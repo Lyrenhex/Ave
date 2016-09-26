@@ -66,8 +66,17 @@ body {
 }
 .usrList ul {
     list-style-type: none;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 0;
+    margin-bottom: 0;
+}
+.usrList ul li {
+    display: block;
+    padding: 5px;
+    background-color: #eee;
+    margin-bottom: 1px;
+}
+.usrList ul li:hover {
+    background-color: #ddd;
 }
 
 .msg {
