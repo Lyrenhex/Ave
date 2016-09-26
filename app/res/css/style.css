@@ -1,0 +1,114 @@
+/* Roboto font */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url(Roboto/Roboto-Regular.ttf) format('ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: #eee;
+}
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.chatLog {
+    width: 75%;
+    min-width: 375px;
+    margin-bottom: 40px;
+}
+.chatLog .message {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    width: 99%;
+    background-color: white;
+    border-radius: 2px;
+    text-align: left;
+    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.chatLog .message p {
+    line-height: 8pt;
+}
+.chatLog .message .meta {
+    font-size: 8pt;
+    color: #ccc;
+    margin-bottom: 0;
+}
+.chatLog .message .meta .msgId {
+    font-style: italic;
+    text-align: right;
+}
+
+.usrList {
+    width: 24%;
+    position: fixed;
+    right: 0;
+    top: 2px;
+    max-height: calc(100% - 45px);
+    overflow: auto;
+    background-color: #fff;
+    border-radius: 2px 0 0 2px;
+    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.usrList ul {
+    list-style-type: none;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.msg {
+    position: fixed;
+    bottom: 0;
+    height: 40px;
+}
+.msg textarea {
+    height: 100%;
+    width: 100vw;
+    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+
+.container img {
+    width: 100%;
+}
+code, pre {
+    background-color: #eee;
+    border-radius: 2px;
+    padding: 2px;
+}
+
+.dark {
+    background-color: black;
+    color: lightgrey;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #0099ff;
+}
+h1 {
+    text-align: center;
+}
+h2.genre {
+    color: #999;
+    font-size: 18pt;
+    margin-top: -20px;
+}
+.sub {
+    text-align: center;
+    margin-top: -20px;
+}

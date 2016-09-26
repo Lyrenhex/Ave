@@ -1,0 +1,12 @@
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\bin\Debug\Ave IRC.exe.config
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\bin\Debug\Ave IRC.exe
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\bin\Debug\Ave IRC.pdb
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\bin\Debug\Ave IRC.xml
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\bin\Debug\MaterialSkin.dll
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave IRC.vbprojResolveAssemblyReference.cache
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave_IRC.Form1.resources
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave_IRC.Resources.resources
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave IRC.vbproj.GenerateResource.Cache
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave IRC.exe
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave IRC.xml
+C:\Users\Damian\Google Drive\Projects\GitHub\Ave\Ave IRC\Ave IRC\obj\Debug\Ave IRC.pdb
