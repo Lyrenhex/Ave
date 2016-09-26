@@ -7,11 +7,33 @@
 		<link href="res/css/mui.min.css" rel="stylesheet" type="text/css" />
 		<script src="res/js/mui.min.js"></script>
         <link href="res/css/style.css" rel="stylesheet" />
+        <script>
+            function updateScroll(){
+                var element = document.getElementById("clog");
+                element.scrollTop = element.scrollHeight;
+            }
+
+            const electron = require("electron");
+
+            electron.ipcRenderer.on("pingchan", function(event, message){
+                console.log(message);
+                updateScroll();
+            });
+
+            electron.ipcRenderer.on("newmsg", function(event, message){
+                console.log(message);
+                var div = document.createElement("div");
+                div.className = "message";
+                div.innerHTML = message;
+                document.getElementById("clog").appendChild(div);
+                updateScroll();
+            });
+        </script>
     </head>
 
     <body>
         <div class="flex">
-            <div class="chatLog">
+            <div class="chatLog" id="clog">
                 <div class="message">
                     <p>hey, scratso!</p>
                     <p class="meta">
