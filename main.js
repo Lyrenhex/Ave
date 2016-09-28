@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu} = require("electron");
+const {app, BrowserWindow, Menu, ipcMain} = require("electron");
 const irc = require("irc");
 
 // prevent JS garbage collector killing the window.
@@ -14,19 +14,23 @@ function newWindow(){
 
     contents.on("did-finish-load", function(){
         contents.send("pingchan", "woop!!");
-        contents.send("newmsg", "<p>Hey, Damo!</p><p class=\"meta\">Meepers42, 22:38 26/09/2016 <span class=\"msgId\">#3</span></p>");
-        sendMsg("This is a test message.", "Sys", "SystemTest");
-        sendMsg("Connecting to IRC server...", "Sys", "System");
+        sendMsg("sys", "This is a test message.", "[System]");
+        sendMsg("sys", "Connecting to IRC server...", "[System]");
 
         client = new irc.Client("orwell.freenode.net", "AveTest");
-        sendMsg("Connected!", "Sys", "System");
+        sendMsg("sys", "Connected!", "[System]");
+
+        ipcMain.on("sendmsg", function(event, recipient, type, message){
+            sendMsg("sys", "received " + message, "[System]", "test");
+            sendMsg(message, type, type);
+        });
 
         client.addListener("message", function (from, to, message){
-            sendMsg(message, to, from);
+            sendMsg(from, message, from);
         });
 
         client.addListener('error', function(message) {
-            sendMsg('error: ' + message.toString(), "Sys", "ErrHandler");
+            sendMsg("sys", 'error: ' + message.toString(), "[System]");
         });
     });
 
@@ -36,10 +40,11 @@ function newWindow(){
     });
 }
 
-function sendMsg(content, recip, sender, bgcolour="white"){
+function sendMsg(channel, content, sender, bgcolour="white"){
     if(contents !== null){
         var d = new Date();
-        contents.send("newmsg", "<p>" + content + "</p><p class=\"meta\">" + sender + "; " + d.toUTCString() + "</p>");
+        contents.send("newmsg", channel, content, sender, d.toUTCString());
+        // contents.send("newmsg", channel, "<p>" + content + "</p><p class=\"meta\">" + sender + "; " + d.toUTCString() + "</p>");
     }
 }
 

@@ -15,18 +15,45 @@
 
             const electron = require("electron");
 
+            // we have to import jQuery weirdly because of Electron
+            window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
+
             electron.ipcRenderer.on("pingchan", function(event, message){
                 console.log(message);
                 updateScroll();
             });
 
-            electron.ipcRenderer.on("newmsg", function(event, message){
+            electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
                 console.log(message);
                 var div = document.createElement("div");
                 div.className = "message";
-                div.innerHTML = message;
+                if(channel == "sys" || sender == "[System]"){
+                    div.className += " sysmsg";
+                }
+                var main = document.createElement("p");
+                var text = document.createTextNode(message);
+                main.appendChild(text);
+                var meta = document.createElement("p");
+                meta.className = "meta";
+                var metaText = document.createTextNode(sender + "; " + time);
+                meta.appendChild(metaText);
+                div.appendChild(main);
+                div.appendChild(meta);
+                // div.innerHTML = message;
                 document.getElementById("clog").appendChild(div);
                 updateScroll();
+            });
+
+            function sendMsg(recipient, type, message){
+                electron.ipcRenderer.send("sendmsg", recipient, type, message);
+            }
+
+            $(document).ready(function(){
+                $('#send').submit(function(){
+                    console.log($('#msg').val());
+                    sendMsg("sys", 'msg', $('#msg').val().toString());
+                    return false;
+                });
             });
         </script>
     </head>
@@ -62,7 +89,10 @@
             </div>
         </div>
         <div class="msg">
-            <textarea name="msg" id="msg" placeholder="Enter message here."></textarea>
+            <form id="send">
+                <input type="text" name="msg" id="msg" placeholder="Enter message here." />
+                <button type="submit" value=">>" />
+            </form>
         </div>
     </body>
 </html>
