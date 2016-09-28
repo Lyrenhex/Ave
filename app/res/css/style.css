@@ -88,12 +88,13 @@ body {
     left: 1vw;
     height: 40px;
 }
-.msg textarea {
+.msg input[type="text"] {
     height: 98%;
     width: 98vw;
     resize: none;
     padding: 8px;
     outline: none !important;
+    border: none;
     border-radius: 20px;
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
