@@ -2,7 +2,7 @@
 A material design IRC client written in HTML, CSS, and JavaScript, using electron/electron.
 
 ## In development
-Please note that Ave is **in active development**. (This is why the `master` branch is empty; there is no deployable code.) There may be bugs, and some features / functionality may not even be implemented yet.
+Please note that Ave is **in active development**. There may be bugs, and some features / functionality may not even be implemented yet.
 
 *Note that the contents of this branch will usually be capable of running; cases where this is not the case __should be reported__. However, it will still be in development, so features may not yet be implemented / only half set up.*
 
