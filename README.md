@@ -8,6 +8,7 @@ Please note that Ave is **in active development**. (This is why the `master` bra
 
 ## Installing
 Currently, there are no binary builds of Ave. In order to launch Ave (from source), you should:
+
 1. Download Node.JS
 2. Clone the electron branch
     1. Run `git clone https://github.com/Scratso/Ave.git` (assuming you have Git installed)
