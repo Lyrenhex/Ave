@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
         <title>Ave IRC Client</title>
         <!-- load MUI -->
-		<link href="res/css/mui.min.css" rel="stylesheet" type="text/css" />
-		<script src="res/js/mui.min.js"></script>
+		<link href="res/css/mui.css" rel="stylesheet" type="text/css" />
+		<script src="res/js/mui.js"></script>
         <link href="res/css/style.css" rel="stylesheet" />
         <script>
             function updateScroll(){
@@ -15,11 +15,8 @@
 
             const electron = require("electron");
 
-	    // we have to import jQuery weirdly because of Electron
-	    window.$ = window.jQuery = require(__dirname+'/res/js/jquery.min.js');
-
             // we have to import jQuery weirdly because of Electron
-            window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
+            window.$ = window.jQuery = require(__dirname + '/res/js/jquery.js');
 
             electron.ipcRenderer.on("pingchan", function(event, message){
                 console.log(message);
