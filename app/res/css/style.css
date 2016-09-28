@@ -21,7 +21,7 @@ body {
 .chatLog {
     width: 75%;
     min-width: 375px;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
 }
 .chatLog .message {
     display: block;
@@ -84,13 +84,18 @@ body {
 
 .msg {
     position: fixed;
-    bottom: 0;
+    bottom: 5px;
+    left: 1vw;
     height: 40px;
 }
-.msg textarea {
-    height: 100%;
-    width: 100vw;
+.msg input[type="text"] {
+    height: 98%;
+    width: 98vw;
     resize: none;
+    padding: 8px;
+    outline: none !important;
+    border: none;
+    border-radius: 20px;
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 5px rgba(0,0,0,.8);
