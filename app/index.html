@@ -1,0 +1,105 @@
+<<<<<<< HEAD
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Ave IRC Client</title>
+        <!-- load MUI -->
+		<link href="res/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<script src="res/js/mui.min.js"></script>
+        <link href="res/css/style.css" rel="stylesheet" />
+        <script>
+            function updateScroll(){
+                var element = document.getElementById("clog");
+                element.scrollTop = element.scrollHeight;
+            }
+
+            const electron = require("electron");
+		
+	    // we have to import jQuery weirdly because of Electron
+	    window.$ = window.jQuery = require(__dirname+'/res/js/jquery.min.js');
+
+            // we have to import jQuery weirdly because of Electron
+            window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
+
+            electron.ipcRenderer.on("pingchan", function(event, message){
+                console.log(message);
+                updateScroll();
+            });
+
+            electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
+                console.log(message);
+                var div = document.createElement("div");
+                div.className = "message";
+                if(channel == "sys" || sender == "[System]"){
+                    div.className += " sysmsg";
+                }
+                var main = document.createElement("p");
+                var text = document.createTextNode(message);
+                main.appendChild(text);
+                var meta = document.createElement("p");
+                meta.className = "meta";
+                var metaText = document.createTextNode(sender + "; " + time);
+                meta.appendChild(metaText);
+                div.appendChild(main);
+                div.appendChild(meta);
+                // div.innerHTML = message;
+                document.getElementById("clog").appendChild(div);
+                updateScroll();
+            });
+
+            function sendMsg(recipient, type, message){
+                electron.ipcRenderer.send("sendmsg", recipient, type, message);
+            }
+
+            $(document).ready(function(){
+                $('#send').submit(function(){
+                    console.log($('#msg').val());
+                    sendMsg("sys", 'msg', $('#msg').val().toString());
+                    return false;
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <div class="flex">
+            <div class="chatLog" id="clog">
+                <div class="message">
+                    <p>hey, scratso!</p>
+                    <p class="meta">
+                        Person, 18:45 26/09/2016
+                        <span class="msgId">#1</span>
+                    </p>
+                </div>
+                <div class="message">
+                    <p>hey, person!</p>
+                    <p class="meta">
+                        Scratso, 18:46 26/09/2016
+                        <span class="msgId">#2</span>
+                    </p>
+                </div>
+            </div>
+            <div class="usrList">
+                <ul>
+                    <li class="op">Person</li>
+                    <li class="op">Another</li>
+                    <li>Scratso</li>
+                    <li>Standard</li>
+                    <li>User</li>
+                    <li>IRCUser</li>
+                    <li>Identify</li>
+                </ul>
+            </div>
+        </div>
+        <div class="msg">
+            <form id="send">
+                <input type="text" name="msg" id="msg" placeholder="Enter message here." />
+                <button type="submit" value=">>" />
+            </form>
+        </div>
+    </body>
+</html>
+=======
+
+>>>>>>> electron
