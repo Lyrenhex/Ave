@@ -22,7 +22,7 @@ function newWindow(){
 
         ipcMain.on("sendmsg", function(event, recipient, type, message){
             sendMsg("sys", "received " + message, "[System]", "test");
-            sendMsg(message, type, type);
+            sendMsg("sys", message, type, type);
         });
 
         client.addListener("message", function (from, to, message){

@@ -54,7 +54,10 @@
             $(document).ready(function(){
                 $('#send').submit(function(){
                     console.log($('#msg').val());
-                    sendMsg("sys", 'msg', $('#msg').val().toString());
+                    if($("#msg").val() != ""){
+                        sendMsg("sys", 'msg', $('#msg').val().toString());
+                        $("#msg").val("");
+                    }
                     return false;
                 });
             });
@@ -80,6 +83,7 @@
                 </div>
             </div>
             <div class="usrList">
+                <p>Online Users and <span class="op">Operators</span></p>
                 <ul>
                     <li class="op">Person</li>
                     <li class="op">Another</li>
@@ -93,8 +97,12 @@
         </div>
         <div class="msg">
             <form id="send">
-                <input type="text" name="msg" id="msg" placeholder="Enter message here." />
-                <button type="submit" value=">>" />
+                <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
+                <button type="submit">
+                    <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                    </svg>
+                </button>
             </form>
         </div>
     </body>

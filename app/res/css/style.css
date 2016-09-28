@@ -55,7 +55,7 @@ body {
     width: 24%;
     position: fixed;
     right: 0;
-    top: 2px;
+    top: 5px;
     max-height: calc(100% - 45px);
     overflow: auto;
     background-color: #fff;
@@ -63,6 +63,12 @@ body {
     -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
                 box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.usrList p {
+    padding: 5px;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 10pt;
 }
 .usrList ul {
     list-style-type: none;
@@ -75,7 +81,7 @@ body {
     background-color: #eee;
     margin-bottom: 1px;
 }
-.usrList ul li.op {
+.op {
     color: #09f;
 }
 .usrList ul li:hover {
@@ -90,15 +96,38 @@ body {
 }
 .msg input[type="text"] {
     height: 98%;
-    width: 98vw;
+    width: 99%;
     resize: none;
     padding: 8px;
+    padding-right: 40px;
     outline: none !important;
     border: none;
     border-radius: 20px;
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+.msg button[type="submit"] {
+    position: fixed;
+    bottom: 17px;
+    right: calc(1vw + 4px);
+    height: 25px;
+    width: 25px;
+    outline: none !important;
+    border: none;
+    border-radius: 12.5px;
+    background-color: #eee;
+    padding: 4px;
+    text-align: center;
+    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+.msg button[type="submit"]:hover {
+    background-color: #bbb;
+}
+.msg button[type="submit"] svg {
+    fill: #09f;
 }
 
 .container img {
