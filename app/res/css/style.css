@@ -10,6 +10,8 @@
 body {
     font-family: "Roboto", sans-serif;
     background-color: #eee;
+    margin: 0;
+    margin-left: 5px;
 }
 .flex {
     display: flex;
@@ -40,19 +42,24 @@ body {
 }
 .chatLog .message p {
     line-height: 8pt;
+    margin: 0;
 }
 .chatLog .message .meta {
     font-size: 8pt;
     color: #ccc;
-    margin-bottom: 0;
+    margin-bottom: 8px;
 }
 .chatLog .message .meta .msgId {
     font-style: italic;
     text-align: right;
 }
 
+.chatLog .sysmsg {
+    background-color: #ebebeb;
+}
+
 .usrList {
-    width: 24%;
+    width: calc(25% - 10px);
     position: fixed;
     right: 0;
     top: 5px;
@@ -66,14 +73,14 @@ body {
 }
 .usrList p {
     padding: 5px;
-    margin-bottom: 0;
+    margin: 0;
     font-weight: bold;
     font-size: 10pt;
 }
 .usrList ul {
     list-style-type: none;
     padding: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 .usrList ul li {
     display: block;
@@ -96,7 +103,7 @@ body {
 }
 .msg input[type="text"] {
     height: 98%;
-    width: 98vw;
+    width: calc(98vw - 48px);
     resize: none;
     padding: 8px;
     padding-right: 40px;

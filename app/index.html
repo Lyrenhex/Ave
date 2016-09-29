@@ -3,9 +3,6 @@
     <head>
         <meta charset="utf-8" />
         <title>Ave IRC Client</title>
-        <!-- load MUI -->
-		<link href="res/css/mui.min.css" rel="stylesheet" type="text/css" />
-		<script src="res/js/mui.min.js"></script>
         <link href="res/css/style.css" rel="stylesheet" />
         <script>
             function updateScroll(){
@@ -35,10 +32,10 @@
                 main.appendChild(text);
                 var meta = document.createElement("p");
                 meta.className = "meta";
-                var metaText = document.createTextNode(sender + "; " + time);
+                var metaText = document.createTextNode(sender + ":");
                 meta.appendChild(metaText);
-                div.appendChild(main);
                 div.appendChild(meta);
+                div.appendChild(main);
                 // div.innerHTML = message;
                 document.getElementById("clog").appendChild(div);
                 updateScroll();
