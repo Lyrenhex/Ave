@@ -4,9 +4,17 @@
         <meta charset="utf-8" />
         <title>Ave IRC Client</title>
         <link href="res/css/style.css" rel="stylesheet" />
-        <link rel="stylesheet" href="/node_modules/material-design-lite/material.min.css">
-        <script src="/node_modules/material-design-lite/material.min.js"></script>
-        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+        <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css">
+        <style>
+        .demo-layout-transparent .mdl-layout__header,
+        .demo-layout-transparent .mdl-layout__drawer-button {
+        /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+        color: rgba(0, 0, 0, 0.87);
+        }
+        </style>
+        <script src="../node_modules/material-design-lite/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <script>
             function updateScroll(){
                 var element = document.getElementById("clog");
@@ -62,45 +70,64 @@
     </head>
 
     <body>
-        <div class="flex">
-            <div class="chatLog" id="clog">
-                <div class="message">
-                    <p>hey, scratso!</p>
-                    <p class="meta">
-                        Person, 18:45 26/09/2016
-                        <span class="msgId">#1</span>
-                    </p>
-                </div>
-                <div class="message">
-                    <p>hey, person!</p>
-                    <p class="meta">
-                        Scratso, 18:46 26/09/2016
-                        <span class="msgId">#2</span>
-                    </p>
-                </div>
+        <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+          <header class="mdl-layout__header mdl-layout__header--transparent">
+            <div class="mdl-layout__header-row">
+              <!-- Title -->
+              <span class="mdl-layout-title">#channel</span>
             </div>
-            <div class="usrList">
-                <p>Online Users and <span class="op">Operators</span></p>
-                <ul>
-                    <li class="op">Person</li>
-                    <li class="op">Another</li>
-                    <li>Scratso</li>
-                    <li>Standard</li>
-                    <li>User</li>
-                    <li>IRCUser</li>
-                    <li>Identify</li>
-                </ul>
+          </header>
+          <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">#channel</span>
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link" href="">Link</a>
+              <a class="mdl-navigation__link" href="">Link</a>
+              <a class="mdl-navigation__link" href="">Link</a>
+              <a class="mdl-navigation__link" href="">Link</a>
+            </nav>
+          </div>
+          <main class="mdl-layout__content">
+              <div class="flex">
+                  <div class="chatLog" id="clog">
+                      <div class="message">
+                          <p>hey, scratso!</p>
+                          <p class="meta">
+                              Person, 18:45 26/09/2016
+                              <span class="msgId">#1</span>
+                          </p>
+                      </div>
+                      <div class="message">
+                          <p>hey, person!</p>
+                          <p class="meta">
+                              Scratso, 18:46 26/09/2016
+                              <span class="msgId">#2</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="usrList">
+                      <p>Online Users and <span class="op">Operators</span></p>
+                      <ul>
+                          <li class="op">Person</li>
+                          <li class="op">Another</li>
+                          <li>Scratso</li>
+                          <li>Standard</li>
+                          <li>User</li>
+                          <li>IRCUser</li>
+                          <li>Identify</li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="msg">
+                  <form id="send">
+                      <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
+                      <button type="submit">
+                          <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
+                              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                          </svg>
+                      </button>
+                  </form>
+              </main>
             </div>
-        </div>
-        <div class="msg">
-            <form id="send">
-                <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
-                <button type="submit">
-                    <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                    </svg>
-                </button>
-            </form>
         </div>
     </body>
 </html>

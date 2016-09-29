@@ -7,7 +7,7 @@ let contents;
 let client;
 
 function newWindow(){
-    win = new BrowserWindow({width: 800, height: 600});
+    win = new BrowserWindow({width: 900, height: 600});
     contents = win.webContents;
 
     win.loadURL("file://" + __dirname + "/app/index.html");

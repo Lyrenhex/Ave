@@ -14,7 +14,7 @@ Currently, there are no binary builds of Ave. In order to launch Ave (from sourc
     1. Run `git clone https://github.com/Scratso/Ave.git` (assuming you have Git installed)
     2. Run `git checkout electron`
 3. In the command line (Windows Command Prompt, or Linux Terminal), within the folder you cloned Ave into in step 2:
-    1. Run `npm install` to install required dependencies (including electron)
+    1. Run `npm install` to install required dependencies (including electron and material-design-lite)
     2. Run `npm start` to run Ave.
 4. All should work at this point; if it doesn't, submit an issue!
 

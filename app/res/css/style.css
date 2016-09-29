@@ -10,17 +10,17 @@
 body {
     font-family: "Roboto", sans-serif;
     background-color: #eee;
-    margin: 0;
-    margin-left: 5px;
 }
 .flex {
     display: flex;
+    margin-left: 55px;
     flex-wrap: wrap;
     flex-wrap: wrap;
     align-items: center;
 }
 
 .chatLog {
+    margin-left: 5px;
     width: 75%;
     min-width: 375px;
     margin-bottom: 50px;
@@ -59,10 +59,10 @@ body {
 }
 
 .usrList {
-    width: calc(25% - 10px);
+    width: calc(25% - 30px);
     position: fixed;
     right: 0;
-    top: 5px;
+    margin-top: 7px;
     max-height: calc(100% - 60px);
     overflow: auto;
     background-color: #fff;
