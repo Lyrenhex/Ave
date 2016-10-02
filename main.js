@@ -17,17 +17,20 @@ function newWindow(){
         sendMsg("sys", "Connecting to IRC server...", "[System]");
 
         client = new irc.Client("orwell.freenode.net", "AveTest");
-        sendMsg("sys", "Connected!", "[System]");
 
         ipcMain.on("sendmsg", function(event, channel, message){
             if(channel != "sys"){
                 client.say(channel, message);
-                sendMsg(channel, message, "AveTest")
+                sendMsg(channel, message, client.nick);
             }
         });
 
         client.addListener("message", function (nick, chan, message, raw){
-            sendMsg(chan, message, nick);
+            if(chan != client.nick){
+                sendMsg(chan, message, nick);
+            }else{
+                sendMsg(nick, message, nick);
+            }
         });
 
         client.addListener("join", function(channel, nick, message){
@@ -35,6 +38,7 @@ function newWindow(){
         });
 
         client.addListener("registered", function(message){
+            sendMsg("sys", "Connected!", "[System]");
             client.join("#ave-irc");
         });
 

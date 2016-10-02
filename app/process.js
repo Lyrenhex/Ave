@@ -5,9 +5,6 @@ function updateScroll(){
 
 var tabs = ["sys"];
 
-var usrLTitle = document.createElement("p");
-usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
-
 const electron = require("electron");
 
 // we have to import jQuery weirdly because of Electron
@@ -83,6 +80,8 @@ function newTab(tabName){
     var clog = document.createElement("div");
     clog.className = "chatLog";
     clog.id = "clog-" + index;
+    var usrLTitle = document.createElement("p");
+    usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
     var usrList = document.createElement("div");
     usrList.className = "usrList";
     usrList.appendChild(usrLTitle);
