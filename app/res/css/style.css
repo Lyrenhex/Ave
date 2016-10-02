@@ -7,13 +7,17 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
+.mdl-layout__drawer  p {
+    padding: 0 10px;
+}
+
 body {
     font-family: "Roboto", sans-serif;
     background-color: #eee;
 }
 .flex {
     display: flex;
-    margin-left: 55px;
+    margin-left: 5px;
     flex-wrap: wrap;
     flex-wrap: wrap;
     align-items: center;
@@ -21,7 +25,7 @@ body {
 
 .chatLog {
     margin-left: 5px;
-    width: 75%;
+    width: 75vw;
     min-width: 375px;
     margin-bottom: 50px;
 }
@@ -59,11 +63,12 @@ body {
 }
 
 .usrList {
-    width: calc(25% - 30px);
+    position: fixed;
+    top: 112px;
+    width: calc(25% - 20px);
     position: fixed;
     right: 0;
-    margin-top: 7px;
-    max-height: calc(100% - 60px);
+    max-height: calc(100vh - 172px);
     overflow: auto;
     background-color: #fff;
     border-radius: 2px 0 0 2px;
@@ -100,6 +105,8 @@ body {
     bottom: 5px;
     left: 1vw;
     height: 40px;
+    z-index: 1;
+    transition: 0.5s linear;
 }
 .msg input[type="text"] {
     height: 98%;
@@ -113,6 +120,12 @@ body {
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+.msg input[type="text"]:focus {
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    transition: 0.5s linear;
 }
 .msg button[type="submit"] {
     position: fixed;
