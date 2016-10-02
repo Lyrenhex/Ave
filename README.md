@@ -19,7 +19,7 @@ Currently, there are no binary builds of Ave. In order to launch Ave (from sourc
 4. All should work at this point; if it doesn't, submit an issue!
 
 ## Screenshots
-![Screenshot](screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/Scratso/Ave/80945bbada6a9abcd2f2fd733fbbb20b167ca6c4/screenshot.png)
 
 ## Contributing
 Feel free to dive in to the code and help out - I won't bite! Alternatively, you could suggest ideas or report bugs in the issue tracker?
