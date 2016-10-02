@@ -4,14 +4,24 @@
         <meta charset="utf-8" />
         <title>Ave IRC Client</title>
         <link href="res/css/style.css" rel="stylesheet" />
-        <link rel="stylesheet" href="/node_modules/material-design-lite/material.min.css">
-        <script src="/node_modules/material-design-lite/material.min.js"></script>
-        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+        <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css">
+        <style>
+        .demo-layout-transparent .mdl-layout__header,
+        .demo-layout-transparent .mdl-layout__drawer-button {
+        /* This background is dark, so we set text to white. Use 87% black instead if
+         your background is light. */
+        color: rgba(0, 0, 0, 0.87);
+        }
+        </style>
+        <script src="../node_modules/material-design-lite/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <script>
             function updateScroll(){
-                var element = document.getElementById("clog");
+                var element = document.getElementById("body");
                 element.scrollTop = element.scrollHeight;
             }
+
+            var tabs = ["sys", "#ave-irc"];
 
             const electron = require("electron");
 
@@ -24,7 +34,7 @@
             });
 
             electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
-                console.log(message);
+                console.log(channel, message, sender, time);
                 var div = document.createElement("div");
                 div.className = "message";
                 if(channel == "sys" || sender == "[System]"){
@@ -40,8 +50,25 @@
                 div.appendChild(meta);
                 div.appendChild(main);
                 // div.innerHTML = message;
-                document.getElementById("clog").appendChild(div);
+                document.getElementById("clog-" + (tabs.indexOf(channel) + 1)).appendChild(div);
                 updateScroll();
+            });
+
+            electron.ipcRenderer.on("join", function(event, channel, nick, message){
+                console.log(channel, nick, message);
+            });
+
+            electron.ipcRenderer.on("names", function(event, channel, nicks){
+                console.log(channel, nicks);
+                for(user in nicks){
+                    var usrEntry = document.createElement("li");
+                    if(nicks[user] == "@" || nicks[user] == "~"){
+                        usrEntry.className = "op";
+                    }
+                    var name = document.createTextNode(user.toString());
+                    usrEntry.appendChild(name);
+                    document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
+                }
             });
 
             function sendMsg(recipient, type, message){
@@ -61,46 +88,65 @@
         </script>
     </head>
 
-    <body>
-        <div class="flex">
-            <div class="chatLog" id="clog">
-                <div class="message">
-                    <p>hey, scratso!</p>
-                    <p class="meta">
-                        Person, 18:45 26/09/2016
-                        <span class="msgId">#1</span>
-                    </p>
+    <body id="body">
+        <!-- Simple header with scrollable tabs. -->
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <!-- Title -->
+                    <span class="mdl-layout-title">orwell.freenode.net</span>
                 </div>
-                <div class="message">
-                    <p>hey, person!</p>
-                    <p class="meta">
-                        Scratso, 18:46 26/09/2016
-                        <span class="msgId">#2</span>
-                    </p>
+                <!-- Tabs -->
+                <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                     <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Sys</a>
+                      <a href="#scroll-tab-2" class="mdl-layout__tab">#ave-irc</a>
                 </div>
+            </header>
+            <div class="mdl-layout__drawer">
+                <span class="mdl-layout-title">Ave IRC Client</span>
+                <p>descriptive about text for Ave goes here</p>
             </div>
-            <div class="usrList">
-                <p>Online Users and <span class="op">Operators</span></p>
-                <ul>
-                    <li class="op">Person</li>
-                    <li class="op">Another</li>
-                    <li>Scratso</li>
-                    <li>Standard</li>
-                    <li>User</li>
-                    <li>IRCUser</li>
-                    <li>Identify</li>
-                </ul>
+            <main class="mdl-layout__content">
+                <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+                    <div class="flex">
+                        <div class="chatLog" id="clog-1">
+                        </div>
+                        <div class="usrList">
+                            <p>Online Users and <span class="op">Operators</span></p>
+                            <ul id="usrList-1">
+                                <li class="op">Person</li>
+                                <li class="op">Another</li>
+                                <li>Scratso</li>
+                                <li>Standard</li>
+                                <li>User</li>
+                                <li>IRCUser</li>
+                                <li>Identify</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+                    <div class="flex">
+                        <div class="chatLog" id="clog-2">
+                        </div>
+                        <div class="usrList">
+                            <p>Online Users and <span class="op">Operators</span></p>
+                            <ul id="usrList-2">
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+             </main>
+        </div>
+              <div class="msg">
+                  <form id="send">
+                      <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
+                      <button type="submit">
+                          <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
+                              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                          </svg>
+                      </button>
+                  </form>
             </div>
-        </div>
-        <div class="msg">
-            <form id="send">
-                <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
-                <button type="submit">
-                    <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                    </svg>
-                </button>
-            </form>
-        </div>
     </body>
 </html>

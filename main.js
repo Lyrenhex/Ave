@@ -7,7 +7,7 @@ let contents;
 let client;
 
 function newWindow(){
-    win = new BrowserWindow({width: 800, height: 600});
+    win = new BrowserWindow({width: 900, height: 600});
     contents = win.webContents;
 
     win.loadURL("file://" + __dirname + "/app/index.html");
@@ -25,8 +25,20 @@ function newWindow(){
             sendMsg("sys", message, type, type);
         });
 
-        client.addListener("message", function (from, to, message){
-            sendMsg(from, message, from);
+        client.addListener("message", function (nick, chan, message, raw){
+            sendMsg(chan, message, nick);
+        });
+
+        client.addListener("join", function(channel, nick, message){
+            contents.send("join", channel, nick, message);
+        });
+
+        client.addListener("registered", function(message){
+            client.join("#ave-irc");
+        });
+
+        client.addListener("names", function(channel, nicks){
+            contents.send("names", channel, nicks);
         });
 
         client.addListener('error', function(message) {
