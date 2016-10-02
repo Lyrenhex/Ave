@@ -21,7 +21,7 @@
                 element.scrollTop = element.scrollHeight;
             }
 
-            var tabs = ["sys", "#ave-irc"];
+            var tabs = ["sys"];
 
             var usrLTitle = document.createElement("p");
             usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
@@ -34,32 +34,16 @@
             electron.ipcRenderer.on("pingchan", function(event, message){
                 console.log(message);
                 updateScroll();
-                newTab("test");
             });
 
             electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
-                console.log(channel, message, sender, time);
-                var div = document.createElement("div");
-                div.className = "message";
-                if(channel == "sys" || sender == "[System]"){
-                    div.className += " sysmsg";
+                try{
+                    newMsg(channel, message, sender, time);
+                }catch(err){
+                    console.log("error in newmsg handler. assuming nonexistant tab. creating new tab. (" + err + ")");
+                    newTab(channel);
+                    newMsg(channel, message, sender, time);
                 }
-                var main = document.createElement("p");
-                var text = document.createTextNode(message);
-                main.appendChild(text);
-                var meta = document.createElement("p");
-                meta.className = "meta";
-                var metaText = document.createTextNode(sender + ":");
-                meta.appendChild(metaText);
-                div.appendChild(meta);
-                div.appendChild(main);
-                // div.innerHTML = message;
-                document.getElementById("clog-" + (tabs.indexOf(channel) + 1)).appendChild(div);
-                updateScroll();
-            });
-
-            electron.ipcRenderer.on("join", function(event, channel, nick, message){
-                console.log(channel, nick, message);
             });
 
             electron.ipcRenderer.on("names", function(event, channel, nicks){
@@ -79,6 +63,27 @@
                 electron.ipcRenderer.send("sendmsg", recipient, type, message);
             }
 
+            function newMsg(channel, message, sender, time){
+                console.log(channel, message, sender, time);
+                var div = document.createElement("div");
+                div.className = "message";
+                if(channel == "sys" || sender == "[System]"){
+                    div.className += " sysmsg";
+                }
+                var main = document.createElement("p");
+                var text = document.createTextNode(message);
+                main.appendChild(text);
+                var meta = document.createElement("p");
+                meta.className = "meta";
+                var metaText = document.createTextNode(sender + " (" + time + "):");
+                meta.appendChild(metaText);
+                div.appendChild(meta);
+                div.appendChild(main);
+                // div.innerHTML = message;
+                document.getElementById("clog-" + (tabs.indexOf(channel) + 1)).appendChild(div);
+                updateScroll();
+            }
+
             function newTab(tabName){
                 tabs.push(tabName);
                 var index = tabs.indexOf(tabName) + 1;
@@ -95,7 +100,7 @@
                 flexDiv.className = "flex";
                 var clog = document.createElement("div");
                 clog.className = "chatLog";
-                clog.id = "scroll-tab-" + index;
+                clog.id = "clog-" + index;
                 var usrList = document.createElement("div");
                 usrList.className = "usrList";
                 usrList.appendChild(usrLTitle);
@@ -122,8 +127,10 @@
             $(document).ready(function(){
                 $('#send').submit(function(){
                     console.log($('#msg').val());
+                    var array = document.getElementsByClassName("is-active")[1].id.split("-");
+                    var channel = tabs[array[array.length-1]-1];
                     if($("#msg").val() != ""){
-                        sendMsg("sys", 'msg', $('#msg').val().toString());
+                        sendMsg(channel, $('#msg').val().toString());
                         $("#msg").val("");
                     }
                     return false;
@@ -143,7 +150,6 @@
                 <!-- Tabs -->
                 <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-bar">
                      <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Sys</a>
-                      <a href="#scroll-tab-2" class="mdl-layout__tab">#ave-irc</a>
                 </div>
             </header>
             <div class="mdl-layout__drawer">
@@ -169,17 +175,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-                    <div class="flex">
-                        <div class="chatLog" id="clog-2">
-                        </div>
-                        <div class="usrList">
-                            <p>Online Users and <span class="op">Operators</span></p>
-                            <ul id="usrList-2">
-                            </ul>
-                        </div>
-                    </div>
-                </section>
+
              </main>
         </div>
               <div class="msg">
