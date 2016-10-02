@@ -14,7 +14,6 @@ function newWindow(){
 
     contents.on("did-finish-load", function(){
         contents.send("pingchan", "woop!!");
-        sendMsg("sys", "This is a test message.", "[System]");
         sendMsg("sys", "Connecting to IRC server...", "[System]");
 
         client = new irc.Client("orwell.freenode.net", "AveTest");
