@@ -23,6 +23,9 @@
 
             var tabs = ["sys", "#ave-irc"];
 
+            var usrLTitle = document.createElement("p");
+            usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
+
             const electron = require("electron");
 
             // we have to import jQuery weirdly because of Electron
@@ -31,6 +34,7 @@
             electron.ipcRenderer.on("pingchan", function(event, message){
                 console.log(message);
                 updateScroll();
+                newTab("test");
             });
 
             electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
@@ -75,6 +79,46 @@
                 electron.ipcRenderer.send("sendmsg", recipient, type, message);
             }
 
+            function newTab(tabName){
+                tabs.push(tabName);
+                var index = tabs.indexOf(tabName) + 1;
+                var tabButton = document.createElement("a");
+                tabButton.href = "#scroll-tab-" + index;
+                tabButton.className = "mdl-layout__tab";
+                var tabText = document.createTextNode(tabName);
+                tabButton.appendChild(tabText);
+
+                var tab = document.createElement("section");
+                tab.className = "mdl-layout__tab-panel";
+                tab.id = "scroll-tab-" + index;
+                var flexDiv = document.createElement("div");
+                flexDiv.className = "flex";
+                var clog = document.createElement("div");
+                clog.className = "chatLog";
+                clog.id = "scroll-tab-" + index;
+                var usrList = document.createElement("div");
+                usrList.className = "usrList";
+                usrList.appendChild(usrLTitle);
+                var usrListUl = document.createElement("ul");
+                usrListUl.id = "usrList-" + index;
+
+                usrList.appendChild(usrListUl);
+                flexDiv.appendChild(clog);
+                flexDiv.appendChild(usrList);
+                tab.appendChild(flexDiv);
+
+                document.getElementById("content").appendChild(tab);
+
+                document.getElementById("tab-bar").appendChild(tabButton);
+
+                var Layout = document.querySelector('.mdl-js-layout');
+                var Tabs = document.querySelectorAll('.mdl-layout__tab');
+                var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
+                for (var i = 0; i < Tabs.length; i++) {
+                    new MaterialLayoutTab(Tabs[i], Tabs, Panels, Layout.MaterialLayout);
+                }
+            }
+
             $(document).ready(function(){
                 $('#send').submit(function(){
                     console.log($('#msg').val());
@@ -97,7 +141,7 @@
                     <span class="mdl-layout-title">orwell.freenode.net</span>
                 </div>
                 <!-- Tabs -->
-                <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-bar">
                      <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Sys</a>
                       <a href="#scroll-tab-2" class="mdl-layout__tab">#ave-irc</a>
                 </div>
@@ -106,7 +150,7 @@
                 <span class="mdl-layout-title">Ave IRC Client</span>
                 <p>descriptive about text for Ave goes here</p>
             </div>
-            <main class="mdl-layout__content">
+            <main class="mdl-layout__content" id="content">
                 <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
                     <div class="flex">
                         <div class="chatLog" id="clog-1">
