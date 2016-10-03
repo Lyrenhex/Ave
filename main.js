@@ -20,7 +20,15 @@ function newWindow(){
 
             contents.on("did-finish-load", function(){
                 contents.send("set", server);
-                client = new irc.Client(server, nick, port=port);
+                try {
+                    client = new irc.Client(server, nick, {
+                        port: port,
+                        showErrors: true,
+                        encoding: "UTF-8"
+                     });
+                }catch(err){
+                    sendMsg("sys", 'error: ' + err.toString(), "[System]" )
+                }
 
                 contents.send("pingchan", "woop!!");
                 sendMsg("sys", "Connecting to IRC server...", "[System]");
@@ -68,7 +76,7 @@ function newWindow(){
     });
 }
 
-function sendMsg(channel, content, sender, bgcolour="white"){
+function sendMsg(channel, content, sender){
     if(contents !== null){
         var d = new Date();
         contents.send("newmsg", channel, content, sender, d.toUTCString());
