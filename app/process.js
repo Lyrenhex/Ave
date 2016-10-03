@@ -5,6 +5,8 @@ function updateScroll(){
 
 var tabs = ["sys"];
 
+let server;
+
 const electron = require("electron");
 
 // we have to import jQuery weirdly because of Electron
@@ -17,7 +19,8 @@ electron.ipcRenderer.on("pingchan", function(event, message){
 
 electron.ipcRenderer.on("set", function(event, server){
     document.getElementById("server").innerHTML = server;
-    console.log(server);
+    document.title = "Ave IRC Client :: " + server;
+    server = server;
 });
 
 electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
@@ -39,6 +42,7 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         }
         var name = document.createTextNode(user.toString());
         usrEntry.appendChild(name);
+        usrEntry.id = user + "-" + (tabs.indexOf(channel) + 1);
         document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
     }
 });

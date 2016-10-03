@@ -63,7 +63,7 @@ function newWindow(){
     });
 
     win.on("closed", function(){
-        client.send("QUIT", "testing");
+        client.disconnect("testing");
         win = null;
     });
 }
