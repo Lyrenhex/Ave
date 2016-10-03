@@ -15,6 +15,11 @@ electron.ipcRenderer.on("pingchan", function(event, message){
     updateScroll();
 });
 
+electron.ipcRenderer.on("set", function(event, server){
+    document.getElementById("server").innerHTML = server;
+    console.log(server);
+});
+
 electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
     try{
         newMsg(channel, message, sender, time);

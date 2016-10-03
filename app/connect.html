@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Ave IRC Client - Connect</title>
+        <link href="res/css/connect.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css">
+        <script src="../node_modules/material-design-lite/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script>
+        const electron = require("electron");
+
+        // we have to import jQuery weirdly because of Electron
+        window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
+
+        $(document).ready(function(){
+            $('#connect').submit(function(){
+                electron.ipcRenderer.send("connect", $('#server').val(), $('#port').val(), $('#nick').val());
+                return false;
+            });
+        });
+        </script>
+    </head>
+
+    <body>
+        <div class="content">
+			<h2>Connect to Server</h2>
+			<p>Please enter your desired nickname and the connection information for the server that you would like to connect to. For reference, the freenode IRC credentials have been pre-filled for you; please feel free to change these.</p>
+            <p><b>Please note that according to the IRC specification, nicknames <b>should not</b> exceed 9 characters. Some servers, however, accept up to 30 characters; therefore, the enforced limit is 30 characters. Please limit it to 9 characters, however.</b></p>
+			<form id="connect">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" id="server" value="irc.freenode.net" required />
+					<label class="mdl-textfield__label" for="server">Server IP</label>
+				</div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="port" value="6667" required />
+					<label class="mdl-textfield__label" for="port">Server Port</label>
+                    <span class="mdl-textfield__error">Ports should be a number (usually 6667)</span>
+				</div><br />
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" id="nick" maxlength="30" required />
+					<label class="mdl-textfield__label" for="nick">Nickname</label>
+				</div><br />
+				<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Connect to Server</button>
+			</form>
+		</div>
+    </body>
+</html>

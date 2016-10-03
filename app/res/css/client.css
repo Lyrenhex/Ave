@@ -1,0 +1,181 @@
+/* Roboto font */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url(Roboto/Roboto-Regular.ttf) format('ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+.mdl-layout__drawer  p {
+    padding: 0 10px;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: #eee;
+}
+.flex {
+    display: flex;
+    margin-left: 5px;
+    flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.chatLog {
+    margin-left: 5px;
+    width: 75vw;
+    min-width: 375px;
+    margin-bottom: 50px;
+}
+.chatLog .message {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    width: 99%;
+    background-color: white;
+    border-radius: 2px;
+    text-align: left;
+    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.chatLog .message p {
+    line-height: 8pt;
+    margin: 0;
+}
+.chatLog .message .meta {
+    font-size: 8pt;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+.chatLog .message .meta .msgId {
+    font-style: italic;
+    text-align: right;
+}
+
+.chatLog .sysmsg {
+    background-color: #ebebeb;
+}
+
+.usrList {
+    position: fixed;
+    top: 112px;
+    width: calc(25% - 20px);
+    position: fixed;
+    right: 0;
+    max-height: calc(100vh - 172px);
+    overflow: auto;
+    background-color: #fff;
+    border-radius: 2px 0 0 2px;
+    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.usrList p {
+    padding: 5px;
+    margin: 0;
+    font-weight: bold;
+    font-size: 10pt;
+}
+.usrList ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.usrList ul li {
+    display: block;
+    padding: 5px;
+    background-color: #eee;
+    margin-bottom: 1px;
+}
+.op {
+    color: #09f;
+}
+.usrList ul li:hover {
+    background-color: #ddd;
+}
+
+.msg {
+    position: fixed;
+    bottom: 5px;
+    left: 1vw;
+    height: 40px;
+    z-index: 1;
+    transition: 0.5s linear;
+}
+.msg input[type="text"] {
+    height: 98%;
+    width: calc(98vw - 48px);
+    resize: none;
+    padding: 8px;
+    padding-right: 40px;
+    outline: none !important;
+    border: none;
+    border-radius: 20px;
+    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+.msg input[type="text"]:focus {
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    transition: 0.5s linear;
+}
+.msg button[type="submit"] {
+    position: fixed;
+    bottom: 17px;
+    right: calc(1vw + 4px);
+    height: 25px;
+    width: 25px;
+    outline: none !important;
+    border: none;
+    border-radius: 12.5px;
+    background-color: #eee;
+    padding: 4px;
+    text-align: center;
+    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+}
+.msg button[type="submit"]:hover {
+    background-color: #bbb;
+}
+.msg button[type="submit"] svg {
+    fill: #09f;
+}
+
+.container img {
+    width: 100%;
+}
+code, pre {
+    background-color: #eee;
+    border-radius: 2px;
+    padding: 2px;
+}
+
+.dark {
+    background-color: black;
+    color: lightgrey;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #0099ff;
+}
+h1 {
+    text-align: center;
+}
+h2.genre {
+    color: #999;
+    font-size: 18pt;
+    margin-top: -20px;
+}
+.sub {
+    text-align: center;
+    margin-top: -20px;
+}

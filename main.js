@@ -6,49 +6,60 @@ let win;
 let contents;
 let client;
 
+var conState = 0;
+
 function newWindow(){
     win = new BrowserWindow({width: 900, height: 600});
     contents = win.webContents;
 
-    win.loadURL("file://" + __dirname + "/app/index.html");
+    win.loadURL("file://" + __dirname + "/app/connect.html");
 
     contents.on("did-finish-load", function(){
-        contents.send("pingchan", "woop!!");
-        sendMsg("sys", "Connecting to IRC server...", "[System]");
+        ipcMain.on("connect", function(event, server, port, nick){
+            win.loadURL("file://" + __dirname + "/app/client.html");
 
-        client = new irc.Client("orwell.freenode.net", "AveTest");
+            contents.on("did-finish-load", function(){
+                contents.send("set", server);
+                client = new irc.Client(server, nick, port=port);
 
-        ipcMain.on("sendmsg", function(event, channel, message){
-            if(channel != "sys"){
-                client.say(channel, message);
-                sendMsg(channel, message, client.nick);
-            }
+                contents.send("pingchan", "woop!!");
+                sendMsg("sys", "Connecting to IRC server...", "[System]");
+
+                ipcMain.on("sendmsg", function(event, channel, message){
+                    if(channel != "sys"){
+                        client.say(channel, message);
+                        sendMsg(channel, message, client.nick);
+                    }
+                });
+
+                client.addListener("message", function (nick, chan, message, raw){
+                    if(chan != client.nick){
+                        sendMsg(chan, message, nick);
+                    }else{
+                        sendMsg(nick, message, nick);
+                    }
+                });
+
+                client.addListener("join", function(channel, nick, message){
+                    sendMsg(channel, nick + " has joined the channel.", "[System]");
+                });
+
+                client.addListener("registered", function(message){
+                    sendMsg("sys", "Connected!", "[System]");
+                    client.join("#ave-irc");
+                });
+
+                client.addListener("names", function(channel, nicks){
+                    contents.send("names", channel, nicks);
+                });
+
+                client.addListener('error', function(message) {
+                    sendMsg("sys", 'error: ' + message.toString(), "[System]");
+                });
+            });
         });
 
-        client.addListener("message", function (nick, chan, message, raw){
-            if(chan != client.nick){
-                sendMsg(chan, message, nick);
-            }else{
-                sendMsg(nick, message, nick);
-            }
-        });
 
-        client.addListener("join", function(channel, nick, message){
-            sendMsg(channel, nick + " has joined the channel.", "[System]");
-        });
-
-        client.addListener("registered", function(message){
-            sendMsg("sys", "Connected!", "[System]");
-            client.join("#ave-irc");
-        });
-
-        client.addListener("names", function(channel, nicks){
-            contents.send("names", channel, nicks);
-        });
-
-        client.addListener('error', function(message) {
-            sendMsg("sys", 'error: ' + message.toString(), "[System]");
-        });
     });
 
     win.on("closed", function(){
