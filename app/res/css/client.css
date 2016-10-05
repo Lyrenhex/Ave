@@ -94,6 +94,10 @@ body {
     margin-bottom: 1px;
     cursor: pointer;
 }
+.usrList ul li.client {
+    background-color: #fff;
+    font-weight: bold;
+}
 .op {
     color: #09f;
 }

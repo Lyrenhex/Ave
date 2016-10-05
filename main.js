@@ -53,6 +53,7 @@ function newWindow(){
                 });
 
                 client.addListener("registered", function(message){
+                    contents.send("user", client.nick);
                     sendMsg("sys", "Connected!", "[System]");
                     client.join("#ave-irc");
                 });

@@ -6,6 +6,7 @@ function updateScroll(){
 var tabs = ["sys"];
 
 let server;
+let uNick;
 
 const electron = require("electron");
 
@@ -21,6 +22,9 @@ electron.ipcRenderer.on("set", function(event, server){
     document.getElementById("server").innerHTML = server;
     document.title = "Ave IRC Client :: " + server;
     server = server;
+});
+electron.ipcRenderer.on("user", function(event, nick){
+    uNick = nick;
 });
 
 electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
@@ -39,6 +43,9 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         var usrEntry = document.createElement("li");
         if(nicks[user] == "@" || nicks[user] == "~"){
             usrEntry.className = "op";
+        }
+        if(user == uNick){
+            usrEntry.className = "client";
         }
         var name = document.createTextNode(user.toString());
         usrEntry.appendChild(name);
