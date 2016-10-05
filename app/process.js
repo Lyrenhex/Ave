@@ -43,7 +43,7 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         var name = document.createTextNode(user.toString());
         usrEntry.appendChild(name);
         usrEntry.id = user + "-" + (tabs.indexOf(channel) + 1);
-        usrEntry.onclick = function(){ newTab(user); }
+        usrEntry.onclick = function(){ newTab(this.innerHTML); };
         document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
     }
 });

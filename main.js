@@ -66,7 +66,11 @@ function newWindow(){
                 });
 
                 client.addListener('error', function(message) {
-                    sendMsg("sys", 'error: ' + message.toString(), "[System]");
+                    if(message["command"] == "err_nosuchnick"){
+                        sendMsg("sys", 'error: No suck nick.', "[System]");
+                    }else{
+                        sendMsg("sys", 'error: ' + message["command"], "[System]");
+                    }
                 });
             });
         });

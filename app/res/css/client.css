@@ -92,6 +92,7 @@ body {
     padding: 5px;
     background-color: #eee;
     margin-bottom: 1px;
+    cursor: pointer;
 }
 .op {
     color: #09f;
