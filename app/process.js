@@ -43,6 +43,7 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         var name = document.createTextNode(user.toString());
         usrEntry.appendChild(name);
         usrEntry.id = user + "-" + (tabs.indexOf(channel) + 1);
+        usrEntry.onclick = function(){ newTab(user); }
         document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
     }
 });
@@ -79,44 +80,46 @@ function newMsg(channel, message, sender, time){
 }
 
 function newTab(tabName){
-    tabs.push(tabName);
-    var index = tabs.indexOf(tabName) + 1;
-    var tabButton = document.createElement("a");
-    tabButton.href = "#scroll-tab-" + index;
-    tabButton.className = "mdl-layout__tab";
-    var tabText = document.createTextNode(tabName);
-    tabButton.appendChild(tabText);
+    if(!(tabs.indexOf(tabName) >= 0)){
+        tabs.push(tabName);
+        var index = tabs.indexOf(tabName) + 1;
+        var tabButton = document.createElement("a");
+        tabButton.href = "#scroll-tab-" + index;
+        tabButton.className = "mdl-layout__tab";
+        var tabText = document.createTextNode(tabName);
+        tabButton.appendChild(tabText);
 
-    var tab = document.createElement("section");
-    tab.className = "mdl-layout__tab-panel";
-    tab.id = "scroll-tab-" + index;
-    var flexDiv = document.createElement("div");
-    flexDiv.className = "flex";
-    var clog = document.createElement("div");
-    clog.className = "chatLog";
-    clog.id = "clog-" + index;
-    var usrLTitle = document.createElement("p");
-    usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
-    var usrList = document.createElement("div");
-    usrList.className = "usrList";
-    usrList.appendChild(usrLTitle);
-    var usrListUl = document.createElement("ul");
-    usrListUl.id = "usrList-" + index;
+        var tab = document.createElement("section");
+        tab.className = "mdl-layout__tab-panel";
+        tab.id = "scroll-tab-" + index;
+        var flexDiv = document.createElement("div");
+        flexDiv.className = "flex";
+        var clog = document.createElement("div");
+        clog.className = "chatLog";
+        clog.id = "clog-" + index;
+        var usrLTitle = document.createElement("p");
+        usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
+        var usrList = document.createElement("div");
+        usrList.className = "usrList";
+        usrList.appendChild(usrLTitle);
+        var usrListUl = document.createElement("ul");
+        usrListUl.id = "usrList-" + index;
 
-    usrList.appendChild(usrListUl);
-    flexDiv.appendChild(clog);
-    flexDiv.appendChild(usrList);
-    tab.appendChild(flexDiv);
+        usrList.appendChild(usrListUl);
+        flexDiv.appendChild(clog);
+        flexDiv.appendChild(usrList);
+        tab.appendChild(flexDiv);
 
-    document.getElementById("content").appendChild(tab);
+        document.getElementById("content").appendChild(tab);
 
-    document.getElementById("tab-bar").appendChild(tabButton);
+        document.getElementById("tab-bar").appendChild(tabButton);
 
-    var Layout = document.querySelector('.mdl-js-layout');
-    var Tabs = document.querySelectorAll('.mdl-layout__tab');
-    var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
-    for (var i = 0; i < Tabs.length; i++) {
-        new MaterialLayoutTab(Tabs[i], Tabs, Panels, Layout.MaterialLayout);
+        var Layout = document.querySelector('.mdl-js-layout');
+        var Tabs = document.querySelectorAll('.mdl-layout__tab');
+        var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
+        for (var i = 0; i < Tabs.length; i++) {
+            new MaterialLayoutTab(Tabs[i], Tabs, Panels, Layout.MaterialLayout);
+        }
     }
 }
 

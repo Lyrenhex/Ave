@@ -57,7 +57,7 @@ function newWindow(){
                     client.join("#ave-irc");
                 });
 
-                client.addListener("adNick", function(channel, nicks){
+                client.addListener("names", function(channel, nicks){
                     contents.send("names", channel, nicks);
                 });
                 client.addListener("part", function(channel, nick, reason, message){
