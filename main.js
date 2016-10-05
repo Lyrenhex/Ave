@@ -27,7 +27,7 @@ function newWindow(){
                         encoding: "UTF-8"
                      });
                 }catch(err){
-                    sendMsg("sys", 'error: ' + err.toString(), "[System]" )
+                    sendMsg("sys", 'error: ' + err.toString(), "[System]");
                 }
 
                 contents.send("pingchan", "woop!!");
@@ -57,8 +57,12 @@ function newWindow(){
                     client.join("#ave-irc");
                 });
 
-                client.addListener("names", function(channel, nicks){
+                client.addListener("adNick", function(channel, nicks){
                     contents.send("names", channel, nicks);
+                });
+                client.addListener("part", function(channel, nick, reason, message){
+                    contents.send("rmNick", channel, nick);
+                    sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
                 });
 
                 client.addListener('error', function(message) {

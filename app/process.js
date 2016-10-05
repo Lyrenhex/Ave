@@ -46,6 +46,12 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
     }
 });
+electron.ipcRenderer.on("rmNick", function(event, channel, nick){
+    var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
+    console.log(channel);
+    console.log("usrList-" + (tabs.indexOf(channel) + 1));
+    document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
+});
 
 function sendMsg(recipient, type, message){
     electron.ipcRenderer.send("sendmsg", recipient, type, message);
