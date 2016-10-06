@@ -76,10 +76,12 @@ electron.ipcRenderer.on("adNick", function(event, channel, nick){
     usrEntry.onclick = function(){ newTab(this.innerHTML); };
     usrList.appendChild(usrEntry);
 });
+electron.ipcRenderer.on("chNick", function(event, oldnick, newnick, channel){
+    var entry = document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1));
+    document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1)).innerHTML = newnick;
+});
 electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
-    console.log(channel);
-    console.log("usrList-" + (tabs.indexOf(channel) + 1));
     document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
 });
 
@@ -93,7 +95,8 @@ function newMsg(channel, message, sender, time){
     div.className = "message";
     if(channel == "sys" || sender == "[System]"){
         div.className += " sysmsg";
-    }else if(sender == "[MOTD]"){
+    }
+    if(sender == "[MOTD]" || sender == "[SERVER]"){
         div.className += " topic";
     }else if(time == "topic"){
         div.className += " topic";

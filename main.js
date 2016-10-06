@@ -52,6 +52,17 @@ function newWindow(){
                         sendMsg(nick, message, nick);
                     }
                 });
+                client.addListener("notice", function (nick, chan, message, raw){
+                    if(nick == null){
+                        nick = "[SERVER]";
+                        chan = "sys";
+                    }
+                    if(chan != client.nick){
+                        sendMsg(chan, message, nick);
+                    }else{
+                        sendMsg(nick, message, nick);
+                    }
+                });
                 client.addListener("topic", function (chan, topic, nick, message){
                     contents.send("topic", chan, topic, nick);
                 });
@@ -70,9 +81,34 @@ function newWindow(){
                     contents.send("adNick", channel, nick);
                     sendMsg(channel, nick + " has joined the channel.", "[System]");
                 });
+                client.addListener("nick", function(oldnick, newnick, channels, message){
+                    for(chan in channels){
+                        chan = channels[chan];
+                        contents.send("chNick", oldnick, newnick, chan);
+                        sendMsg(chan, oldnick + " changed their name to " + newnick + ".", "[System]");
+                    }
+                });
                 client.addListener("part", function(channel, nick, reason, message){
                     contents.send("rmNick", channel, nick);
                     sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
+                });
+                client.addListener("kick", function(channel, nick, by, reason, message){
+                    contents.send("rmNick", channel, nick);
+                    sendMsg(channel, nick + " was kicked from the channel by " + by + " (" + reason + ").", "[System]");
+                });
+                client.addListener("quit", function(nick, reason, channels, message){
+                    for(chan in channels){
+                        chan = channels[chan];
+                        contents.send("rmNick", chan, nick);
+                        sendMsg(chan, nick + " has quit the server (" + reason + ").", "[System]");
+                    }
+                });
+                client.addListener("kill", function(nick, reason, channels, message){
+                    for(chan in channels){
+                        chan = channels[chan];
+                        contents.send("rmNick", chan, nick);
+                        sendMsg(chan, nick + " was kicked from the server (" + reason + ").", "[System]");
+                    }
                 });
 
                 client.addListener('error', function(message) {
