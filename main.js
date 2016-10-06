@@ -56,18 +56,19 @@ function newWindow(){
                     contents.send("topic", chan, topic, nick);
                 });
 
-                client.addListener("join", function(channel, nick, message){
-                    sendMsg(channel, nick + " has joined the channel.", "[System]");
-                });
-
                 client.addListener("registered", function(message){
                     contents.send("user", client.nick);
                     sendMsg("sys", "Connected!", "[System]");
                     client.join("#ave-irc");
                 });
 
+                // connection stuff - joins, parts, names, quits
                 client.addListener("names", function(channel, nicks){
                     contents.send("names", channel, nicks);
+                });
+                client.addListener("join", function(channel, nick, message){
+                    contents.send("adNick", channel, nick);
+                    sendMsg(channel, nick + " has joined the channel.", "[System]");
                 });
                 client.addListener("part", function(channel, nick, reason, message){
                     contents.send("rmNick", channel, nick);

@@ -28,6 +28,8 @@ electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time
     try{
         newMsg(channel, message, sender, time);
     }catch(err){
+        /* if the channel doesn't have a tab, it will probably raise an error. therefore, if we assume that
+        this error was caused by that, we should get away with it (let's face it - it probably was) */
         console.log("error in newmsg handler. assuming nonexistant tab. creating new tab. (" + err + ")");
         newTab(channel);
         newMsg(channel, message, sender, time);
@@ -39,6 +41,14 @@ electron.ipcRenderer.on("topic", function(event, channel, topic, nick){
 
 electron.ipcRenderer.on("names", function(event, channel, nicks){
     console.log(channel, nicks);
+    /* for in case NAMES was called *after* the initial channel call, we should probably clear
+    the existing user list (to prevent duplicates and potentially delete nonapplicable nicks)
+    __note that this shouldn't happen often!__*/
+    var usrList = document.getElementById("usrList-" + (tabs.indexOf(channel) + 1));
+    while (usrList.firstChild) {
+        usrList.removeChild(usrList.firstChild);
+    }
+
     for(user in nicks){
         var usrEntry = document.createElement("li");
         if(nicks[user] == "@" || nicks[user] == "~"){
@@ -51,8 +61,20 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
         usrEntry.appendChild(name);
         usrEntry.id = user + "-" + (tabs.indexOf(channel) + 1);
         usrEntry.onclick = function(){ newTab(this.innerHTML); };
-        document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).appendChild(usrEntry);
+        usrList.appendChild(usrEntry);
     }
+});
+electron.ipcRenderer.on("adNick", function(event, channel, nick){
+    var usrList = document.getElementById("usrList-" + (tabs.indexOf(channel) + 1));
+    var usrEntry = document.createElement("li");
+    if(nick == uNick){
+        usrEntry.className += " client";
+    }
+    var name = document.createTextNode(nick.toString());
+    usrEntry.appendChild(name);
+    usrEntry.id = nick + "-" + (tabs.indexOf(channel) + 1);
+    usrEntry.onclick = function(){ newTab(this.innerHTML); };
+    usrList.appendChild(usrEntry);
 });
 electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
@@ -66,25 +88,26 @@ function sendMsg(recipient, type, message){
 }
 
 function newMsg(channel, message, sender, time){
-    console.log(linkify.find(message));
     console.log(channel, message, sender, time);
     var div = document.createElement("div");
     div.className = "message";
     if(channel == "sys" || sender == "[System]"){
         div.className += " sysmsg";
+    }else if(sender == "[MOTD]"){
+        div.className += " topic";
     }else if(time == "topic"){
         div.className += " topic";
     }
     var main = document.createElement("p");
+
+    // check for links and emails, and then make them into links (because users like that shit)
     var hTxt = message;
     var links = linkify.find(message);
-    console.log(links);
     for(link in links){
         link = links[link];
-        console.log(link.value);
         hTxt = hTxt.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
     }
-    console.log(hTxt);
+
     /* var text = document.createTextNode(message);
     main.appendChild(text); */
     main.innerHTML = hTxt;
@@ -134,6 +157,8 @@ function newTab(tabName){
 
         document.getElementById("tab-bar").appendChild(tabButton);
 
+        /* the following is intended to register the new tab with MDL, which has no standard
+        method for registering tabs (apparently they aren't supposed to be dynamically generated?) */
         var Layout = document.querySelector('.mdl-js-layout');
         var Tabs = document.querySelectorAll('.mdl-layout__tab');
         var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
