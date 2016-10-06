@@ -76,9 +76,17 @@ electron.ipcRenderer.on("adNick", function(event, channel, nick){
     usrEntry.onclick = function(){ newTab(this.innerHTML); };
     usrList.appendChild(usrEntry);
 });
+electron.ipcRenderer.on("opNick", function(event, channel, nick){
+    var usrEntry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
+    usrEntry.className += " op";
+});
+electron.ipcRenderer.on("deopNick", function(event, channel, nick){
+    var usrEntry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
+    usrEntry.classList.remove("op");
+});
 electron.ipcRenderer.on("chNick", function(event, oldnick, newnick, channel){
-    var entry = document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1));
-    document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1)).innerHTML = newnick;
+    var usrEntry = document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1));
+    usrEntry.innerHTML = newnick;
 });
 electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));

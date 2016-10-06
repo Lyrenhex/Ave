@@ -55,6 +55,14 @@ function newWindow(){
                         sendMsg(nick, message, nick);
                     }
                 });
+                client.addListener("action", function (nick, chan, action, raw){
+                    var message = "<b> * " + nick + " " + action + "</b>";
+                    if(chan != client.nick){
+                        sendMsg(chan, message, nick);
+                    }else{
+                        sendMsg(nick, message, nick);
+                    }
+                });
                 client.addListener("notice", function (nick, chan, message, raw){
                     if(nick == null){
                         nick = "[SERVER]";
@@ -66,6 +74,7 @@ function newWindow(){
                         sendMsg(nick, message, nick);
                     }
                 });
+
                 client.addListener("topic", function (chan, topic, nick, message){
                     contents.send("topic", chan, topic, nick);
                 });
@@ -89,6 +98,22 @@ function newWindow(){
                         chan = channels[chan];
                         contents.send("chNick", oldnick, newnick, chan);
                         sendMsg(chan, oldnick + " changed their name to " + newnick + ".", "[System]");
+                    }
+                });
+                client.addListener("+mode", function(channel, by, mode, argument, message){
+                    if(mode == "o"){
+                        sendMsg(channel, by + " ascended " + argument + " to operator.", "[System]");
+                        contents.send("opNick", channel, argument);
+                    }else{
+                        sendMsg(channel, by + " set the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                    }
+                });
+                client.addListener("-mode", function(channel, by, mode, argument, message){
+                    if(mode == "o"){
+                        sendMsg(channel, by + " stripped " + argument + " of operator perks.", "[System]");
+                        contents.send("deopNick", channel, argument);
+                    }else{
+                        sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
                     }
                 });
                 client.addListener("part", function(channel, nick, reason, message){
