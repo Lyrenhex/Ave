@@ -44,6 +44,9 @@ function newWindow(){
                         sendMsg(channel, message, client.nick);
                     }
                 });
+                ipcMain.on("join", function(event, channel){
+                    client.join(channel);
+                });
 
                 client.addListener("message", function (nick, chan, message, raw){
                     if(chan != client.nick){
@@ -109,6 +112,11 @@ function newWindow(){
                         contents.send("rmNick", chan, nick);
                         sendMsg(chan, nick + " was kicked from the server (" + reason + ").", "[System]");
                     }
+                });
+
+                client.addListener("invite", function(channel, from, message){
+                    sendMsg("sys", "You have been invited to the " + channel + " channel, by " + from + "!", "[SERVER]");
+                    contents.send("inv", channel, from);
                 });
 
                 client.addListener('error', function(message) {

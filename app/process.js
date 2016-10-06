@@ -85,6 +85,14 @@ electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
 });
 
+electron.ipcRenderer.on("inv", function(event, chan, from){
+    var join = confirm("You have been invited to the  " + chan + " channel by " + from + ". Would you like to accept this invitation?");
+    if(join){
+        console.log("join!");
+        electron.ipcRenderer.send("join", chan);
+    }
+});
+
 function sendMsg(recipient, type, message){
     electron.ipcRenderer.send("sendmsg", recipient, type, message);
 }
