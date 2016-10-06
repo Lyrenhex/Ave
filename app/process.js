@@ -10,9 +10,6 @@ let uNick;
 
 const electron = require("electron");
 
-// we have to import jQuery weirdly because of Electron
-window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
-
 electron.ipcRenderer.on("pingchan", function(event, message){
     console.log(message);
     updateScroll();
@@ -36,6 +33,9 @@ electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time
         newMsg(channel, message, sender, time);
     }
 });
+electron.ipcRenderer.on("topic", function(event, channel, topic, nick){
+    newMsg(channel, topic, nick, "topic");
+});
 
 electron.ipcRenderer.on("names", function(event, channel, nicks){
     console.log(channel, nicks);
@@ -45,7 +45,7 @@ electron.ipcRenderer.on("names", function(event, channel, nicks){
             usrEntry.className = "op";
         }
         if(user == uNick){
-            usrEntry.className = "client";
+            usrEntry.className += " client";
         }
         var name = document.createTextNode(user.toString());
         usrEntry.appendChild(name);
@@ -66,15 +66,28 @@ function sendMsg(recipient, type, message){
 }
 
 function newMsg(channel, message, sender, time){
+    console.log(linkify.find(message));
     console.log(channel, message, sender, time);
     var div = document.createElement("div");
     div.className = "message";
     if(channel == "sys" || sender == "[System]"){
         div.className += " sysmsg";
+    }else if(time == "topic"){
+        div.className += " topic";
     }
     var main = document.createElement("p");
-    var text = document.createTextNode(message);
-    main.appendChild(text);
+    var hTxt = message;
+    var links = linkify.find(message);
+    console.log(links);
+    for(link in links){
+        link = links[link];
+        console.log(link.value);
+        hTxt = hTxt.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
+    }
+    console.log(hTxt);
+    /* var text = document.createTextNode(message);
+    main.appendChild(text); */
+    main.innerHTML = hTxt;
     var meta = document.createElement("p");
     meta.className = "meta";
     var metaText = document.createTextNode(sender + " (" + time + "):");

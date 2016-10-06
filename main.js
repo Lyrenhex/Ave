@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, ipcMain} = require("electron");
+const {app, BrowserWindow, Menu, ipcMain, shell} = require("electron");
 const irc = require("irc");
 
 // prevent JS garbage collector killing the window.
@@ -17,6 +17,11 @@ function newWindow(){
     contents.on("did-finish-load", function(){
         ipcMain.on("connect", function(event, server, port, nick){
             win.loadURL("file://" + __dirname + "/app/client.html");
+
+            contents.on('new-window', function(e, url) {
+                e.preventDefault();
+                shell.openExternal(url);
+            });
 
             contents.on("did-finish-load", function(){
                 contents.send("set", server);
@@ -46,6 +51,9 @@ function newWindow(){
                     }else{
                         sendMsg(nick, message, nick);
                     }
+                });
+                client.addListener("topic", function (chan, topic, nick, message){
+                    contents.send("topic", chan, topic, nick);
                 });
 
                 client.addListener("join", function(channel, nick, message){

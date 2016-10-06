@@ -61,6 +61,10 @@ body {
 .chatLog .sysmsg {
     background-color: #ebebeb;
 }
+.chatLog .topic {
+    background-color: #09f;
+    color: #fff;
+}
 
 .usrList {
     position: fixed;
