@@ -108,7 +108,7 @@ function newWindow(){
                 client.addListener("registered", function(message){
                     contents.send("user", client.nick);
                     sendMsg("sys", "Connected!", "[System]");
-                    client.join("#ave-irc");
+                    // client.join("#ave-irc");
                 });
 
                 // connection stuff - joins, parts, names, quits
