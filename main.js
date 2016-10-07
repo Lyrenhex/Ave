@@ -236,7 +236,11 @@ function newWindow(){
     });
 
     win.on("closed", function(){
-        client.disconnect("testing");
+        try{
+            client.disconnect("testing");
+        }catch(e){
+            // don't do anything; the user probably left on the connection screen.
+        }
         win = null;
     });
 }
