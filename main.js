@@ -3,6 +3,7 @@ const irc = require("irc");
 
 // prevent JS garbage collector killing the window.
 let win;
+let about;
 let contents;
 let client;
 
@@ -39,6 +40,15 @@ function newWindow(){
                 }catch(err){
                     sendMsg("sys", 'error: ' + err.toString(), "[System]");
                 }
+
+                ipcMain.on("about", function(event){
+                    about = new BrowserWindow({width:900, height:600});
+                    about.loadURL("file://" + __dirname + "/app/about.html");
+
+                    about.on("closed", function(){
+                        about = null;
+                    });
+                });
 
                 contents.send("pingchan", "woop!!");
                 sendMsg("sys", "Connecting to IRC server...", "[System]");

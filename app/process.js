@@ -5,6 +5,10 @@ let uNick;
 
 const electron = require("electron");
 
+function about(){
+    electron.ipcRenderer.send("about");
+}
+
 electron.ipcRenderer.on("pingchan", function(event, message){
     console.log(message);
 });
