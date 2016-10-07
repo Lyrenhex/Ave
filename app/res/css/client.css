@@ -45,7 +45,7 @@ body {
                 box-shadow: 0px 3px 7px rgba(0,0,0,.8);
 }
 .chatLog .message p {
-    line-height: 8pt;
+    line-height: 12pt;
     margin: 0;
 }
 .chatLog .message .meta {

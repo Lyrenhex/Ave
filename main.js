@@ -6,6 +6,11 @@ let win;
 let contents;
 let client;
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 var conState = 0;
 
 function newWindow(){
@@ -137,6 +142,11 @@ function newWindow(){
                         contents.send("rmNick", chan, nick);
                         sendMsg(chan, nick + " was kicked from the server (" + reason + ").", "[System]");
                     }
+                });
+
+                client.addListener("motd", function(motd){
+                    var motd = motd.replaceAll("\n", " <br />");
+                    sendMsg("sys", motd, "[MOTD]");
                 });
 
                 client.addListener("whois", function(info){
