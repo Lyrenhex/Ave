@@ -33,8 +33,10 @@ String.prototype.replaceAll = function(search, replacement) {
 
 var conState = 0;
 
+var ico = __dirname + "/app/res/img/icon.ico";
+
 function newWindow(){
-    win = new BrowserWindow({width: 900, height: 600});
+    win = new BrowserWindow({width: 900, height: 600, icon: ico});
     contents = win.webContents;
 
     win.loadURL("file://" + __dirname + "/app/connect.html");
@@ -68,7 +70,7 @@ function newWindow(){
                 }
 
                 ipcMain.on("about", function(event){
-                    about = new BrowserWindow({width:900, height:600});
+                    about = new BrowserWindow({width:900, height:600, icon: ico});
                     aboutCon = about.webContents;
 
                     about.loadURL("file://" + __dirname + "/app/about.html");
