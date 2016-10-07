@@ -31,7 +31,49 @@
             </header>
             <div class="mdl-layout__drawer">
                 <span class="mdl-layout-title">Ave IRC Client</span>
-                <p>descriptive about text for Ave goes here</p>
+                <form id="joinChan">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="channel" required />
+                      <label class="mdl-textfield__label" for="channel">IRC Channel</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Join Channel</button>
+                </form>
+                <hr />
+                <form id="pmUsr">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="pmNick" required />
+                      <label class="mdl-textfield__label" for="nick">Target Nick (such as NickServ)</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="pmMsg" required />
+                      <label class="mdl-textfield__label" for="pmMsg">Message</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Message User</button>
+                </form>
+                <hr />
+                <form id="changeNick">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="newNick" maxlength="30" required />
+                      <label class="mdl-textfield__label" for="newNick">New Nickname</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Change Nickname</button>
+                </form>
+                <hr />
+                <form id="reConnect">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="srvIP" required />
+                        <label class="mdl-textfield__label" for="nick">Server IP Address</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="srvPort" required />
+                        <label class="mdl-textfield__label" for="srvPort">Server Port</label>
+                        <span class="mdl-textfield__error">Ports should be a number (usually 6667)</span>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Connect</button>
+                </form>
+                <form id="dc">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Disconnect</button>
+                </form>
                 <!-- Add spacer, to align navigation to the right -->
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation -->

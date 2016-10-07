@@ -100,8 +100,8 @@ electron.ipcRenderer.on("inv", function(event, chan, from){
     }
 });
 
-function sendMsg(recipient, type, message){
-    electron.ipcRenderer.send("sendmsg", recipient, type, message);
+function sendMsg(recipient, message){
+    electron.ipcRenderer.send("sendmsg", recipient, message);
 }
 
 function newMsg(channel, message, sender, time){
@@ -205,6 +205,19 @@ $(document).ready(function(){
             sendMsg(channel, $('#msg').val().toString());
             $("#msg").val("");
         }
+        return false;
+    });
+
+    $('#joinChan').submit(function(){
+        electron.ipcRenderer.send("join", $("#channel").val().toString());
+        return false;
+    });
+    $('#pmUsr').submit(function(){
+        sendMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString());
+        return false;
+    });
+    $('#changeNick').submit(function(){
+        electron.ipcRenderer.send("changeNick", $("#newNick").val().toString());
         return false;
     });
 

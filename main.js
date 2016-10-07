@@ -70,6 +70,9 @@ function newWindow(){
                 ipcMain.on("join", function(event, channel){
                     client.join(channel);
                 });
+                ipcMain.on("changeNick", function(event, newnick){
+                    client.send("NICK", newnick);
+                });
 
                 client.addListener("message", function (nick, chan, message, raw){
                     if(chan != client.nick){
