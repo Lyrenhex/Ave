@@ -175,8 +175,11 @@ function newTab(tabName){
         var tabButton = document.createElement("a");
         tabButton.href = "#scroll-tab-" + index;
         tabButton.className = "mdl-layout__tab";
-        var tabText = document.createTextNode(tabName);
-        tabButton.appendChild(tabText);
+        var tabBadge = document.createElement("span");
+        tabBadge.className = "mdl-badge";
+        tabBadge.setAttribute("data-badge", "0");
+        tabBadge.innerHTML = tabName;
+        tabButton.appendChild(tabBadge);
 
         var tab = document.createElement("section");
         tab.className = "mdl-layout__tab-panel";
@@ -240,9 +243,7 @@ $(document).ready(function(){
     });
 
     document.getElementById("topbar").addEventListener("click", function(){
-        console.log("clicked");
         var tab = document.getElementById("content");
-        console.log(tab);
         tab.scrollTop = tab.scrollHeight;
     });
 });
