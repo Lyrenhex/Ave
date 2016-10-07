@@ -40,7 +40,8 @@ function newWindow(){
     win.loadURL("file://" + __dirname + "/app/connect.html");
 
     contents.on("did-finish-load", function(){
-        ipcMain.on("connect", function(event, server, port, nick){
+        ipcMain.on("connect", function(event, server, port, nick, username, realname, encoding,
+                                                                                    retryCount, retryDelay, clearColours, floodProtect){
             win.loadURL("file://" + __dirname + "/app/client.html");
 
             contents.on('new-window', function(e, url) {
@@ -54,7 +55,13 @@ function newWindow(){
                     client = new irc.Client(server, nick, {
                         port: port,
                         showErrors: true,
-                        encoding: "UTF-8"
+                        encoding: encoding,
+                        userName: username,
+                        realName: realname.toString(),
+                        retryCount: retryCount,
+                        retryDelay: retryDelay,
+                        stripColours: clearColours,
+                        floodProtection: floodProtect
                      });
                 }catch(err){
                     sendMsg("sys", 'error: ' + err.toString(), "[System]");
