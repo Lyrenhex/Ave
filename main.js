@@ -139,6 +139,22 @@ function newWindow(){
                     }
                 });
 
+                client.addListener("whois", function(info){
+                    var whois = "";
+                    whois += "WHOIS response for user '" + info.nick + "' (" + info.user + ")<br />";
+                    whois += "Connecting from host " + info.host + " at " + info.server + "<br />";
+                    whois += "Real name is " + info.realname + "<br />";
+                    var chans = "";
+                    for(channel in info.channels){
+                        chans += info.channels[channel] + " ";
+                    }
+                    whois += "User is currently chatting in the following channels: " + chans;
+                    if(info.operator == "is an IRC Operator"){
+                        whois += "<br /><b>This user is an IRC operator.";
+                    }
+                    sendMsg("sys", whois, "[System]");
+                });
+
                 client.addListener("invite", function(channel, from, message){
                     sendMsg("sys", "You have been invited to the " + channel + " channel, by " + from + "!", "[SERVER]");
                     contents.send("inv", channel, from);
