@@ -1,8 +1,3 @@
-function updateScroll(){
-    var element = document.getElementById("body");
-    element.scrollTop = element.scrollHeight;
-}
-
 var tabs = ["sys"];
 
 let server;
@@ -12,7 +7,6 @@ const electron = require("electron");
 
 electron.ipcRenderer.on("pingchan", function(event, message){
     console.log(message);
-    updateScroll();
 });
 
 electron.ipcRenderer.on("set", function(event, server){
@@ -107,6 +101,11 @@ function sendMsg(recipient, type, message){
 }
 
 function newMsg(channel, message, sender, time){
+    var clog = document.getElementById("clog-" + (tabs.indexOf(channel) + 1));
+    var tab = document.getElementById("content");
+    // allow 1px inaccuracy by adding 1
+    var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
+    console.log(isScrolledToBottom);
     console.log(channel, message, sender, time);
     var div = document.createElement("div");
     div.className = "message";
@@ -138,8 +137,11 @@ function newMsg(channel, message, sender, time){
     div.appendChild(meta);
     div.appendChild(main);
     // div.innerHTML = message;
-    document.getElementById("clog-" + (tabs.indexOf(channel) + 1)).appendChild(div);
-    updateScroll();
+    clog.appendChild(div);
+    // scroll to bottom if isScrolledToBotto
+    if(isScrolledToBottom){
+        tab.scrollTop = tab.scrollHeight;
+    }
 }
 
 function newTab(tabName){
@@ -198,5 +200,12 @@ $(document).ready(function(){
             $("#msg").val("");
         }
         return false;
+    });
+
+    document.getElementById("topbar").addEventListener("click", function(){
+        console.log("clicked");
+        var tab = document.getElementById("content");
+        console.log(tab);
+        tab.scrollTop = tab.scrollHeight;
     });
 });
