@@ -162,9 +162,19 @@ function newMsg(channel, message, sender, time){
     div.appendChild(main);
     // div.innerHTML = message;
     clog.appendChild(div);
-    // scroll to bottom if isScrolledToBotto
-    if(isScrolledToBottom){
-        tab.scrollTop = tab.scrollHeight;
+
+    // if it was posted to the current channel, we should bump the scroll
+    var array = document.getElementsByClassName("is-active")[1].id.split("-");
+    var curChan = tabs[array[array.length-1]-1];
+    if(curChan == channel){
+        // scroll to bottom if isScrolledToBottom
+        if(isScrolledToBottom){
+            tab.scrollTop = tab.scrollHeight;
+        }
+    }else{
+        // otherwise, we should actually increase the badge of the actual channel
+        var badge = document.getElementById("badge-" + (tabs.indexOf(channel) + 1));
+        badge.setAttribute("data-badge", String(Number(badge.getAttribute("data-badge")) + 1));
     }
 }
 
@@ -176,6 +186,7 @@ function newTab(tabName){
         tabButton.href = "#scroll-tab-" + index;
         tabButton.className = "mdl-layout__tab";
         var tabBadge = document.createElement("span");
+        tabBadge.id = "badge-" + index;
         tabBadge.className = "mdl-badge";
         tabBadge.setAttribute("data-badge", "0");
         tabBadge.innerHTML = tabName;
@@ -245,5 +256,11 @@ $(document).ready(function(){
     document.getElementById("topbar").addEventListener("click", function(){
         var tab = document.getElementById("content");
         tab.scrollTop = tab.scrollHeight;
+
+        // we should reset the unread message indicator for the active channel (for in case the
+        // user just changed it)
+        var array = document.getElementsByClassName("is-active")[1].id.split("-");
+        var badge = document.getElementById("badge-" + array[array.length-1]);
+        badge.setAttribute("data-badge", "0");
     });
 });
