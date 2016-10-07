@@ -4,6 +4,7 @@ const irc = require("irc");
 // prevent JS garbage collector killing the window.
 let win;
 let about;
+let aboutCon;
 let contents;
 let client;
 
@@ -43,7 +44,14 @@ function newWindow(){
 
                 ipcMain.on("about", function(event){
                     about = new BrowserWindow({width:900, height:600});
+                    aboutCon = about.webContents;
+
                     about.loadURL("file://" + __dirname + "/app/about.html");
+
+                    aboutCon.on('new-window', function(e, url) {
+                        e.preventDefault();
+                        shell.openExternal(url);
+                    });
 
                     about.on("closed", function(){
                         about = null;
@@ -120,7 +128,9 @@ function newWindow(){
                         sendMsg(channel, by + " ascended " + argument + " to operator.", "[System]");
                         contents.send("opNick", channel, argument);
                     }else{
-                        sendMsg(channel, by + " set the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                        if(by != undefined){
+                            sendMsg(channel, by + " set the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                        }
                     }
                 });
                 client.addListener("-mode", function(channel, by, mode, argument, message){
@@ -128,7 +138,9 @@ function newWindow(){
                         sendMsg(channel, by + " stripped " + argument + " of operator perks.", "[System]");
                         contents.send("deopNick", channel, argument);
                     }else{
-                        sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                        if(by != undefined){
+                            sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                        }
                     }
                 });
                 client.addListener("part", function(channel, nick, reason, message){
