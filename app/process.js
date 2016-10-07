@@ -114,6 +114,8 @@ function newMsg(channel, message, sender, time){
     }
     if(sender == "[MOTD]" || sender == "[SERVER]"){
         div.className += " topic";
+    }else if(sender == "[ERROR]"){
+        div.className += " error";
     }else if(time == "topic"){
         div.className += " topic";
     }

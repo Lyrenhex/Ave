@@ -65,6 +65,10 @@ body {
     background-color: #09f;
     color: #fff;
 }
+.chatLog .error {
+    background-color: #ff1744;
+    color: #fff;
+}
 
 .usrList {
     position: fixed;
