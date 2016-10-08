@@ -51,8 +51,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </header>
             <div class="mdl-layout__drawer">
                 <span class="mdl-layout-title">Ave IRC Client</span>
-                <form id="joinChan">
-                    <h6>Join IRC Channel</h6>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('joinChan')">Join IRC Channel</button>
+                <form id="joinChan" class="toggle">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                       <input class="mdl-textfield__input" type="text" id="channel" required />
                       <label class="mdl-textfield__label" for="channel">IRC Channel</label>
@@ -60,8 +60,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Join Channel</button>
                 </form>
                 <hr />
-                <form id="pmUsr">
-                    <h6>Private Message User</h6>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('pmUsr')">Message User</button>
+                <form id="pmUsr" class="toggle">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                       <input class="mdl-textfield__input" type="text" id="pmNick" required />
                       <label class="mdl-textfield__label" for="nick">Target Nick (such as NickServ)</label>
@@ -70,15 +70,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       <input class="mdl-textfield__input" type="text" id="pmMsg" required />
                       <label class="mdl-textfield__label" for="pmMsg">Message</label>
                     </div>
-                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Message User</button>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Send Message</button>
                 </form>
                 <hr />
-                <form id="dc">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('dc')">Disconnect</button>
+                <form id="dc" class="toggle">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                       <input class="mdl-textfield__input" type="text" id="dcReason" />
                       <label class="mdl-textfield__label" for="dcReason">Disconnect Reason</label>
                     </div>
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Disconnect</button>
+                </form>
+                <hr />
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changeNick')">Change Nickname</button>
+                <form id="changeNick" class="toggle">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="newNick" maxlength="30" required />
+                      <label class="mdl-textfield__label" for="newNick">New Nickname</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Change</button>
+                </form>
+                <hr />
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('whois')">WHOIS User</button>
+                <form id="whois" class="toggle">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="whoisNick" required />
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">WHOIS</button>
                 </form>
                 <!-- Add spacer, to align navigation to the right -->
                 <div class="mdl-layout-spacer"></div>
@@ -87,24 +105,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <a class="mdl-navigation__link" href="javascript:help()">Help</a>
                     <a class="mdl-navigation__link" href="javascript:about()">About Ave</a>
                 </nav>
-                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle()">Toggle Controls</button>
-                <div class="toggle" id="toggle">
-                    <form id="changeNick">
-                        <h6>Change Nickname</h6>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" id="newNick" maxlength="30" required />
-                          <label class="mdl-textfield__label" for="newNick">New Nickname</label>
-                        </div>
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Change Nickname</button>
-                    </form>
-                    <form id="whois">
-                        <h6>WHOIS User</h6>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" id="whoisNick" required />
-                        </div>
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">WHOIS</button>
-                    </form>
-                </div>
             </div>
             <main class="mdl-layout__content" id="content">
                 <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">

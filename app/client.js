@@ -30,7 +30,7 @@ function help(){
     electron.ipcRenderer.send("help");
 }
 
-function toggle(id="toggle"){
+function toggle(id){
     var element = document.getElementById(id);
     if(element.classList.contains("shown")){
         element.classList.remove("shown");
