@@ -254,6 +254,11 @@ $(document).ready(function(){
         return false;
     });
 
+    $('#dc').submit(function(){
+        electron.ipcRenderer.send("disconnect", $("#dcReason").val().toString());
+        return false;
+    });
+
     document.getElementById("topbar").addEventListener("click", function(){
         var tab = document.getElementById("content");
         tab.scrollTop = tab.scrollHeight;

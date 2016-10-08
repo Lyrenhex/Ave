@@ -31,8 +31,6 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-var conState = 0;
-
 var ico = __dirname + "/app/res/img/icon.ico";
 
 function newWindow(){
@@ -42,8 +40,7 @@ function newWindow(){
     win.loadURL("file://" + __dirname + "/app/connect.html");
 
     contents.on("did-finish-load", function(){
-        ipcMain.on("connect", function(event, server, port, nick, username, realname, encoding,
-                                                                                    retryCount, retryDelay, clearColours, floodProtect){
+        ipcMain.on("connect", function(event, connDat){
             win.loadURL("file://" + __dirname + "/app/client.html");
 
             contents.on('new-window', function(e, url) {
@@ -52,18 +49,18 @@ function newWindow(){
             });
 
             contents.on("did-finish-load", function(){
-                contents.send("set", server);
+                contents.send("set", connDat.server.address + " (" + connDat.server.port + ")");
                 try {
-                    client = new irc.Client(server, nick, {
-                        port: port,
+                    client = new irc.Client(connDat.server.address, connDat.user.nickname, {
+                        port: connDat.server.port,
                         showErrors: true,
-                        encoding: encoding,
-                        userName: username,
-                        realName: realname.toString(),
-                        retryCount: retryCount,
-                        retryDelay: retryDelay,
-                        stripColours: clearColours,
-                        floodProtection: floodProtect
+                        encoding: connDat.encoding,
+                        userName: connDat.user.username,
+                        realName: connDat.user.realname.toString(),
+                        retryCount: connDat.retry.count,
+                        retryDelay: connDat.retry.delay,
+                        stripColours: connDat.stripForm,
+                        floodProtection: connDat.floodProtect
                      });
                 }catch(err){
                     sendMsg("sys", 'error: ' + err.toString(), "[System]");
@@ -99,6 +96,11 @@ function newWindow(){
                 });
                 ipcMain.on("changeNick", function(event, newnick){
                     client.send("NICK", newnick);
+                });
+
+                ipcMain.on("disconnect", function(event, reason){
+                    client.disconnect(reason);
+                    win.loadURL("file://" + __dirname + "/app/disconnected.html");
                 });
 
                 client.addListener("message", function (nick, chan, message, raw){

@@ -79,19 +79,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Change Nickname</button>
                 </form>
                 <hr />
-                <form id="reConnect">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="srvIP" required />
-                        <label class="mdl-textfield__label" for="nick">Server IP Address</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="srvPort" required />
-                        <label class="mdl-textfield__label" for="srvPort">Server Port</label>
-                        <span class="mdl-textfield__error">Ports should be a number (usually 6667)</span>
-                    </div>
-                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Connect</button>
-                </form>
                 <form id="dc">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="dcReason" />
+                      <label class="mdl-textfield__label" for="dcReason">Disconnect Reason</label>
+                    </div>
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Disconnect</button>
                 </form>
                 <!-- Add spacer, to align navigation to the right -->
