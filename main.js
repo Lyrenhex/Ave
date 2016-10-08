@@ -23,6 +23,8 @@ const irc = require("irc");
 let win;
 let about;
 let aboutCon;
+let help;
+let helpCon;
 let contents;
 let client;
 
@@ -81,12 +83,34 @@ function newWindow(){
                         about = null;
                     });
                 });
+                ipcMain.on("help", function(event){
+                    about = new BrowserWindow({width:900, height:600, icon: ico});
+                    aboutCon = about.webContents;
+
+                    about.loadURL("file://" + __dirname + "/app/help/index.html");
+
+                    aboutCon.on('new-window', function(e, url) {
+                        e.preventDefault();
+                        shell.openExternal(url);
+                    });
+
+                    about.on("closed", function(){
+                        about = null;
+                    });
+                });
 
                 contents.send("pingchan", "woop!!");
                 sendMsg("sys", "Connecting to IRC server...", "[System]");
 
                 ipcMain.on("sendmsg", function(event, channel, message){
-                    if(channel != "sys"){
+                    if(message.charAt(0) == "/"){
+                        var parsed = message.split(" ");
+                        parsed[0] = parsed[0].toUpperCase();
+                        if(parsed[0] == "MSG"){
+                            parsed[0] = "PRIVMSG";
+                        }
+                        client.send.apply(this, parsed);
+                    }else if(channel != "sys"){
                         client.say(channel, message);
                         sendMsg(channel, message, client.nick);
                     }

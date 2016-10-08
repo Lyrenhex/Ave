@@ -26,6 +26,9 @@ const electron = require("electron");
 function about(){
     electron.ipcRenderer.send("about");
 }
+function help(){
+    electron.ipcRenderer.send("help");
+}
 
 electron.ipcRenderer.on("pingchan", function(event, message){
     console.log(message);
