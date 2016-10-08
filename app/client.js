@@ -138,7 +138,7 @@ function newMsg(channel, message, sender, time){
         div.className += " topic";
     }else if(sender == "[ERROR]"){
         div.className += " error";
-    }else if(time == "topic"){
+    }else if(time == "topic" || message.indexOf(uNick) >= 0){
         div.className += " topic";
     }
     var main = document.createElement("p");
@@ -175,6 +175,7 @@ function newMsg(channel, message, sender, time){
         // otherwise, we should actually increase the badge of the actual channel
         var badge = document.getElementById("badge-" + (tabs.indexOf(channel) + 1));
         badge.setAttribute("data-badge", String(Number(badge.getAttribute("data-badge")) + 1));
+        // check if the user's nickname was included in the message
     }
 }
 
