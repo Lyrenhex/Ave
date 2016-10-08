@@ -64,10 +64,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         <div class="content">
             <h2>Sending commands</h2>
-            <p>As of currently, the Ave input field cannot send commands to IRC servers. However,
+            <p>As of currently, the Ave input field cannot easily send commands to IRC servers. However,
             basic actions (such as joining channels, changing nicks, private messages) are possible via
             the Ave side-menu.</p>
-            <p>Command input is planned for the future.</p>
+            <p>That said, Ave permits control of the backend, via prepending a colon (":") to the beginning of your message. For example,
+            by sending the message <pre>:client.send("WHOIS", client.nick)</pre> you will be sent the WHOIS response for yourself.</p>
+            <p><b>This provides unrestricted access to the Ave main thread, and is therefore intended to be treated with suitable amounts
+                of caution!</b></p>
         </div>
     </body>
 </html>

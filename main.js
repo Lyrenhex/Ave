@@ -111,13 +111,10 @@ function newWindow(){
                 });
 
                 ipcMain.on("sendmsg", function(event, channel, message){
-                    if(message.charAt(0) == "/"){
-                        var parsed = message.split(" ");
-                        parsed[0] = parsed[0].toUpperCase();
-                        if(parsed[0] == "MSG"){
-                            parsed[0] = "PRIVMSG";
-                        }
-                        client.send.apply(this, parsed);
+                    // if message starts with ":", run JS code.
+                    if(message.charAt(0) == ":"){
+                        message = message.substring(1);
+                        eval(message);
                     }else if(channel != "sys"){
                         client.say(channel, message);
                         sendMsg(channel, message, client.nick);
