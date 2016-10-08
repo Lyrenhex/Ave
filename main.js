@@ -56,6 +56,7 @@ function newWindow(){
                     client = new irc.Client(connDat.server.address, connDat.user.nickname, {
                         port: connDat.server.port,
                         showErrors: true,
+                        autoConnect: false,
                         encoding: connDat.encoding,
                         userName: connDat.user.username,
                         realName: connDat.user.realname.toString(),
@@ -67,6 +68,16 @@ function newWindow(){
                 }catch(err){
                     sendMsg("sys", 'error: ' + err.toString(), "[System]");
                 }
+                client.addListener("netError", function(error){
+                    if(error.code == "ENOTFOUND"){
+                        sendMsg("sys", "Connection failed: Could not find host \"" + error.hostname + "\"<br />Please check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
+                    }else{
+                        sendMsg("sys", "Connection error: " + error, "[ERROR]");
+                    }
+                    contents.send("log", error);
+                });
+                sendMsg("sys", "Connecting to IRC server...", "[System]");
+                client.connect()
 
                 ipcMain.on("about", function(event){
                     about = new BrowserWindow({width:900, height:600, icon: ico});
@@ -98,9 +109,6 @@ function newWindow(){
                         about = null;
                     });
                 });
-
-                contents.send("pingchan", "woop!!");
-                sendMsg("sys", "Connecting to IRC server...", "[System]");
 
                 ipcMain.on("sendmsg", function(event, channel, message){
                     if(message.charAt(0) == "/"){
@@ -249,11 +257,8 @@ function newWindow(){
                 });
 
                 client.addListener('error', function(message) {
-                    if(message["command"] == "err_nosuchnick"){
-                        sendMsg("sys", 'error: No suck nick.', "[ERROR]");
-                    }else{
-                        sendMsg("sys", 'error: ' + message["command"], "[ERROR]");
-                    }
+                    sendMsg(message.args[1], "error: " + message.args[2], "[ERROR]");
+                    contents.send("log", message);
                 });
             });
         });

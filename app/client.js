@@ -30,7 +30,7 @@ function help(){
     electron.ipcRenderer.send("help");
 }
 
-electron.ipcRenderer.on("pingchan", function(event, message){
+electron.ipcRenderer.on("log", function(event, message){
     console.log(message);
 });
 
