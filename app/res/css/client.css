@@ -33,6 +33,13 @@ hr {
     border: 1px solid #aaa;
 }
 
+.toggle {
+    display: none;
+}
+.shown {
+    display: block;
+}
+
 body {
     font-family: "Roboto", sans-serif;
     background-color: #eee;
@@ -209,6 +216,9 @@ h2.genre {
     color: #999;
     font-size: 18pt;
     margin-top: -20px;
+}
+h6 {
+    margin: 0 !important;
 }
 .sub {
     text-align: center;

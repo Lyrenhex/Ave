@@ -132,6 +132,10 @@ function newWindow(){
                     win.loadURL("file://" + __dirname + "/app/disconnected.html");
                 });
 
+                ipcMain.on("whois", function(event, whois){
+                    client.send("WHOIS", whois);
+                });
+
                 client.addListener("message", function (nick, chan, message, raw){
                     if(chan != client.nick){
                         sendMsg(chan, message, nick);

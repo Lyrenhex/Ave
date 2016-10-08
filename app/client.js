@@ -30,6 +30,15 @@ function help(){
     electron.ipcRenderer.send("help");
 }
 
+function toggle(id="toggle"){
+    var element = document.getElementById(id);
+    if(element.classList.contains("shown")){
+        element.classList.remove("shown");
+    }else{
+        element.classList.add("shown");
+    }
+}
+
 electron.ipcRenderer.on("log", function(event, message){
     console.log(message);
 });
@@ -259,6 +268,11 @@ $(document).ready(function(){
 
     $('#dc').submit(function(){
         electron.ipcRenderer.send("disconnect", $("#dcReason").val().toString());
+        return false;
+    });
+
+    $('#whois').submit(function(){
+        electron.ipcRenderer.send("whois", $("#whoisNick").val().toString());
         return false;
     });
 
