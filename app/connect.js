@@ -23,7 +23,8 @@ $(document).ready(function(){
             user: {
                 nickname: $("#nick").val(),
                 username: $("#username").val(),
-                realname: $("#realname").val()
+                realname: $("#realname").val(),
+                password: $("#nsPass").val()
             },
             encoding: $("#encoding").val(),
             retry: {
@@ -53,6 +54,7 @@ function popFields(json){
     $("#nick").val(json.user.nickname);
     $("#username").val(json.user.username);
     $("#realname").val(json.user.realname);
+    $("#nsPass").val(json.user.password);
     $("#encoding").val(json.encoding);
     $("#retryCount").val(json.retry.count);
     $("#retryDelay").val(json.retry.delay);

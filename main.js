@@ -79,6 +79,16 @@ function newWindow(){
                 sendMsg("sys", "Connecting to IRC server...", "[System]");
                 client.connect()
 
+                client.addListener("registered", function(message){
+                    contents.send("user", client.nick);
+                    sendMsg("sys", "Connected!", "[System]");
+                    if(connDat.user.password != ""){
+                        client.say("NickServ", "IDENTIFY " + connDat.user.password)
+                        sendMsg("NickServ", "IDENTIFY ********", client.nick)
+                    }
+                    // client.join("#ave-irc");
+                });
+
                 ipcMain.on("about", function(event){
                     about = new BrowserWindow({width:900, height:600, icon: ico});
                     aboutCon = about.webContents;
@@ -116,6 +126,7 @@ function newWindow(){
                         message = message.substring(1);
                         eval(message);
                     }else if(channel != "sys"){
+                        contents.send("log", [channel, message]);
                         client.say(channel, message);
                         sendMsg(channel, message, client.nick);
                     }
@@ -165,12 +176,6 @@ function newWindow(){
 
                 client.addListener("topic", function (chan, topic, nick, message){
                     contents.send("topic", chan, topic, nick);
-                });
-
-                client.addListener("registered", function(message){
-                    contents.send("user", client.nick);
-                    sendMsg("sys", "Connected!", "[System]");
-                    // client.join("#ave-irc");
                 });
 
                 // connection stuff - joins, parts, names, quits

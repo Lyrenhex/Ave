@@ -244,7 +244,7 @@ function newTab(tabName){
 $(document).ready(function(){
     $('#send').submit(function(){
         console.log($('#msg').val());
-        var array = document.getElementsByClassName("is-active")[1].id.split("-");
+        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
         var channel = tabs[array[array.length-1]-1];
         if($("#msg").val() != ""){
             sendMsg(channel, $('#msg').val().toString());
@@ -282,7 +282,7 @@ $(document).ready(function(){
 
         // we should reset the unread message indicator for the active channel (for in case the
         // user just changed it)
-        var array = document.getElementsByClassName("is-active")[1].id.split("-");
+        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
         var badge = document.getElementById("badge-" + array[array.length-1]);
         badge.setAttribute("data-badge", "0");
     });
