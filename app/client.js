@@ -137,6 +137,21 @@ electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
     document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
 });
+electron.ipcRenderer.on("quit", function(event, nick, chans, reason){
+    for(channel in chans){
+        channel = chans[channel];
+        try{
+            var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
+            document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
+            var d = new Date();
+            newMsg(channel, nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
+        }catch(err){
+            // do nothing; probably just not a channel the user's on
+        }
+    }
+    var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));
+    document.getElementById("usrList-" + (tabs.indexOf(channel) + 1)).removeChild(entry);
+});
 
 electron.ipcRenderer.on("inv", function(event, chan, from){
     var join = confirm("You have been invited to the  " + chan + " channel by " + from + ". Would you like to accept this invitation?");

@@ -235,11 +235,7 @@ function newWindow(){
                     sendMsg(channel, nick + " was kicked from the channel by " + by + " (" + reason + ").", "[System]");
                 });
                 client.addListener("quit", function(nick, reason, channels, message){
-                    for(chan in channels){
-                        chan = channels[chan];
-                        contents.send("rmNick", chan, nick);
-                        sendMsg(chan, nick + " has quit the server (" + reason + ").", "[System]");
-                    }
+                    contents.send("quit", nick, channels, reason);
                 });
                 client.addListener("kill", function(nick, reason, channels, message){
                     for(chan in channels){
