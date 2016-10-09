@@ -225,8 +225,10 @@ function newWindow(){
                     }
                 });
                 client.addListener("part", function(channel, nick, reason, message){
-                    contents.send("rmNick", channel, nick);
-                    sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
+                    if(nick != client.nick){
+                        contents.send("rmNick", channel, nick);
+                        sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
+                    }
                 });
                 client.addListener("kick", function(channel, nick, by, reason, message){
                     contents.send("rmNick", channel, nick);

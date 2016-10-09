@@ -106,6 +106,9 @@ body {
     background-color: #09f;
     color: #fff;
 }
+.chatLog .old {
+    opacity: 0.3;
+}
 .chatLog .error {
     background-color: #ff1744;
     color: #fff;

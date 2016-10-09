@@ -17,11 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var tabs = ["sys"];
+var msgs = [{name: "sys", messages: []}];
 
-let server;
-let uNick;
+var server;
+var uNick;
 
 const electron = require("electron");
+const fs = require("fs");
+
+fs.mkdir("logs");
 
 function about(){
     electron.ipcRenderer.send("about");
@@ -47,6 +51,10 @@ electron.ipcRenderer.on("set", function(event, server){
     document.getElementById("server").innerHTML = server;
     document.title = "Ave IRC Client :: " + server;
     server = server;
+
+    var oldMsgs = JSON.parse(fs.readFileSync("logs/" + server + '.json', 'utf8'));
+    console.log(oldMsgs);
+    msgs = oldMsgs;
 });
 electron.ipcRenderer.on("user", function(event, nick){
     uNick = nick;
@@ -142,8 +150,25 @@ function sendMsg(recipient, message){
     electron.ipcRenderer.send("sendmsg", recipient, message);
 }
 
-function newMsg(channel, message, sender, time){
+function newMsg(channel, message, sender, time, old=false){
     var clog = document.getElementById("clog-" + (tabs.indexOf(channel) + 1));
+    var chanID = tabs.indexOf(channel);
+    if(!old){
+        var msgObj = {
+            user: sender,
+            timestamp: time,
+            content: message
+        };
+        msgs[chanID].messages.push(msgObj);
+        var msgID = msgs[chanID].messages.indexOf(msgObj);
+        fs.writeFile("logs/" + document.getElementById("server").innerHTML + '.json', JSON.stringify(msgs, null, 4), 'utf8', function(err) {
+            if(err) {
+                console.log("couldn't write messages to json file: ", err);
+            } else {
+                console.log("messages saved as json: " + server + ".json");
+            }
+        });
+    }
     var tab = document.getElementById("content");
     // allow 1px inaccuracy by adding 1
     var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
@@ -151,6 +176,7 @@ function newMsg(channel, message, sender, time){
     console.log(channel, message, sender, time);
     var div = document.createElement("div");
     div.className = "message";
+    div.id = "msg-" + chanID + "-" + msgID;
     if(channel == "sys" || sender == "[System]"){
         div.className += " sysmsg";
     }
@@ -160,6 +186,9 @@ function newMsg(channel, message, sender, time){
         div.className += " error";
     }else if(time == "topic" || message.indexOf(uNick) >= 0){
         div.className += " topic";
+    }
+    if(old){
+        div.className += " old";
     }
     var main = document.createElement("p");
 
@@ -193,15 +222,20 @@ function newMsg(channel, message, sender, time){
         }
     }else{
         // otherwise, we should actually increase the badge of the actual channel
-        var badge = document.getElementById("badge-" + (tabs.indexOf(channel) + 1));
-        badge.setAttribute("data-badge", String(Number(badge.getAttribute("data-badge")) + 1));
-        // check if the user's nickname was included in the message
+        if(!old){
+            var badge = document.getElementById("badge-" + (tabs.indexOf(channel) + 1));
+            badge.setAttribute("data-badge", String(Number(badge.getAttribute("data-badge")) + 1));
+        }
     }
 }
 
 function newTab(tabName){
     if(!(tabs.indexOf(tabName) >= 0)){
         tabs.push(tabName);
+        msgs.push({
+            name: tabName,
+            messages: []
+        });
         var index = tabs.indexOf(tabName) + 1;
         var tabButton = document.createElement("a");
         tabButton.href = "#scroll-tab-" + index;
@@ -245,6 +279,15 @@ function newTab(tabName){
         var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
         for (var i = 0; i < Tabs.length; i++) {
             new MaterialLayoutTab(Tabs[i], Tabs, Panels, Layout.MaterialLayout);
+        }
+
+        for(channel in msgs){
+            if(msgs[channel].name == tabName){
+                for(message in msgs[channel].messages){
+                    console.log("yo");
+                    newMsg(tabName, msgs[channel].messages[message].content, msgs[channel].messages[message].user, msgs[channel].messages[message].timestamp, true)
+                }
+            }
         }
     }
 }
