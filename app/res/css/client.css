@@ -91,7 +91,7 @@ body {
 }
 .chatLog .message .meta {
     font-size: 8pt;
-    color: #ccc;
+    color: #aaa;
     margin-bottom: 8px;
 }
 .chatLog .message .meta .msgId {

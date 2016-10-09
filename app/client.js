@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var tabs = ["sys"];
-var msgs = [{name: "sys", messages: []}];
+var tabs = ["_sys"];
+var msgs = [{name: "_sys", messages: []}];
 
 var server;
 var uNick;
@@ -177,7 +177,7 @@ function newMsg(channel, message, sender, time, old=false){
     var div = document.createElement("div");
     div.className = "message";
     div.id = "msg-" + chanID + "-" + msgID;
-    if(channel == "sys" || sender == "[System]"){
+    if(channel == "_sys" || sender == "[System]"){
         div.className += " sysmsg";
     }
     if(sender == "[MOTD]" || sender == "[SERVER]"){

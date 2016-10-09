@@ -66,11 +66,11 @@ function newWindow(){
                         floodProtection: connDat.floodProtect
                      });
                 }catch(err){
-                    sendMsg("sys", 'error: ' + err.toString(), "[System]");
+                    sendMsg("_sys", 'error: ' + err.toString(), "[System]");
                 }
                 client.addListener("netError", function(error){
                     if(error.code == "ENOTFOUND"){
-                        sendMsg("sys", "Connection failed: Could not find host \"" + error.hostname + "\"<br />Please check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
+                        sendMsg("_sys", "Connection failed: Could not find host \"" + error.hostname + "\"<br />Please check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
                     }else{
                         contents.send("disconnected", error);
                     }
@@ -78,16 +78,16 @@ function newWindow(){
                 });
 
                 ipcMain.on("reconnect", function(event){
-                    sendMsg("sys", "Reconnecting...", "[SYSTEM]");
+                    sendMsg("_sys", "Reconnecting...", "[SYSTEM]");
                     client.connect();
                 });
 
-                sendMsg("sys", "Connecting to IRC server...", "[System]");
+                sendMsg("_sys", "Connecting to IRC server...", "[System]");
                 client.connect()
 
                 client.addListener("registered", function(message){
                     contents.send("user", client.nick);
-                    sendMsg("sys", "Connected!", "[System]");
+                    sendMsg("_sys", "Connected!", "[System]");
                     if(connDat.user.password != ""){
                         client.say("NickServ", "IDENTIFY " + connDat.user.password)
                         sendMsg("NickServ", "IDENTIFY ********", client.nick)
@@ -131,7 +131,7 @@ function newWindow(){
                     if(message.charAt(0) == ":"){
                         message = message.substring(1);
                         eval(message);
-                    }else if(channel != "sys"){
+                    }else if(channel != "_sys"){
                         contents.send("log", [channel, message]);
                         client.say(channel, message);
                         sendMsg(channel, message, client.nick);
@@ -176,7 +176,7 @@ function newWindow(){
                 client.addListener("notice", function (nick, chan, message, raw){
                     if(nick == null){
                         nick = "[SERVER]";
-                        chan = "sys";
+                        chan = "_sys";
                     }
                     if(chan != client.nick){
                         sendMsg(chan, message, nick);
@@ -251,7 +251,7 @@ function newWindow(){
 
                 client.addListener("motd", function(motd){
                     var motd = motd.replaceAll("\n", " <br />");
-                    sendMsg("sys", motd, "[MOTD]");
+                    sendMsg("_sys", motd, "[MOTD]");
                 });
 
                 client.addListener("whois", function(info){
@@ -267,11 +267,11 @@ function newWindow(){
                     if(info.operator == "is an IRC Operator"){
                         whois += "<br /><b>This user is an IRC operator.";
                     }
-                    sendMsg("sys", whois, "[System]");
+                    sendMsg("_sys", whois, "[System]");
                 });
 
                 client.addListener("invite", function(channel, from, message){
-                    sendMsg("sys", "You have been invited to the " + channel + " channel, by " + from + "!", "[SERVER]");
+                    sendMsg("_sys", "You have been invited to the " + channel + " channel, by " + from + "!", "[SERVER]");
                     contents.send("inv", channel, from);
                 });
 
