@@ -59,6 +59,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Join Channel</button>
                 </form>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('partChan')">Leave IRC Chat</button>
+                <form id="partChan" class="toggle">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="partChannel" required />
+                      <label class="mdl-textfield__label" for="partChannel">IRC Channel or PM Username</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Leave Chat</button>
+                </form>
                 <hr />
                 <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('pmUsr')">Message User</button>
                 <form id="pmUsr" class="toggle">
@@ -95,6 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <form id="whois" class="toggle">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                       <input class="mdl-textfield__input" type="text" id="whoisNick" required />
+                      <label class="mdl-textfield__label" for="whoisNick">Nick to WHOIS</label>
                     </div>
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">WHOIS</button>
                 </form>

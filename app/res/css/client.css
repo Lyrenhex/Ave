@@ -35,6 +35,9 @@ hr {
 
 .toggle {
     display: none;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 3px;
 }
 .shown {
     display: block;

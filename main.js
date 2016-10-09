@@ -134,6 +134,11 @@ function newWindow(){
                 ipcMain.on("join", function(event, channel){
                     client.join(channel);
                 });
+                ipcMain.on("part", function(event, channel){
+                    if(channel.indexOf("#") == 0){
+                        client.part(channel);
+                    }
+                });
                 ipcMain.on("changeNick", function(event, newnick){
                     client.send("NICK", newnick);
                 });

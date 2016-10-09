@@ -176,7 +176,7 @@ function newMsg(channel, message, sender, time){
     clog.appendChild(div);
 
     // if it was posted to the current channel, we should bump the scroll
-    var array = document.getElementsByClassName("is-active")[1].id.split("-");
+    var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
     var curChan = tabs[array[array.length-1]-1];
     if(curChan == channel){
         // scroll to bottom if isScrolledToBottom
@@ -255,6 +255,24 @@ $(document).ready(function(){
 
     $('#joinChan').submit(function(){
         electron.ipcRenderer.send("join", $("#channel").val().toString());
+        return false;
+    });
+    $('#partChan').submit(function(){
+        var channel = $("#partChannel").val().toString();
+        try{
+            var chanID = tabs.indexOf(channel);
+            tabs[chanID] = null;
+            chanID++;
+            var chanTab = document.querySelectorAll("a[href='#scroll-tab-" + chanID + "']")[0];
+            console.log(chanTab.parentNode);
+            chanTab.parentNode.removeChild(chanTab);
+            var chanContent = document.getElementById("scroll-tab-" + chanID);
+            chanContent.parentNode.removeChild(chanContent);
+            electron.ipcRenderer.send("part", channel);
+        }catch(err){
+            alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
+            console.log("chat leave error: ", err);
+        }
         return false;
     });
     $('#pmUsr').submit(function(){
