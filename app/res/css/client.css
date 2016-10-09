@@ -80,6 +80,15 @@ body {
     line-height: 12pt;
     margin: 0;
 }
+.chatLog .message a:link,
+.chatLog .message a:visited,
+.chatLog .message a:active {
+    color: #3F51B5;
+    text-decoration: none;
+}
+.chatLog .message a:hover {
+    text-decoration: underline;
+}
 .chatLog .message .meta {
     font-size: 8pt;
     color: #ccc;

@@ -72,10 +72,16 @@ function newWindow(){
                     if(error.code == "ENOTFOUND"){
                         sendMsg("sys", "Connection failed: Could not find host \"" + error.hostname + "\"<br />Please check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
                     }else{
-                        sendMsg("sys", "Connection error: " + error, "[ERROR]");
+                        contents.send("disconnected", error);
                     }
                     contents.send("log", error);
                 });
+
+                ipcMain.on("reconnect", function(event){
+                    sendMsg("sys", "Reconnecting...", "[SYSTEM]");
+                    client.connect();
+                });
+
                 sendMsg("sys", "Connecting to IRC server...", "[System]");
                 client.connect()
 
@@ -145,7 +151,7 @@ function newWindow(){
 
                 ipcMain.on("disconnect", function(event, reason){
                     client.disconnect(reason);
-                    win.loadURL("file://" + __dirname + "/app/disconnected.html");
+                    contents.send("disconnected", "User requested disconnect.");
                 });
 
                 ipcMain.on("whois", function(event, whois){

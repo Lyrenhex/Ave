@@ -52,6 +52,14 @@ electron.ipcRenderer.on("user", function(event, nick){
     uNick = nick;
 });
 
+electron.ipcRenderer.on("disconnected", function(event, error){
+    console.log("disconnected ", error);
+    var d = new Date();
+    for(channel in tabs){
+        newMsg(tabs[channel], "Disconnected from server. See Developer Console for detailed explanation.", "[ERROR]", d.toUTCString());
+    }
+});
+
 electron.ipcRenderer.on("newmsg", function(event, channel, message, sender, time){
     try{
         newMsg(channel, message, sender, time);
@@ -284,6 +292,10 @@ $(document).ready(function(){
         return false;
     });
 
+    $('#rc').submit(function(){
+        electron.ipcRenderer.send("reconnect");
+        return false;
+    });
     $('#dc').submit(function(){
         electron.ipcRenderer.send("disconnect", $("#dcReason").val().toString());
         return false;
