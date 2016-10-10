@@ -72,9 +72,15 @@ body {
     background-color: white;
     border-radius: 2px;
     text-align: left;
+    opacity: 0.9;
+    color: #000;
     -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
                 box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.chatLog .message:hover {
+    cursor: pointer;
+    opacity: 1;
 }
 .chatLog .message p {
     line-height: 12pt;

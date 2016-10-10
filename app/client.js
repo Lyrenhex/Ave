@@ -27,6 +27,14 @@ const fs = require("fs");
 
 fs.mkdir("logs");
 
+String.prototype.nIndexOf = function(substring, occurrence) {
+    var str = this;
+   return str.split(substring, occurrence).join(substring).length;
+};
+String.prototype.replaceBetween = function(start, end, what) {
+    return this.substring(0, start) + what + this.substring(end);
+};
+
 function about(){
     electron.ipcRenderer.send("about");
 }
@@ -172,14 +180,16 @@ function sendMsg(recipient, message){
 }
 
 function newMsg(channel, message, sender, time, old=false){
+    message = message.replace(/</g, "&lt;");
+    message = message.replace(/>/g, "&gt;");
     var clog = document.getElementById("clog-" + (tabs.indexOf(channel) + 1));
     var chanID = tabs.indexOf(channel);
+    var msgObj = {
+        user: sender,
+        timestamp: time,
+        content: message
+    };
     if(!old){
-        var msgObj = {
-            user: sender,
-            timestamp: time,
-            content: message
-        };
         msgs[chanID].messages.push(msgObj);
         var msgID = msgs[chanID].messages.indexOf(msgObj);
         fs.writeFile("logs/" + document.getElementById("server").innerHTML + '.json', JSON.stringify(msgs, null, 4), 'utf8', function(err) {
@@ -190,12 +200,28 @@ function newMsg(channel, message, sender, time, old=false){
             }
         });
     }
+    var msgID = msgs[chanID].messages.indexOf(msgObj);
     var tab = document.getElementById("content");
     // allow 1px inaccuracy by adding 1
     var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
     console.log(isScrolledToBottom);
     console.log(channel, message, sender, time);
     var div = document.createElement("div");
+    div.onclick = function(){
+        $('#msg').val("[" + sender + " (" + time + "): " + message + "] ");
+    };
+    var nMessage = message.slice(0);
+    if(message[0] == "["){
+        try{
+            var quote = message.substring(1, message.lastIndexOf("]"));
+            var metadata = quote.substring(0, quote.nIndexOf(":", 3));
+            var qMsg = quote.substring(quote.nIndexOf(":", 3)+2, quote.length);
+            var qStitch = "<div class=\"message\"><p class=\"meta\">" + metadata + ":</p><p>" + qMsg + "</p></div>";
+            nMessage = message.replaceBetween(0, message.lastIndexOf("]") + 2, qStitch);
+        }catch(err){
+            // nothing needs to be done, someone probably just started a message with "["
+        }
+    }
     div.className = "message";
     div.id = "msg-" + chanID + "-" + msgID;
     if(channel == "!sys" || sender == "[System]"){
@@ -214,8 +240,8 @@ function newMsg(channel, message, sender, time, old=false){
     var main = document.createElement("p");
 
     // check for links and emails, and then make them into links (because users like that shit)
-    var hTxt = message;
-    var links = linkify.find(message);
+    var hTxt = nMessage;
+    var links = linkify.find(nMessage);
     for(link in links){
         link = links[link];
         hTxt = hTxt.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
