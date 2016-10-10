@@ -129,9 +129,15 @@ electron.ipcRenderer.on("deopNick", function(event, channel, nick){
     usrEntry.classList.remove("op");
 });
 electron.ipcRenderer.on("chNick", function(event, oldnick, newnick, channel){
-    var usrEntry = document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1));
-    usrEntry.innerHTML = newnick;
-    usrEntry.id = newnick + "-" + (tabs.indexOf(channel) + 1);
+    try {
+        var usrEntry = document.getElementById(oldnick + "-" + (tabs.indexOf(channel) + 1));
+        usrEntry.innerHTML = newnick;
+        usrEntry.id = newnick + "-" + (tabs.indexOf(channel) + 1);
+        var d = new Date();
+        newMsg(channel, oldnick + " changed their name to " + newnick + ".", "[System]", d.toUTCString());
+    }catch(err){
+        // do nothing; probably just not in the channel.
+    }
 });
 electron.ipcRenderer.on("rmNick", function(event, channel, nick){
     var entry = document.getElementById(nick + "-" + (tabs.indexOf(channel) + 1));

@@ -201,7 +201,7 @@ function newWindow(){
                     for(chan in channels){
                         chan = channels[chan];
                         contents.send("chNick", oldnick, newnick, chan);
-                        sendMsg(chan, oldnick + " changed their name to " + newnick + ".", "[System]");
+                        // sendMsg(chan, oldnick + " changed their name to " + newnick + ".", "[System]");
                     }
                 });
                 client.addListener("+mode", function(channel, by, mode, argument, message){
