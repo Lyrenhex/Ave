@@ -188,7 +188,7 @@ function newWindow(){
                 });
 
                 client.addListener("message", function (nick, chan, message, raw){
-                    if(chan != client.nick){
+                    if(chan != client.nick.toLowerCase()){
                         sendMsg(chan, message, nick);
                     }else{
                         sendMsg(nick, message, nick);
@@ -196,7 +196,7 @@ function newWindow(){
                 });
                 client.addListener("action", function (nick, chan, action, raw){
                     var message = "<b> * " + nick + " " + action + "</b>";
-                    if(chan != client.nick){
+                    if(chan != client.nick.toLowerCase()){
                         sendMsg(chan, message, nick);
                     }else{
                         sendMsg(nick, message, nick);
@@ -272,7 +272,7 @@ function newWindow(){
 
                 client.addListener("motd", function(motd){
                     var motd = motd.replaceAll("\n", " <br />");
-                    sendMsg("!sys", motd, "[MOTD]");
+                    sendMsg("!sys", motd, "[MOTD]", true);
                 });
 
                 client.addListener("whois", function(info){
@@ -314,11 +314,11 @@ function newWindow(){
     });
 }
 
-function sendMsg(channel, content, sender){
-    if(contents !== null){
+function sendMsg(channel, content, sender, noFix=false){
+    if(content !== null){
         var d = new Date();
         // instruct the render process to handle the new message
-        contents.send("message_add", channel, content, sender, d.toUTCString());
+        contents.send("message_add", channel, content, sender, d.toUTCString(), noFix);
     }
 }
 

@@ -26,7 +26,17 @@ var Logging;
 const electron = require("electron");
 const fs = require("fs");
 
-fs.mkdir("logs");
+// ensure logs folder already exists, for logging purposes
+fs.mkdir("logs", 0777, function(err){
+        if(err){
+            if(err.code == "EEXIST"){
+                // do nothing; folder already exists
+            }else{
+                console.log("Unable to create Logs folder", err);
+                Logging = false;
+            }
+        }
+});
 
 /*
     EXTENDERS FOR BASIC JAVASCRIPT PROTOTYPES
@@ -39,9 +49,10 @@ String.prototype.nIndexOf = function(substring, occurrence) {
 String.prototype.replaceBetween = function(start, end, what) {
     return this.substring(0, start) + what + this.substring(end);
 };
-Array.prototype.attrIndexOf = function(attr, value) {
-    for(var i = 0; i < this.length; i += 1) {
-        if(this[i][attr] === value) {
+function nameIndexOf(array, value) {
+    for(var i = 0; i < array.length; i += 1) {
+        console.log(array[i].name);
+        if(array[i].name === value) {
             return i;
         }
     }
@@ -65,7 +76,6 @@ electron.ipcRenderer.on("set_server", function(event, server){
     // load the old messages for this server into memory, if logs are enabled
     if(Logging){
         var oldMessages = JSON.parse(fs.readFileSync("logs/" + server + '.json', 'utf8'));
-        console.log(oldMessages);
         Messages = oldMessages;
     }
 });
@@ -83,9 +93,9 @@ electron.ipcRenderer.on("server_disconnect", function(event, error){
     }
 });
 
-electron.ipcRenderer.on("message_add", function(event, channel, message, sender, time){
+electron.ipcRenderer.on("message_add", function(event, channel, message, sender, time, noFix){
     try{
-        newMsg(channel, message, sender, time);
+        newMsg(channel, message, sender, time, false, noFix);
     }catch(err){
         /* if the channel doesn't have a tab, it will probably raise an error. therefore, if we assume that
         this error was caused by that, we should get away with it (let's face it - it probably was) */
@@ -101,7 +111,6 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
 /* IRC USER HANDLERS */
 {
     electron.ipcRenderer.on("user_names", function(event, channel, nicks){
-        console.log(channel, nicks);
         /* for in case NAMES was called *after* the initial channel call, we should probably clear
         the existing user list (to prevent duplicates and potentially delete nonapplicable nicks)
         __note that this shouldn't happen often!__*/
@@ -116,7 +125,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
                 usrEntry.className = "op";
             }
             if(user == UserNick){
-                usrEntry.className += " client";
+                usrEntry.classList.add("client");
             }
             var name = document.createTextNode(user.toString());
             usrEntry.appendChild(name);
@@ -129,7 +138,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
         var usrList = document.getElementById("usrList-" + (Tabs.indexOf(channel) + 1));
         var usrEntry = document.createElement("li");
         if(nick == UserNick){
-            usrEntry.className += " client";
+            usrEntry.classList.add("client");
         }
         var name = document.createTextNode(nick.toString());
         usrEntry.appendChild(name);
@@ -139,7 +148,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
     });
     electron.ipcRenderer.on("user_op_add", function(event, channel, nick){
         var usrEntry = document.getElementById(nick + "-" + (Tabs.indexOf(channel) + 1));
-        usrEntry.className.add("op");
+        usrEntry.classList.add("op");
     });
     electron.ipcRenderer.on("user_op_remove", function(event, channel, nick){
         var usrEntry = document.getElementById(nick + "-" + (Tabs.indexOf(channel) + 1));
@@ -213,10 +222,12 @@ function newTab(tabName){
         // add it to the tab list
         Tabs.push(tabName);
         // add a channel for it in the message object
-        Messages.push({
-            name: tabName,
-            messages: []
-        });
+        if(nameIndexOf(Messages, tabName) == -1){
+            Messages.push({
+                name: tabName,
+                messages: []
+            });
+        }
 
         // IDs are always the index + 1
         var id = Tabs.indexOf(tabName) + 1;
@@ -271,32 +282,40 @@ function newTab(tabName){
 
         /* the following is intended to register the new tab with MDL, which has no standard
         method for registering tabs (apparently they aren't supposed to be dynamically generated?) */
-        var Layout = document.querySelector('.mdl-js-layout');
-        var Tabs = document.querySelectorAll('.mdl-layout__tab');
-        var Panels = document.querySelectorAll('.mdl-layout__tab-panel');
-        for (var i = 0; i < Tabs.length; i++) {
-            new MaterialLayoutTab(Tabs[i], Tabs, Panels, Layout.MaterialLayout);
+        var mdlLayout = document.querySelector('.mdl-js-layout');
+        var mdlTabs = document.querySelectorAll('.mdl-layout__tab');
+        var mdlPanels = document.querySelectorAll('.mdl-layout__tab-panel');
+        for (var i = 0; i < mdlTabs.length; i++) {
+            new MaterialLayoutTab(mdlTabs[i], mdlTabs, mdlPanels, mdlLayout.MaterialLayout);
         }
 
         // if the channel's inside the message logs, and logging's enabled
         if(Logging){
-            var channelMessageIndex = Messages.attrIndexOf(name, tabName); // returns array index, or -1 if not found
+            var channelMessageIndex = nameIndexOf(Messages, tabName); // returns array index, or -1 if not found
+            console.log(channelMessageIndex);
             if(channelMessageIndex >= 0){
                 // add each message from the log to the channel tab, as "old" messages (faded)
                 for(message in Messages[channelMessageIndex].messages){
-                    newMsg(tabName, Messages[channelMessageIndex].messages[message].content, Messages[channelMessageIndex].messages[message].user, Messages[channelMessageIndex].messages[message].timestamp, true)
+                    console.log(Messages[channelMessageIndex].messages[message].content);
+                    console.log(message);
+                    console.log(Messages[channelMessageIndex].messages[message]);
+                    newMsg(tabName, Messages[channelMessageIndex].messages[message].content, Messages[channelMessageIndex].messages[message].user, Messages[channelMessageIndex].messages[message].timestamp, true);
                 }
             }
         }
     }
 }
 // add a new message to a tab
-function newMsg(channel, message, sender, time, old=false){
+function newMsg(channel, message, sender, time, old=false, noFix=false){
+    console.log(channel);
+    console.log(message);
     channel = channel.toLowerCase();
 
     // escape <>s, to prevent users from embedding HTML
-    message = message.replace(/</g, "&lt;");
-    message = message.replace(/>/g, "&gt;");
+    if(!noFix){
+        message = message.replace(/</g, "&lt;");
+        message = message.replace(/>/g, "&gt;");
+    }
 
     // get the channel chat log in the DOM
     var clog = document.getElementById("clog-" + (Tabs.indexOf(channel) + 1));
@@ -326,9 +345,6 @@ function newMsg(channel, message, sender, time, old=false){
     // allow 1px inaccuracy by adding 1
     var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
     var div = document.createElement("div");
-    div.onclick = function(){
-        $('#msg').val("[" + sender + " (" + time + "): " + message + "] ");
-    };
     // create a copy of the message, so that we can mess around with the visible output but keep a clean object in the logs
     var outMessage = message.slice(0);
     if(message[0] == "["){
@@ -371,6 +387,9 @@ function newMsg(channel, message, sender, time, old=false){
 
     main.innerHTML = hypertext;
     var meta = document.createElement("p");
+    meta.onclick = function(){
+        $('#msg').val("[" + sender + " (" + time + "): " + message + "] ");
+    };
     meta.className = "meta";
     var metaText = document.createTextNode(sender + " (" + time + "):");
     meta.appendChild(metaText);
