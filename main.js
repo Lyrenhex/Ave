@@ -288,7 +288,7 @@ function newWindow(){
                     if(info.operator == "is an IRC Operator"){
                         whois += "<br /><b>This user is an IRC operator.";
                     }
-                    sendMsg("!sys", whois, "[System]");
+                    sendMsg(info.nick, whois, "[System]", true);
                 });
 
                 client.addListener("invite", function(channel, from, message){

@@ -216,6 +216,7 @@ function rmNick(nickname, channel){
 
 // open a new tab
 function newTab(tabName){
+    oldTabName = tabName.slice(0);
     tabName = tabName.toLowerCase();
     // only create a new tab if there isn't one already
     if(!(Tabs.indexOf(tabName) >= 0)){
@@ -262,7 +263,7 @@ function newTab(tabName){
             flexDiv.appendChild(clog);
 
             if(isChannel(tabName)){
-                // but if it is a channel, we need a user list.
+                // if it is a channel, we need a user list.
                 var usrLTitle = document.createElement("p");
                 usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
                 var usrList = document.createElement("div");
@@ -272,6 +273,86 @@ function newTab(tabName){
                 usrListUl.id = "usrList-" + id;
                 usrList.appendChild(usrListUl);
                 flexDiv.appendChild(usrList);
+            }else{
+                // private chats can use the user list space for an easy command system
+                var usrCTitle = document.createElement("p");
+                usrCTitle.innerHTML = "Quick User Command";
+                var comList = document.createElement("div");
+                comList.className = "usrList";
+                comList.appendChild(usrCTitle);
+                // create whois button
+                var comWhois = document.createElement("button");
+                comWhois.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
+                comWhois.onclick = function(){
+                    electron.ipcRenderer.send("user_whois", oldTabName);
+                };
+                var comWhoisLabel = document.createTextNode("WHOIS User");
+                comWhois.appendChild(comWhoisLabel);
+                comList.appendChild(comWhois);
+                // create invite toggle button
+                var comInviteToggle = document.createElement("button");
+                comInviteToggle.id = Tabs.indexOf(tabName);
+                comInviteToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
+                var comInviteToggleLabel = document.createTextNode("Invite to Channel");
+                comInviteToggle.onclick = function(){
+                    var id = this.id;
+                    var element = document.getElementById("invite-" + id);
+                    if(element.classList.contains("shown")){
+                        // if shown, hide it
+                        element.classList.remove("shown");
+                    }else{
+                        // otherwise, show it
+                        element.classList.add("shown");
+                    }
+                };
+                comInviteToggle.appendChild(comInviteToggleLabel);
+                comList.appendChild(comInviteToggle);
+                // create invite form
+                var comInviteForm = document.createElement("div");
+                comInviteForm.id = "invite-" + Tabs.indexOf(tabName);
+                comInviteForm.className = "toggle";
+                var comInviteFormDiv = document.createElement("div");
+                comInviteFormDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+                var comInviteFormInput = document.createElement("input");
+                comInviteFormInput.className = "mdl-textfield__input";
+                comInviteFormInput.required = true;
+                comInviteFormInput.type = "text";
+                comInviteFormInput.id = "inviteChan-" + Tabs.indexOf(tabName);
+                comInviteFormDiv.appendChild(comInviteFormInput);
+                var comInviteUser = document.createElement("input");
+                comInviteUser.type = "text";
+                comInviteUser.value = oldTabName;
+                comInviteUser.hidden = true;
+                comInviteUser.id = "inviteUser-" + Tabs.indexOf(tabName);
+                comInviteForm.appendChild(comInviteUser);
+                var comInviteFormLabel = document.createElement("label");
+                comInviteFormLabel.className = "mdl-textfield__label";
+                comInviteFormLabel.for = "inviteChan-" + Tabs.indexOf(tabName);
+                var comInviteFormLabelText = document.createTextNode("Invite User");
+                comInviteFormLabel.appendChild(comInviteFormLabelText);
+                comInviteFormDiv.appendChild(comInviteFormLabel);
+                comInviteForm.appendChild(comInviteFormDiv);
+                var comInviteFormButton = document.createElement("button");
+                comInviteFormButton.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                comInviteFormButton.type = "button";
+                comInviteFormButton.onclick = function(){
+                    // break up the active tab's id, which is of form scroll-tab-[channel]
+                    var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+                    // we need to get [channel], so we grab the last element of the array
+                    var channel = Tabs[array[array.length-1]];
+                    var chan = $("#inviteChan-" + (array[array.length-1] - 1)).val().toString();
+                    var user = $("#inviteUser-" + (array[array.length-1] - 1)).val().toString();
+                    console.log("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
+                    electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
+                    return false;
+                };
+                var comInviteFormButtonLabel = document.createTextNode("Invite User");
+                comInviteFormButton.appendChild(comInviteFormButtonLabel);
+                comInviteForm.appendChild(comInviteFormButton);
+                comList.appendChild(comInviteForm);
+                // register all buttons with google mdl
+                componentHandler.upgradeElements(comList);
+                flexDiv.appendChild(comList);
             }
         }
 
@@ -517,12 +598,6 @@ function sendMsg(recipient, message){
         });
         $('#dc').submit(function(){
             electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
-            // override Chromium behaviour
-            return false;
-        });
-
-        $('#whois').submit(function(){
-            electron.ipcRenderer.send("user_whois", $("#whoisNick").val().toString());
             // override Chromium behaviour
             return false;
         });

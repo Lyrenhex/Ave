@@ -61,9 +61,6 @@ body {
     min-width: 375px;
     margin-bottom: 50px;
 }
-.extended {
-    width: 95vw;
-}
 .chatLog .message {
     display: block;
     margin-left: auto;
@@ -137,6 +134,10 @@ body {
     -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
            -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
                 box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.usrList button {
+    width: calc(100% - 6px);
+    margin: 3px;
 }
 .usrList p {
     padding: 5px;
