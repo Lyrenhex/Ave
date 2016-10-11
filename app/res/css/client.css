@@ -61,6 +61,9 @@ body {
     min-width: 375px;
     margin-bottom: 50px;
 }
+.extended {
+    width: 95vw;
+}
 .chatLog .message {
     display: block;
     margin-left: auto;
@@ -108,7 +111,7 @@ body {
 .chatLog .sysmsg {
     background-color: #dbdbdb;
 }
-.chatLog .topic {
+.chatLog .important {
     background-color: #09f;
     color: #fff;
 }

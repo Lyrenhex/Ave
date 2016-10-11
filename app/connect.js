@@ -15,6 +15,7 @@ $(document).ready(function(){
     }
 
     $('#connect').submit(function(){
+        // set up the settings array
         var settings = {
             server: {
                 address: $("#server").val(),
@@ -31,11 +32,16 @@ $(document).ready(function(){
                 count: $("#retryCount").val(),
                 delay: $("#retryDelay").val()
             },
-            stripForm: $("#clearColours").is(":checked"),
+            messages: {
+                stripForm: $("#clearColours").is(":checked"),
+                log: $("#logMessages").is(":checked")
+            }
             floodProtect: $("#floodProtect").is(":checked")
         };
-        electron.ipcRenderer.send("connect", settings);
+        electron.ipcRenderer.send("server_connect", settings);
+        // convert it to a JSON array
         var jsonSettings = JSON.stringify(settings, null, 4);
+        // write it to a file, to persist for next time
         fs.writeFile('settings.json', jsonSettings, 'utf8', function(err) {
             if(err) {
                 console.log("couldn't write settings to json file: ", err);
@@ -48,7 +54,7 @@ $(document).ready(function(){
 });
 
 function popFields(json){
-    console.log(json);
+    // parse the JSON stuff into the form fields.
     $("#server").val(json.server.address);
     $("#port").val(json.server.port);
     $("#nick").val(json.user.nickname);
@@ -58,7 +64,8 @@ function popFields(json){
     $("#encoding").val(json.encoding);
     $("#retryCount").val(json.retry.count);
     $("#retryDelay").val(json.retry.delay);
-    $("#clearColours").prop("checked", json.stripForm);
+    $("#clearColours").prop("checked", json.messages.stripForm);
+    $("#logMessages").prop("checked", json.messages.log);
     $("#floodProtect").prop("checked", json.floodProtect);
 }
 
