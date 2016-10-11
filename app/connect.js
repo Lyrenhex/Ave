@@ -35,7 +35,7 @@ $(document).ready(function(){
             messages: {
                 stripForm: $("#clearColours").is(":checked"),
                 log: $("#logMessages").is(":checked")
-            }
+            },
             floodProtect: $("#floodProtect").is(":checked")
         };
         electron.ipcRenderer.send("server_connect", settings);
