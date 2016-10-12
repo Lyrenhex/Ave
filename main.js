@@ -116,7 +116,7 @@ function newWindow(){
                         contents.send("server_disconnect", "User requested disconnect.");
                     });
 
-                    ipcMain.on("client_win", function(event){
+                    ipcMain.on("client_about", function(event){
                         ext = new BrowserWindow({width:900, height:600, icon: ico});
                         extCon = ext.webContents;
 

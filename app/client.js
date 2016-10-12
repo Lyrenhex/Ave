@@ -16,8 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Tabs = ["!sys"];
-var Messages = [{name: "!sys", messages: []}];
+var Chans = ["!sys"];
+var Tabs = [];
+var Users = [];
+
+var cID = 0;
 
 var Server;
 var UserNick;
@@ -59,6 +62,286 @@ function nameIndexOf(array, value) {
     return -1;
 }
 
+/*
+    OBJECT DECLARATION
+*/
+{
+    function Tab(name, id){
+        this.Id = id;
+        this.Name = name; // store the NON-LOWERCASE name for IRC commands (like WHOIS).
+        this.Type = "pm";
+        if(isChannel(name)){
+            this.Type = "channel";
+        }
+        this.Messages = [];
+        this.Users = [];
+        console.log(this);
+
+        // create the UI components (tab, contents, etc) like we usually do on newTab() here (save the chatLog as `this.ChatLog`, usrList as `this.UserList`, etc. however)
+        tabName = name.toLowerCase();
+
+        this.Button = document.createElement("a");
+
+        // set up the tab selector "button"
+        this.Button.href = "#scroll-tab-" + this.Id;
+        this.Button.className = "mdl-layout__tab";
+        // create the channel's unread counter badge
+        this.Badge = document.createElement("span");
+        this.Badge.id = "badge-" + tabName;
+        this.Badge.className = "mdl-badge";
+        this.Badge.setAttribute("data-badge", "0");
+        this.Badge.innerHTML = tabName;
+        // add the badge to the button
+        this.Button.appendChild(this.Badge);
+
+        // create the tab content
+        {
+            this.Content = document.createElement("section");
+            this.Content.className = "mdl-layout__tab-panel";
+            this.Content.id = "scroll-tab-" + this.Id;
+            var flexDiv = document.createElement("div");
+            flexDiv.className = "flex";
+            this.ChatLog = document.createElement("div");
+            this.ChatLog.className = "chatLog";
+            this.ChatLog.id = "clog-" + tabName;
+            flexDiv.appendChild(this.ChatLog);
+
+            if(this.Type == "channel"){
+                // if it is a channel, we need a user list.
+                var usrLTitle = document.createElement("p");
+                usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
+                var usrList = document.createElement("div");
+                usrList.className = "usrList";
+                usrList.appendChild(usrLTitle);
+                this.UserList = document.createElement("ul");
+                this.UserList.id = "usrList-" + tabName;
+                usrList.appendChild(this.UserList);
+                flexDiv.appendChild(usrList);
+            }else{
+                // private chats can use the user list space for an easy command system
+                var usrCTitle = document.createElement("p");
+                usrCTitle.innerHTML = "Quick User Command: " + this.Name;
+                usrCTitle.id = "ct-" + tabName;
+                this.CommandList = document.createElement("div");
+                this.CommandList.className = "usrList";
+                this.CommandList.appendChild(usrCTitle);
+                // create whois button
+                var comWhois = document.createElement("button");
+                comWhois.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                comWhois.id = tabName;
+                comWhois.onclick = function(){
+                    var channel = this.id;
+                    console.log(channel);
+                    electron.ipcRenderer.send("user_whois", Tabs[channel].Name.toString());
+                };
+                var comWhoisLabel = document.createTextNode("WHOIS User");
+                comWhois.appendChild(comWhoisLabel);
+                this.CommandList.appendChild(comWhois);
+                // create invite toggle button
+                var comInviteToggle = document.createElement("button");
+                comInviteToggle.id = tabName;
+                comInviteToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
+                var comInviteToggleLabel = document.createTextNode("Invite to Channel");
+                comInviteToggle.onclick = function(){
+                    var id = this.id;
+                    var element = document.getElementById("invite-" + id);
+                    if(element.classList.contains("shown")){
+                        // if shown, hide it
+                        element.classList.remove("shown");
+                    }else{
+                        // otherwise, show it
+                        element.classList.add("shown");
+                    }
+                };
+                comInviteToggle.appendChild(comInviteToggleLabel);
+                this.CommandList.appendChild(comInviteToggle);
+                // create invite form
+                var comInviteForm = document.createElement("div");
+                comInviteForm.id = "invite-" + tabName;
+                comInviteForm.className = "toggle";
+                var comInviteFormDiv = document.createElement("div");
+                comInviteFormDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+                var comInviteFormInput = document.createElement("input");
+                comInviteFormInput.className = "mdl-textfield__input";
+                comInviteFormInput.required = true;
+                comInviteFormInput.type = "text";
+                comInviteFormInput.id = "inviteChan-" + tabName;
+                comInviteFormDiv.appendChild(comInviteFormInput);
+                var comInviteFormLabel = document.createElement("label");
+                comInviteFormLabel.className = "mdl-textfield__label";
+                comInviteFormLabel.for = "inviteChan-" + tabName;
+                var comInviteFormLabelText = document.createTextNode("Invite User");
+                comInviteFormLabel.appendChild(comInviteFormLabelText);
+                comInviteFormDiv.appendChild(comInviteFormLabel);
+                comInviteForm.appendChild(comInviteFormDiv);
+                var comInviteFormButton = document.createElement("button");
+                comInviteFormButton.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                comInviteFormButton.type = "button";
+                comInviteFormButton.onclick = function(){
+                    // break up the active tab's id, which is of form scroll-tab-[channel]
+                    var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+                    var chan = $("#inviteChan-" + Chans[array[array.length-1]]).val().toString();
+                    var user = Tabs[Chans[array[array.length-1]]].Name;
+                    console.log("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
+                    electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
+                };
+                var comInviteFormButtonLabel = document.createTextNode("Invite User");
+                comInviteFormButton.appendChild(comInviteFormButtonLabel);
+                comInviteForm.appendChild(comInviteFormButton);
+                this.CommandList.appendChild(comInviteForm);
+                // register all buttons with google mdl
+                componentHandler.upgradeElements(this.CommandList);
+                flexDiv.appendChild(this.CommandList);
+            }
+        }
+
+        this.Content.appendChild(flexDiv);
+
+        document.getElementById("content").appendChild(this.Content);
+        document.getElementById("tab-bar").appendChild(this.Button);
+
+        /* the following is intended to register the new tab with MDL, which has no standard
+        method for registering tabs (apparently they aren't supposed to be dynamically generated?) */
+        var mdlLayout = document.querySelector('.mdl-js-layout');
+        var mdlTabs = document.querySelectorAll('.mdl-layout__tab');
+        var mdlPanels = document.querySelectorAll('.mdl-layout__tab-panel');
+        for (var i = 0; i < mdlTabs.length; i++) {
+            new MaterialLayoutTab(mdlTabs[i], mdlTabs, mdlPanels, mdlLayout.MaterialLayout);
+        }
+
+        // // if the channel's inside the message logs, and logging's enabled
+        // if(Logging){
+        //     var channelMessageIndex = nameIndexOf(Messages, tabName) - 1; // returns array index, or -1 if not found
+        //     console.log(channelMessageIndex);
+        //     if(channelMessageIndex >= 0){
+        //         // add each message from the log to the channel tab, as "old" messages (faded)
+        //         for(message in Messages[channelMessageIndex].messages){
+        //             newMsg(tabName, Messages[channelMessageIndex].messages[message].content, Messages[channelMessageIndex].messages[message].user, Messages[channelMessageIndex].messages[message].timestamp, true);
+        //         }
+        //     }
+        // }
+    }
+    Tab.prototype.addMessage = function(sender, contents, time, old=false, noFix=false){
+        // check if there are any previous messages
+        if(this.Messages.length > 0){
+            // check if the same user posted both messages
+            var prevMessage = this.Messages[this.Messages.length - 1];
+        }else{
+            var prevMessage = {Author: undefined};
+        }
+        if(prevMessage.Author == sender){
+            // consecutive messages are separated with a <hr />
+            prevMessage.Element.appendChild(document.createElement("hr"));
+            // create the message, sharing the previous message's div container.
+            this.Messages.push(new Message(sender, contents, time, prevMessage.Element, old, noFix));
+        }else{
+            // otherwise, make a new div and pass that to the Message object
+            var messageDiv = document.createElement("div");
+            messageDiv.className = "message";
+            this.ChatLog.appendChild(messageDiv);
+            this.Messages.push(new Message(sender, contents, time, messageDiv, old, noFix));
+        }
+    }
+    Tab.prototype.addUser = function(name, op=false){
+        if(Users.indexOf(name.toLowerCase()) >= 0){
+            var user = name.toLowerCase();
+            Users[user].Channels[this.Name.toLowerCase()] = this;
+        }else{
+            Users[name.toLowerCase()] = new User(name);
+            Users[name.toLowerCase()].Channels[this.Name.toLowerCase()] = this;
+        }
+        this.Users.push(name.toLowerCase());
+        var usrEntry = document.createElement("li");
+        if(name == UserNick){
+            usrEntry.classList.add("client");
+        }
+        if(op){
+            usrEntry.classList.add("op");
+        }
+        var nameText = document.createTextNode(name.toString());
+        usrEntry.appendChild(nameText);
+        usrEntry.id = name.toLowerCase() + "-" + this.Id;
+        usrEntry.onclick = function(){ newTab(this.innerHTML); };
+        this.UserList.appendChild(usrEntry);
+    }
+    Tab.prototype.removeUser = function(name){
+        delete Users[name.toLowerCase()].Channels[this.Name.toLowerCase()];
+        delete this.Users[this.Users.indexOf(name.toLowerCase())];
+        this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id));
+    }
+    Tab.prototype.opUser = function(name){
+        document.getElementById(name.toLowerCase() + "-" + this.Id).classList.add("op");
+    }
+    Tab.prototype.deopUser = function(name){
+        document.getElementById(name.toLowerCase() + "-" + this.Id).classList.remove("op");
+    }
+    Tab.prototype.destroy = function(){
+        for(user in this.Users){
+            this.removeUser(this.Users[user]);
+        }
+        this.Button.parentNode.removeChild(this.Button);
+        this.Content.parentNode.removeChild(this.Content);
+        Chans[this.Id] = null;
+        delete Tabs[this.Name.toLowerCase()];
+    }
+}
+{
+    function Message(sender, contents, time, div, old=false, noFix=false){
+        this.Author = sender;
+        this.Content = contents;
+        this.Timestamp = time;
+        this.Element = div;
+        this.isOld = old;
+        this.isNotFixed = noFix;
+
+        // escape <>s, to prevent users from embedding HTML
+        if(!this.isNotFixed){
+            this.Content = this.Content.replace(/</g, "&lt;");
+            this.Content = this.Content.replace(/>/g, "&gt;");
+        }
+
+        if(this.Author == "[System]"){
+            // if it's a system message, add the appropriate class.
+            this.Element.classList.add("sysmsg");
+        }
+        if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.indexOf(UserNick) >= 0){
+            // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
+            this.Element.classList.add("important");
+        }else if(this.Author == "[ERROR]"){
+            // if it's an error, then style accordingly
+            this.Element.classList.add("error");
+        }
+        if(this.isOld){
+            // if it's an old message, reduce the opacity 50%;
+            this.Element.classList.add("old");
+        }
+        var main = document.createElement("p");
+
+        // check for links and emails, and then make them into links (because users like that shit)
+        // create a copy of the message, so that we can mess around with the visible output but keep a clean object in the logs
+        var hypertext = this.Content.slice(0);
+        var links = linkify.find(hypertext);
+        for(link in links){
+            link = links[link];
+            hypertext = hypertext.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
+        }
+
+        main.innerHTML = hypertext;
+        var meta = document.createElement("p");
+        meta.className = "meta";
+        var metaText = document.createTextNode(this.Author + " (" + this.Timestamp + "):");
+        meta.appendChild(metaText);
+        this.Element.appendChild(meta);
+        this.Element.appendChild(main);
+    }
+}
+{
+    function User(name){
+        this.Name = name;
+        this.Channels = [];
+    }
+}
+
 electron.ipcRenderer.on("log", function(event, message){
     console.log(message);
 });
@@ -88,20 +371,21 @@ electron.ipcRenderer.on("server_disconnect", function(event, error){
     console.log("DISCONNECTED ", error);
     var d = new Date();
     // make a big fuss! we lost connection
-    for(channel in Tabs){
-        newMsg(Tabs[channel], "Disconnected from server. See Developer Console for detailed explanation.", "[ERROR]", d.toUTCString());
+    for(tab in Tabs){
+        newMsg(tab, "Disconnected from server. See Developer Console for detailed explanation.", "[ERROR]", d.toUTCString());
     }
 });
 
 electron.ipcRenderer.on("message_add", function(event, channel, message, sender, time, noFix){
     try{
+        console.log(channel, message);
         newMsg(channel, message, sender, time, false, noFix);
     }catch(err){
         /* if the channel doesn't have a tab, it will probably raise an error. therefore, if we assume that
         this error was caused by that, we should get away with it (let's face it - it probably was) */
         console.log("error in message_add handler. assuming nonexistant tab. creating new tab. (" + err + ")");
         newTab(channel);
-        newMsg(channel, message, sender, time);
+        newMsg(channel, message, sender, time, false, noFix);
     }
 });
 electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
@@ -114,45 +398,26 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
         /* for in case NAMES was called *after* the initial channel call, we should probably clear
         the existing user list (to prevent duplicates and potentially delete nonapplicable nicks)
         __note that this shouldn't happen often!__*/
-        var usrList = document.getElementById("usrList-" + (Tabs.indexOf(channel) + 1));
-        while (usrList.firstChild) {
-            usrList.removeChild(usrList.firstChild);
+        for(user in Tabs[channel.toLowerCase()].Users){
+            Tabs[channel.toLowerCase()].removeUser(Tabs[channel.toLowerCase()].Users[user]);
         }
 
         for(user in nicks){
-            var usrEntry = document.createElement("li");
+            var op = false;
             if(nicks[user] == "@" || nicks[user] == "~"){
-                usrEntry.className = "op";
+                op = true;
             }
-            if(user == UserNick){
-                usrEntry.classList.add("client");
-            }
-            var name = document.createTextNode(user.toString());
-            usrEntry.appendChild(name);
-            usrEntry.id = user + "-" + (Tabs.indexOf(channel) + 1);
-            usrEntry.onclick = function(){ newTab(this.innerHTML); };
-            usrList.appendChild(usrEntry);
+            Tabs[channel.toLowerCase()].addUser(user, op);
         }
     });
     electron.ipcRenderer.on("user_add", function(event, channel, nick){
-        var usrList = document.getElementById("usrList-" + (Tabs.indexOf(channel) + 1));
-        var usrEntry = document.createElement("li");
-        if(nick == UserNick){
-            usrEntry.classList.add("client");
-        }
-        var name = document.createTextNode(nick.toString());
-        usrEntry.appendChild(name);
-        usrEntry.id = nick + "-" + (Tabs.indexOf(channel) + 1);
-        usrEntry.onclick = function(){ newTab(this.innerHTML); };
-        usrList.appendChild(usrEntry);
+        Tabs[channel.toLowerCase()].addUser(nick);
     });
     electron.ipcRenderer.on("user_op_add", function(event, channel, nick){
-        var usrEntry = document.getElementById(nick + "-" + (Tabs.indexOf(channel) + 1));
-        usrEntry.classList.add("op");
+        Tabs[channel.toLowerCase()].opUser(nick);
     });
     electron.ipcRenderer.on("user_op_remove", function(event, channel, nick){
-        var usrEntry = document.getElementById(nick + "-" + (Tabs.indexOf(channel) + 1));
-        usrEntry.classList.remove("op");
+        Tabs[channel.toLowerCase()].deopUser(nick);
     });
     electron.ipcRenderer.on("user_change", function(event, oldnick, newnick, channel){
         try {
@@ -166,21 +431,15 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
         }
     });
     electron.ipcRenderer.on("user_remove", function(event, channel, nick){
-        rmNick(nick, channel);
+        Tabs[channel.toLowerCase()].removeUser(nick);
     });
     electron.ipcRenderer.on("user_quit", function(event, nick, chans, reason){
-        for(channel in chans){
-            channel = chans[channel];
-            try{
-                rmNick(nick, channel);
-                var d = new Date();
-                newMsg(channel, nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
-            }catch(err){
-                // do nothing; probably just not a channel the user's on
-            }
+        for(channel in Users[nick.toLowerCase()].Channels){
+            channel = Users[nick.toLowerCase()].Channels[channel];
+            Tabs[channel.toLowerCase()].removeUser(nick);
+            var d = new Date();
+            newMsg(channel, nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
         }
-        var entry = document.getElementById(nick + "-" + (Tabs.indexOf(channel) + 1));
-        document.getElementById("usrList-" + (Tabs.indexOf(channel) + 1)).removeChild(entry);
     });
 }
 
@@ -208,182 +467,14 @@ function isChannel(channel){
     FUNCTIONS THAT SCREW AROUND WITH THE USER INTERFACE
 */
 
-// remove a user from the online user's list of a channel
-function rmNick(nickname, channel){
-    var entry = document.getElementById(nickname + "-" + (Tabs.indexOf(channel) + 1));
-    document.getElementById("usrList-" + (Tabs.indexOf(channel) + 1)).removeChild(entry);
-}
-
 // open a new tab
 function newTab(tabName){
-    oldTabName = tabName.slice(0);
-    tabName = tabName.toLowerCase();
     // only create a new tab if there isn't one already
-    if(!(Tabs.indexOf(tabName) >= 0)){
+    if(Tabs[tabName.toLowerCase()] == undefined){
         // add it to the tab list
-        Tabs.push(tabName);
-        // add a channel for it in the message object
-        if(nameIndexOf(Messages, tabName) == -1){
-            Messages.push({
-                name: tabName,
-                messages: []
-            });
-        }
-
-        // IDs are always the index + 1
-        var id = Tabs.indexOf(tabName) + 1;
-        var tabButton = document.createElement("a");
-
-        // set up the tab selector "button"
-        tabButton.href = "#scroll-tab-" + id;
-        tabButton.className = "mdl-layout__tab";
-        // create the channel's unread counter badge
-        var tabBadge = document.createElement("span");
-        tabBadge.id = "badge-" + id;
-        tabBadge.className = "mdl-badge";
-        tabBadge.setAttribute("data-badge", "0");
-        tabBadge.innerHTML = tabName;
-        // add the badge to the button
-        tabButton.appendChild(tabBadge);
-
-        // create the tab content
-        {
-            var tab = document.createElement("section");
-            tab.className = "mdl-layout__tab-panel";
-            tab.id = "scroll-tab-" + id;
-            var flexDiv = document.createElement("div");
-            flexDiv.className = "flex";
-            var clog = document.createElement("div");
-            clog.className = "chatLog";
-            clog.id = "clog-" + id;
-            if(!isChannel(tabName)){
-                // if it's a private chat, we can extend the chat log horizontally
-                clog.classList.add("extended");
-            }
-            flexDiv.appendChild(clog);
-
-            if(isChannel(tabName)){
-                // if it is a channel, we need a user list.
-                var usrLTitle = document.createElement("p");
-                usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
-                var usrList = document.createElement("div");
-                usrList.className = "usrList";
-                usrList.appendChild(usrLTitle);
-                var usrListUl = document.createElement("ul");
-                usrListUl.id = "usrList-" + id;
-                usrList.appendChild(usrListUl);
-                flexDiv.appendChild(usrList);
-            }else{
-                // private chats can use the user list space for an easy command system
-                var usrCTitle = document.createElement("p");
-                usrCTitle.innerHTML = "Quick User Command";
-                var comList = document.createElement("div");
-                comList.className = "usrList";
-                comList.appendChild(usrCTitle);
-                // create whois button
-                var comWhois = document.createElement("button");
-                comWhois.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
-                comWhois.onclick = function(){
-                    electron.ipcRenderer.send("user_whois", oldTabName);
-                };
-                var comWhoisLabel = document.createTextNode("WHOIS User");
-                comWhois.appendChild(comWhoisLabel);
-                comList.appendChild(comWhois);
-                // create invite toggle button
-                var comInviteToggle = document.createElement("button");
-                comInviteToggle.id = Tabs.indexOf(tabName);
-                comInviteToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
-                var comInviteToggleLabel = document.createTextNode("Invite to Channel");
-                comInviteToggle.onclick = function(){
-                    var id = this.id;
-                    var element = document.getElementById("invite-" + id);
-                    if(element.classList.contains("shown")){
-                        // if shown, hide it
-                        element.classList.remove("shown");
-                    }else{
-                        // otherwise, show it
-                        element.classList.add("shown");
-                    }
-                };
-                comInviteToggle.appendChild(comInviteToggleLabel);
-                comList.appendChild(comInviteToggle);
-                // create invite form
-                var comInviteForm = document.createElement("div");
-                comInviteForm.id = "invite-" + Tabs.indexOf(tabName);
-                comInviteForm.className = "toggle";
-                var comInviteFormDiv = document.createElement("div");
-                comInviteFormDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
-                var comInviteFormInput = document.createElement("input");
-                comInviteFormInput.className = "mdl-textfield__input";
-                comInviteFormInput.required = true;
-                comInviteFormInput.type = "text";
-                comInviteFormInput.id = "inviteChan-" + Tabs.indexOf(tabName);
-                comInviteFormDiv.appendChild(comInviteFormInput);
-                var comInviteUser = document.createElement("input");
-                comInviteUser.type = "text";
-                comInviteUser.value = oldTabName;
-                comInviteUser.hidden = true;
-                comInviteUser.id = "inviteUser-" + Tabs.indexOf(tabName);
-                comInviteForm.appendChild(comInviteUser);
-                var comInviteFormLabel = document.createElement("label");
-                comInviteFormLabel.className = "mdl-textfield__label";
-                comInviteFormLabel.for = "inviteChan-" + Tabs.indexOf(tabName);
-                var comInviteFormLabelText = document.createTextNode("Invite User");
-                comInviteFormLabel.appendChild(comInviteFormLabelText);
-                comInviteFormDiv.appendChild(comInviteFormLabel);
-                comInviteForm.appendChild(comInviteFormDiv);
-                var comInviteFormButton = document.createElement("button");
-                comInviteFormButton.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
-                comInviteFormButton.type = "button";
-                comInviteFormButton.onclick = function(){
-                    // break up the active tab's id, which is of form scroll-tab-[channel]
-                    var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-                    // we need to get [channel], so we grab the last element of the array
-                    var channel = Tabs[array[array.length-1]];
-                    var chan = $("#inviteChan-" + (array[array.length-1] - 1)).val().toString();
-                    var user = $("#inviteUser-" + (array[array.length-1] - 1)).val().toString();
-                    console.log("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
-                    electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
-                    return false;
-                };
-                var comInviteFormButtonLabel = document.createTextNode("Invite User");
-                comInviteFormButton.appendChild(comInviteFormButtonLabel);
-                comInviteForm.appendChild(comInviteFormButton);
-                comList.appendChild(comInviteForm);
-                // register all buttons with google mdl
-                componentHandler.upgradeElements(comList);
-                flexDiv.appendChild(comList);
-            }
-        }
-
-        tab.appendChild(flexDiv);
-
-        document.getElementById("content").appendChild(tab);
-        document.getElementById("tab-bar").appendChild(tabButton);
-
-        /* the following is intended to register the new tab with MDL, which has no standard
-        method for registering tabs (apparently they aren't supposed to be dynamically generated?) */
-        var mdlLayout = document.querySelector('.mdl-js-layout');
-        var mdlTabs = document.querySelectorAll('.mdl-layout__tab');
-        var mdlPanels = document.querySelectorAll('.mdl-layout__tab-panel');
-        for (var i = 0; i < mdlTabs.length; i++) {
-            new MaterialLayoutTab(mdlTabs[i], mdlTabs, mdlPanels, mdlLayout.MaterialLayout);
-        }
-
-        // if the channel's inside the message logs, and logging's enabled
-        if(Logging){
-            var channelMessageIndex = nameIndexOf(Messages, tabName); // returns array index, or -1 if not found
-            console.log(channelMessageIndex);
-            if(channelMessageIndex >= 0){
-                // add each message from the log to the channel tab, as "old" messages (faded)
-                for(message in Messages[channelMessageIndex].messages){
-                    console.log(Messages[channelMessageIndex].messages[message].content);
-                    console.log(message);
-                    console.log(Messages[channelMessageIndex].messages[message]);
-                    newMsg(tabName, Messages[channelMessageIndex].messages[message].content, Messages[channelMessageIndex].messages[message].user, Messages[channelMessageIndex].messages[message].timestamp, true);
-                }
-            }
-        }
+        cID++;
+        Chans.push(tabName.toLowerCase());
+        Tabs[tabName.toLowerCase()] = new Tab(tabName, cID);
     }
 }
 // add a new message to a tab
@@ -392,96 +483,17 @@ function newMsg(channel, message, sender, time, old=false, noFix=false){
     console.log(message);
     channel = channel.toLowerCase();
 
-    // escape <>s, to prevent users from embedding HTML
-    if(!noFix){
-        message = message.replace(/</g, "&lt;");
-        message = message.replace(/>/g, "&gt;");
-    }
-
-    // get the channel chat log in the DOM
-    var clog = document.getElementById("clog-" + (Tabs.indexOf(channel) + 1));
-    var chanID = Tabs.indexOf(channel);
-    // set up the message's object for the Messages[] array.
-    var msgObj = {
-        user: sender,
-        timestamp: time,
-        content: message
-    };
-    if(!old && Logging){
-        // if it's not an old message (already in the array), add it to the array and re-save the array as JSON.
-        Messages[chanID].messages.push(msgObj);
-        var msgID = Messages[chanID].messages.indexOf(msgObj);
-        // json works really well with JavaScript, and can easily be parsed into a JS array/object combo.
-        fs.writeFile("logs/" + Server + '.json', JSON.stringify(Messages, null, 4), 'utf8', function(err) {
-            if(err) {
-                console.log("couldn't write messages to json file: ", err);
-            } else {
-                console.log("messages saved as json: " + Server + ".json");
-            }
-        });
-    }
-
-    var msgID = Messages[chanID].messages.indexOf(msgObj);
     var tab = document.getElementById("content");
     // allow 1px inaccuracy by adding 1
     var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
-    var div = document.createElement("div");
-    // create a copy of the message, so that we can mess around with the visible output but keep a clean object in the logs
-    var outMessage = message.slice(0);
-    if(message[0] == "["){
-        try{
-            var quote = message.substring(1, message.lastIndexOf("]"));
-            var qMeta = quote.substring(0, quote.nIndexOf(":", 3));
-            var qMsg = quote.substring(quote.nIndexOf(":", 3)+2, quote.length);
-            var qStitch = "<div class=\"message\"><p class=\"meta\">" + qMeta + ":</p><p>" + qMsg + "</p></div>";
-            outMessage = message.replaceBetween(0, message.lastIndexOf("]") + 2, qStitch);
-        }catch(err){
-            // nothing needs to be done, someone probably just started a message with "["
-        }
-    }
-    div.className = "message";
-    div.id = "msg-" + chanID + "-" + msgID;
-    if(channel == "!sys" || sender == "[System]"){
-        // if it's a system message, add the appropriate class.
-        div.classList.add("sysmsg");
-    }
-    if(sender == "[MOTD]" || sender == "[SERVER]" || time == "topic" || message.indexOf(UserNick) >= 0){
-        // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
-        div.classList.add("important");
-    }else if(sender == "[ERROR]"){
-        // if it's an error, then style accordingly
-        div.classList.add("error");
-    }
-    if(old){
-        // if it's an old message, reduce the opacity 50%;
-        div.classList.add("old");
-    }
-    var main = document.createElement("p");
 
-    // check for links and emails, and then make them into links (because users like that shit)
-    var hypertext = outMessage;
-    var links = linkify.find(outMessage);
-    for(link in links){
-        link = links[link];
-        hypertext = hypertext.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
-    }
-
-    main.innerHTML = hypertext;
-    var meta = document.createElement("p");
-    meta.onclick = function(){
-        $('#msg').val("[" + sender + " (" + time + "): " + message + "] ");
-    };
-    meta.className = "meta";
-    var metaText = document.createTextNode(sender + " (" + time + "):");
-    meta.appendChild(metaText);
-    div.appendChild(meta);
-    div.appendChild(main);
-    clog.appendChild(div);
+    Tabs[channel].addMessage(sender, message, time, old, noFix);
 
     // if it was posted to the current channel, we should bump the scroll
     var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
     // get the selected channel name
-    var curChan = Tabs[array[array.length-1]-1];
+    var curChan = Chans[array[array.length-1]];
+    console.log("curchan", curChan);
     if(curChan == channel){
         // scroll to bottom if isScrolledToBottom, if the channel is selected that the message was posted to
         if(isScrolledToBottom){
@@ -491,9 +503,8 @@ function newMsg(channel, message, sender, time, old=false, noFix=false){
         // otherwise, we should probably increase the badge of the actual channel, unless it's an old message
         // (which the user will already have read)
         if(!old){
-            var badge = document.getElementById("badge-" + (Tabs.indexOf(channel) + 1));
             // set the badge to its value + 1.
-            badge.setAttribute("data-badge", String(Number(badge.getAttribute("data-badge")) + 1));
+            Tabs[channel].Badge.setAttribute("data-badge", String(Number(Tabs[channel].Badge.getAttribute("data-badge")) + 1));
         }
     }
 }
@@ -530,12 +541,26 @@ function sendMsg(recipient, message){
 
     // add handlers for form submits
     $(document).ready(function(){
+        // if the top bar's clicked, we want to force the chat log to the bottom
+        document.getElementById("topbar").addEventListener("click", function(){
+            var tab = document.getElementById("content");
+            // jump to bottom
+            tab.scrollTop = tab.scrollHeight;
+
+            // we should reset the unread message indicator for the active channel (for in case the
+            // user just changed it)
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // get the selected channel name
+            var curChan = Chans[array[array.length-1]];
+            Tabs[curChan].Badge.setAttribute("data-badge", "0");
+        });
+
         // when the new message form is completed
         $('#send').submit(function(){
             // break up the active tab's id, which is of form scroll-tab-[channel]
             var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
             // we need to get [channel], so we grab the last element of the array
-            var channel = Tabs[array[array.length-1]-1];
+            var channel = Chans[array[array.length-1]];
             // *never send an empty message*
             if($("#msg").val() != ""){
                 sendMsg(channel, $('#msg').val().toString());
@@ -560,17 +585,8 @@ function sendMsg(recipient, message){
             // lowercase it; all channels and stuff should be lowercase (we don't want case-sensitivity)
             var channel = $("#partChannel").val().toString().toLowerCase();
             try{
-                var chanID = Tabs.indexOf(channel);
-                // unset the tab listing; we can't just purge it as this breaks all other tabs.
-                Tabs[chanID] = null;
-                // id's numbers are always 1 greater than the index.
-                chanID++;
-                var chanTab = document.querySelectorAll("a[href='#scroll-tab-" + chanID + "']")[0];
-                // destroy the tab selector
-                chanTab.parentNode.removeChild(chanTab);
-                var chanContent = document.getElementById("scroll-tab-" + chanID);
-                // ... and the chat log.
-                chanContent.parentNode.removeChild(chanContent);
+                // destroy the object.
+                Tabs[channel].destroy();
                 electron.ipcRenderer.send("channel_part", channel);
             }catch(err){
                 // we couldn't leave the requested chat for some reason. probably a user typo.
@@ -600,19 +616,6 @@ function sendMsg(recipient, message){
             electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
             // override Chromium behaviour
             return false;
-        });
-
-        // if the top bar's clicked, we want to force the chat log to the bottom
-        document.getElementById("topbar").addEventListener("click", function(){
-            var tab = document.getElementById("content");
-            // jump to bottom
-            tab.scrollTop = tab.scrollHeight;
-
-            // we should reset the unread message indicator for the active channel (for in case the
-            // user just changed it)
-            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-            var badge = document.getElementById("badge-" + array[array.length-1]);
-            badge.setAttribute("data-badge", "0");
         });
     });
 }
