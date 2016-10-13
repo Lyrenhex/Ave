@@ -34,13 +34,19 @@ hr {
 }
 
 .toggle {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
     border: 1px solid #ddd;
     border-radius: 3px;
     padding: 3px;
+    -webkit-transition: max-height 0.5s ease-out;
+    transition: max-height 0.5s ease-out;
 }
 .shown {
-    display: block;
+    max-height: 200px;
+    overflow: auto;
+    -webkit-transition: max-height 0.5s ease-out;
+    transition: max-height 0.5s ease-out;
 }
 
 body {
@@ -53,6 +59,33 @@ body {
     flex-wrap: wrap;
     flex-wrap: wrap;
     align-items: center;
+}
+
+.special {
+    margin-bottom: 60px;
+}
+.content {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    padding: 10px;
+    width: 90%;
+    background-color: white;
+    border-radius: 5px;
+    text-align: left;
+    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+}
+.content img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.content h1 {
+    font-size: 32pt;
+    text-align: left;
 }
 
 .chatLog {
@@ -186,14 +219,13 @@ body {
     border: none;
     border-radius: 20px;
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+    transition: 0.25s linear;
 }
 .msg input[type="text"]:focus {
     -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 10px rgba(0,0,0,.8);
-    transition: 0.5s linear;
+    transition: 0.25s linear;
 }
 .msg button[type="submit"] {
     position: fixed;
@@ -208,7 +240,6 @@ body {
     padding: 4px;
     text-align: center;
     -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 5px rgba(0,0,0,.8);
 }
 .msg button[type="submit"]:hover {

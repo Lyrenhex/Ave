@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var Chans = ["!sys"];
+var Chans = ["Welcome"];
 var Tabs = [];
 var Users = [];
 
@@ -543,16 +543,21 @@ function sendMsg(recipient, message){
     $(document).ready(function(){
         // if the top bar's clicked, we want to force the chat log to the bottom
         document.getElementById("topbar").addEventListener("click", function(){
-            var tab = document.getElementById("content");
-            // jump to bottom
-            tab.scrollTop = tab.scrollHeight;
-
             // we should reset the unread message indicator for the active channel (for in case the
             // user just changed it)
             var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
             // get the selected channel name
             var curChan = Chans[array[array.length-1]];
-            Tabs[curChan].Badge.setAttribute("data-badge", "0");
+            var tab = document.getElementById("content");
+            if(array[array.length-1] != 0){
+                // jump to bottom
+                tab.scrollTop = tab.scrollHeight;
+
+                Tabs[curChan].Badge.setAttribute("data-badge", "0");
+            }else{
+                // jump to top
+                tab.scrollTop = 0;
+            }
         });
 
         // when the new message form is completed

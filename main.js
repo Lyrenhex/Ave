@@ -35,7 +35,7 @@ String.prototype.replaceAll = function(search, replacement) {
 var ico = __dirname + "/app/res/img/icon.ico";
 
 function newWindow(){
-    win = new BrowserWindow({width: 900, height: 600, icon: ico});
+    win = new BrowserWindow({width: 900, height: 700, icon: ico});
     contents = win.webContents;
 
     win.loadURL("file://" + __dirname + "/app/connect.html");

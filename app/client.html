@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- Tabs -->
                 <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-bar">
                      <a href="#scroll-tab-0" class="mdl-layout__tab is-active">
-                        <span class="mdl-badge" data-badge="0" id="badge-0">!Sys</span>
+                        Welcome
                     </a>
                 </div>
             </header>
@@ -111,23 +111,55 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <main class="mdl-layout__content" id="content">
                 <section class="mdl-layout__tab-panel is-active" id="scroll-tab-0">
-                    <div class="flex">
-                        <div class="chatLog" id="clog-0">
+                    <div class="special">
+                        <div class="content">
+                            <img src="res/img/logo.png" alt="Ave" />
+                            <h1>Hi there</h1>
+                            <p>Welcome! We're glad to see people using Ave for chatter, and we'd like to
+                                thank you for choosing Ave over the many other IRC clients. Of course, to
+                                make this as great an experience for you as we can, this page will just outline
+                                some things that we think are important when using Ave, and help you make
+                                the most out of this client. However, if you're already an expert on Ave, then
+                                feel free to ignore this!</p>
                         </div>
-                        <div class="usrList">
-                            <p>This is the system messages channel. <i>This is not an online IRC channel</i>,
-                                and is used for relaying system messages to you. Messages entered here will not
-                                be broadcast to IRC. You may use this to enter commands, such as to identify with
-                                NickServ.</p>
-                            <p>As a result, there are no "online users".</p>
-                            <p>Perhaps you would consider, if you're on Freenode, joining #ave-irc? To
-                                do so, just open the side menu, enter "#ave-irc" (without quotes) in the
-                                "IRC Channel" field, and then click "Join Channel". That's how you join
-                                channels!</p>
+                        <div class="content">
+                            <h2>Update Changelogs</h2>
+                            <p><b>Please note:</b> Ave is currently in development, and changes may be made
+                                within the source repository that may not be shown in changelogs, and changelogs
+                                may not be maintained at the moment. Changelogs are planned for release; pre-alpha's
+                                changes are too numerous to logically index in a changelog (feel free to peruse
+                                the GitHub history for a "changelog"; see about.)</p>
+                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changelog')">Show / Hide Changelog</button>
+                            <div class="toggle" id="changelog">
+                                <h4>Version -> Version2</h4>
+                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changelog-2')">Show / Hide Changelog</button>
+                                <div class="toggle" id="changelog-2">
+                                        <li>testing stuffs!</li>
+                                </div>
+                            </div>
                         </div>
+                        <div class="content">
+                            <h2>What makes Ave different</h2>
+                            <p>Ave is, in many ways, different to most of your usual IRC clients. Part of this
+                                is because Ave's design is inspired, uniquely for an IRC client, by Google's Material
+                                Design Guidelines. But Ave is also unique in that <i>user interface is valued
+                                    above command interfaces</i>.</p>
+                            <p>It is common for IRC clients to implement commands via the textual input
+                                fields, resulting in users entering <code>/msg nickserv identify password</code>
+                                to identify with NickServ. We working on Ave, however, consider this <b>bad form</b>
+                                as users should not be expected to memorise a long list of commands and their syntaxes.</p>
+                            <p>Consequently, Ave aims to implement as many commands as possible naturally
+                                into the client's user interface, allowing users to do what they can do in other clients
+                                with a logical, and natural, graphical user interface.</p>
+                            <p>(An example is that joining channels, in other clients, is usually done with
+                                <code>/join #channel</code>. In Ave, this is accomplished by opening the side
+                                menu (click the hamburger icon in the top left), clicking "Join IRC Channel",
+                                entering the channel name and clicking "join". It sounds like a lot - we know -
+                                but it's not (and actually a lot more natural!).)</p>
+                        </div>
+
                     </div>
                 </section>
-
              </main>
         </div>
               <div class="msg">
