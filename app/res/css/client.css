@@ -128,12 +128,11 @@ body {
     color: #aaa;
     margin-bottom: 8px;
 }
-.chatLog .message .meta:hover {
-    font-size: 8pt;
+/* .chatLog .message .meta:hover {
     color: #000;
     cursor: pointer;
     margin-bottom: 8px;
-}
+} */
 .chatLog .message .meta .msgId {
     font-style: italic;
     text-align: right;
