@@ -322,7 +322,7 @@ function nameIndexOf(array, value) {
         var hypertext = this.Content.slice(0);
 
         // get all standard channel names and let clicking it join the channel
-        var chanLinks = hypertext.match(/(^|\s)#(\w+)/g);
+        var chanLinks = hypertext.match(/(^|\s)#([\w,\-]+)/g);
         for(link in chanLinks){
             link = chanLinks[link];
             hypertext = hypertext.replace(link, "<a href='javascript:electron.ipcRenderer.send(\"channel_join\", \"" + link + "\")'>" + link + "</a>");
@@ -445,7 +445,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
             channel = Users[nick.toLowerCase()].Channels[channel];
             channel.removeUser(nick);
             var d = new Date();
-            newMsg(channel, nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
+            newMsg(channel.Name.toString(), nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
         }
     });
 }

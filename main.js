@@ -240,6 +240,7 @@ function newWindow(){
                     if(mode == "o"){
                         sendMsg(channel, by + " ascended " + argument + " to operator.", "[System]");
                         contents.send("user_op_add", channel, argument);
+                        contents.send("log", message);
                     }else{
                         if(by != undefined){
                             sendMsg(channel, by + " set the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
