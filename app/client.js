@@ -113,6 +113,29 @@ function nameIndexOf(array, value) {
                 var usrList = document.createElement("div");
                 usrList.className = "usrList";
                 usrList.appendChild(usrLTitle);
+
+                this.UserSearch = document.createElement("input");
+                this.UserSearch.className = "mdl-textfield__input";
+                this.UserSearch.type = "text";
+                this.UserSearch.id = "searchUsers:" + tabName;
+                this.UserSearch.placeholder = "Search users...";
+                console.log("usersearch",this.UserSearch);
+                this.UserSearch.onkeyup = function(event){
+                    var filter = this.value.toLowerCase();
+                    var channel = this.id.split(":")[1].toLowerCase();
+                    var lis = Tabs[channel].UserList.getElementsByTagName('li');
+                    for (var i = 0; i < lis.length; i++) {
+                        var name = lis[i].innerHTML;
+                        if (name.toLowerCase().indexOf(filter) == 0)
+                            lis[i].style.display = 'block';
+                        else
+                            lis[i].style.display = 'none';
+                    }
+                }
+                usrList.appendChild(this.UserSearch);
+                // register search bar with google mdl
+                componentHandler.upgradeElements(usrList);
+
                 this.UserList = document.createElement("ul");
                 this.UserList.id = "usrList-" + tabName;
                 usrList.appendChild(this.UserList);
