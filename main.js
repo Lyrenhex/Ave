@@ -194,6 +194,9 @@ function newWindow(){
                         sendMsg(nick, message, nick);
                     }
                 });
+                client.addListener("selfMessage", function (to, text){
+                    contents.send("log", [to, text]);
+                });
                 client.addListener("action", function (nick, chan, action, raw){
                     var message = "<b> * " + nick + " " + action + "</b>";
                     if(chan != client.nick.toLowerCase()){

@@ -36,10 +36,10 @@ body {
 }
 h2 {
 	color: #0099ff;
-	font-size: 36pt;
+	font-size: 24px;
 }
 h3 {
-	font-size: 24pt;
+	font-size: 18px;
 }
 h3, h4, h5, h6 {
 	color: #0099ff;
@@ -48,7 +48,7 @@ h3, h4, h5, h6 {
 	font-size: 10pt;
 }
 p {
-	font-size: 16pt;
+	font-size: 14px;
 }
 
 .content {
@@ -63,9 +63,8 @@ p {
     border-radius: 2px;
     padding: 10px;
     text-align: left;
-    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-        -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
 }
 .content img {
     display: block;

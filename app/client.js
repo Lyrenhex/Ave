@@ -378,7 +378,6 @@ electron.ipcRenderer.on("server_disconnect", function(event, error){
 
 electron.ipcRenderer.on("message_add", function(event, channel, message, sender, time, noFix){
     try{
-        console.log(channel, message);
         newMsg(channel, message, sender, time, false, noFix);
     }catch(err){
         /* if the channel doesn't have a tab, it will probably raise an error. therefore, if we assume that
@@ -488,6 +487,11 @@ function newMsg(channel, message, sender, time, old=false, noFix=false){
     var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
 
     Tabs[channel].addMessage(sender, message, time, old, noFix);
+
+    // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.
+    if(!isChannel(channel) && sender.toLowerCase() == channel){
+        Tabs[channel].Name = sender;
+    }
 
     // if it was posted to the current channel, we should bump the scroll
     var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");

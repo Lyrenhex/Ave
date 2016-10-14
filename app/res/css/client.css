@@ -36,17 +36,26 @@ hr {
 .toggle {
     max-height: 0;
     overflow: hidden;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 3px;
+    border-radius: 2px;
+    padding: 5px;
     -webkit-transition: max-height 0.5s ease-out;
     transition: max-height 0.5s ease-out;
+    background-color: white;
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.24);
+}
+.usrList .toggle {
+    margin: 5px;
+    margin-top: 0;
 }
 .shown {
     max-height: 200px;
     overflow: auto;
     -webkit-transition: max-height 0.5s ease-out;
     transition: max-height 0.5s ease-out;
+}
+.toggle h2 {
+    font-size: 14px;
 }
 
 body {
@@ -72,11 +81,10 @@ body {
     padding: 10px;
     width: 90%;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 2px;
     text-align: left;
-    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
 }
 .content img {
     display: block;
@@ -84,7 +92,7 @@ body {
     margin-right: auto;
 }
 .content h1 {
-    font-size: 32pt;
+    font-size: 48px;
     text-align: left;
 }
 
@@ -100,15 +108,14 @@ body {
     margin-right: auto;
     margin-top: 5px;
     margin-bottom: 5px;
-    padding: 5px;
+    padding: 10px;
     width: 99%;
     background-color: white;
     border-radius: 2px;
     text-align: left;
     color: #000;
-    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
 }
 .chatLog .message p {
     line-height: 12pt;
@@ -125,7 +132,7 @@ body {
 }
 .chatLog .message .meta {
     font-size: 8pt;
-    color: #aaa;
+    color: #bdbdbd;
     margin-bottom: 8px;
 }
 /* .chatLog .message .meta:hover {
@@ -140,6 +147,9 @@ body {
 
 .chatLog .sysmsg {
     background-color: #dbdbdb;
+}
+.chatLog .sysmsg .meta {
+    color: #616161;
 }
 .chatLog .important {
     background-color: #09f;
@@ -156,16 +166,15 @@ body {
 .usrList {
     position: fixed;
     top: 112px;
-    width: calc(25% - 20px);
+    width: calc(25vw - 30px);
     position: fixed;
     right: 0;
     max-height: calc(100vh - 172px);
     overflow: auto;
     background-color: #fff;
     border-radius: 2px 0 0 2px;
-    -webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-           -moz-box-shadow: 0px 3px 7px rgba(0,0,0,.8);
-                box-shadow: 0px 3px 7px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
 }
 .usrList button {
     width: calc(100% - 6px);
@@ -217,13 +226,15 @@ body {
     outline: none !important;
     border: none;
     border-radius: 20px;
-    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
-                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+    --webkit-box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
+                box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
     transition: 0.25s linear;
 }
 .msg input[type="text"]:focus {
     -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
                 box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 0 9px rgba(0,0,0,0.12), 0 0 8px rgba(0,0,0,0.24);
+                box-shadow: 0 0 9px rgba(0,0,0,0.12), 0 0 8px rgba(0,0,0,0.24);
     transition: 0.25s linear;
 }
 .msg button[type="submit"] {
@@ -238,8 +249,8 @@ body {
     background-color: #eee;
     padding: 4px;
     text-align: center;
-    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,.8);
-                box-shadow: 0px 0px 5px rgba(0,0,0,.8);
+    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
+                box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
 }
 .msg button[type="submit"]:hover {
     background-color: #bbb;
