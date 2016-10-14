@@ -320,6 +320,14 @@ function nameIndexOf(array, value) {
         // check for links and emails, and then make them into links (because users like that shit)
         // create a copy of the message, so that we can mess around with the visible output but keep a clean object in the logs
         var hypertext = this.Content.slice(0);
+
+        // get all standard channel names and let clicking it join the channel
+        var chanLinks = hypertext.match(/(^|\s)#(\w+)/g);
+        for(link in chanLinks){
+            link = chanLinks[link];
+            hypertext = hypertext.replace(link, "<a href='javascript:electron.ipcRenderer.send(\"channel_join\", \"" + link + "\")'>" + link + "</a>");
+        }
+
         var links = linkify.find(hypertext);
         for(link in links){
             link = links[link];
@@ -435,7 +443,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
     electron.ipcRenderer.on("user_quit", function(event, nick, chans, reason){
         for(channel in Users[nick.toLowerCase()].Channels){
             channel = Users[nick.toLowerCase()].Channels[channel];
-            Tabs[channel.toLowerCase()].removeUser(nick);
+            channel.removeUser(nick);
             var d = new Date();
             newMsg(channel, nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
         }
