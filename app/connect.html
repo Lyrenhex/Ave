@@ -33,6 +33,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <img src="res/img/logo.png" alt="Ave" />
 			<h2>Connect to Server</h2>
 			<p>Please enter your desired nickname and the connection information for the server that you would like to connect to. For reference, the freenode IRC credentials have been pre-filled for you; please feel free to change these.</p>
+            <button type="button" onclick="toggle('serverList')" class="mdl-button mdl-js-button mdl-js-ripple-effect">Existing Server Profiles</button>
+            <div class="toggle" id="serverList">
+            </div>
 			<form id="connect">
 				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					<input class="mdl-textfield__input" type="text" id="server" value="irc.freenode.net" required />
@@ -53,8 +56,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<label class="mdl-textfield__label" for="nsPass">NickServ Password (if needed)</label>
 				</div><br />
 				<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Connect to Server</button>
-                <button type="button" onclick="toggleAdvanced()" class="mdl-button mdl-js-button mdl-js-ripple-effect">Toggle Advanced Options</button>
-                <div class="advanced" id="advanced">
+                <button type="button" onclick="toggle('advanced')" class="mdl-button mdl-js-button mdl-js-ripple-effect">Toggle Advanced Options</button>
+                <div class="toggle" id="advanced">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     					<input class="mdl-textfield__input" type="text" id="username" value="AveUser" required />
     					<label class="mdl-textfield__label" for="username">Username</label>
