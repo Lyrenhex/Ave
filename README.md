@@ -1,6 +1,9 @@
 # Ave
 A material design IRC client written in HTML, CSS, and JavaScript, using electron/electron.
 
+## Official IRC Channel
+Ave has an official IRC channel for discussion, operating at `#ave-irc` on `irc.freenode.net`.  Please feel free to join at any point to discuss various topics (normally concerning Ave...).
+
 ## In development
 Please note that Ave is **in active development**. There may be bugs, and some features / functionality may not even be implemented yet.
 

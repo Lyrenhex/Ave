@@ -105,6 +105,10 @@ function newWindow(){
                     RENDER -> MAIN THREAD HANDLERS
                 */
                 {
+                    ipcMain.on("server_command", function(event, command){
+                        client.send(command);
+                    });
+
                     // user requested a reconnect attempt...
                     ipcMain.on("server_reconnect", function(event){
                         sendMsg("!sys", "Reconnecting...", "[SYSTEM]");
@@ -200,9 +204,9 @@ function newWindow(){
                 client.addListener("action", function (nick, chan, action, raw){
                     var message = "<b> * " + nick + " " + action + "</b>";
                     if(chan != client.nick.toLowerCase()){
-                        sendMsg(chan, message, nick);
+                        sendMsg(chan, message, nick, true);
                     }else{
-                        sendMsg(nick, message, nick);
+                        sendMsg(nick, message, nick, true);
                     }
                 });
                 client.addListener("notice", function (nick, chan, message, raw){

@@ -106,7 +106,36 @@ function nameIndexOf(array, value) {
             this.ChatLog.id = "clog-" + tabName;
             flexDiv.appendChild(this.ChatLog);
 
-            if(this.Type == "channel"){
+            if(tabName == "!sys"){
+                // if it is the system channel, we need a server command list.
+                var usrCTitle = document.createElement("p");
+                usrCTitle.innerHTML = "Server Commands";
+                usrCTitle.id = "ct-" + tabName;
+                this.CommandList = document.createElement("div");
+                this.CommandList.className = "usrList";
+                this.CommandList.appendChild(usrCTitle);
+                // create motd button
+                var comMotd = document.createElement("button");
+                comMotd.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                comMotd.onclick = function(){
+                    electron.ipcRenderer.send("server_command", "MOTD");
+                };
+                var comMotdLabel = document.createTextNode("Server MOTD");
+                comMotd.appendChild(comMotdLabel);
+                this.CommandList.appendChild(comMotd);
+                // create rules button
+                var comRules = document.createElement("button");
+                comRules.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                comRules.onclick = function(){
+                    electron.ipcRenderer.send("server_command", "RULES");
+                };
+                var comRulesLabel = document.createTextNode("Server Rules");
+                comRules.appendChild(comRulesLabel);
+                this.CommandList.appendChild(comRules);
+                // register all buttons with google mdl
+                componentHandler.upgradeElements(this.CommandList);
+                flexDiv.appendChild(this.CommandList);
+            }else if(this.Type == "channel"){
                 // if it is a channel, we need a user list.
                 var usrLTitle = document.createElement("p");
                 usrLTitle.innerHTML = "Online Users and <span class=\"op\">Operators</span>";
