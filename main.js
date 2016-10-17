@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const {app, BrowserWindow, Menu, ipcMain, shell} = require("electron");
 const irc = require("irc");
+const fs = require("fs");
 
 // prevent JS garbage collector killing the window.
 let win;
@@ -30,6 +31,17 @@ let client;
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
 };
 
 var ico = __dirname + "/app/res/img/icon.ico";
@@ -188,6 +200,9 @@ function newWindow(){
                         client.say("NickServ", "IDENTIFY " + connDat.user.password)
                         sendMsg("NickServ", "IDENTIFY ********", client.nick)
                     }
+                    connDat.channels.forEach(function(channel, index){
+                        client.join(channel);
+                    });
                     // client.join("#ave-irc");
                 });
 
@@ -232,6 +247,19 @@ function newWindow(){
                 client.addListener("join", function(channel, nick, message){
                     contents.send("user_add", channel, nick);
                     sendMsg(channel, nick + " has joined the channel.", "[System]");
+                    if(nick == client.nick && connDat.channels.indexOf(channel) == -1){
+                        connDat.channels.push(channel);
+                        // convert it to a JSON array
+                        var jsonSettings = JSON.stringify(connDat, null, 4);
+                        // write it to a file, to persist for next time
+                        fs.writeFile("servers/" + connDat.server.address + '.json', jsonSettings, 'utf8', function(err) {
+                            if(err) {
+                                console.log("couldn't write settings to json file: ", err);
+                            } else {
+                                console.log("settings saved as json: " + connDat.server.address + ".json");
+                            }
+                        });
+                    }
                 });
                 client.addListener("nick", function(oldnick, newnick, channels, message){
                     for(chan in channels){
@@ -265,11 +293,37 @@ function newWindow(){
                     if(nick != client.nick){
                         contents.send("user_remove", channel, nick);
                         sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
+                        if(nick == client.nick && connDat.channels.indexOf(channel) != -1){
+                            connDat.channels.remove(channel);
+                            // convert it to a JSON array
+                            var jsonSettings = JSON.stringify(connDat, null, 4);
+                            // write it to a file, to persist for next time
+                            fs.writeFile("servers/" + connDat.server.address + '.json', jsonSettings, 'utf8', function(err) {
+                                if(err) {
+                                    console.log("couldn't write settings to json file: ", err);
+                                } else {
+                                    console.log("settings saved as json: " + connDat.server.address + ".json");
+                                }
+                            });
+                        }
                     }
                 });
                 client.addListener("kick", function(channel, nick, by, reason, message){
                     contents.send("user_remove", channel, nick);
                     sendMsg(channel, nick + " was kicked from the channel by " + by + " (" + reason + ").", "[System]");
+                    if(nick == client.nick && connDat.channels.indexOf(channel) != -1){
+                        connDat.channels.remove(channel);
+                        // convert it to a JSON array
+                        var jsonSettings = JSON.stringify(connDat, null, 4);
+                        // write it to a file, to persist for next time
+                        fs.writeFile("servers/" + connDat.server.address + '.json', jsonSettings, 'utf8', function(err) {
+                            if(err) {
+                                console.log("couldn't write settings to json file: ", err);
+                            } else {
+                                console.log("settings saved as json: " + connDat.server.address + ".json");
+                            }
+                        });
+                    }
                 });
                 client.addListener("quit", function(nick, reason, channels, message){
                     contents.send("user_quit", nick, channels, reason);

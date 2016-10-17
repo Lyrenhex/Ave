@@ -18,6 +18,8 @@ for(server in servers){
     Servers.push(JSON.parse(fs.readFileSync("servers/" + servers[server], "utf-8")));
 }
 
+var Channels = [];
+
 // we have to import jQuery weirdly because of Electron
 window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
 
@@ -80,7 +82,8 @@ $(document).ready(function(){
                 stripForm: $("#clearColours").is(":checked"),
                 log: $("#logMessages").is(":checked")
             },
-            floodProtect: $("#floodProtect").is(":checked")
+            floodProtect: $("#floodProtect").is(":checked"),
+            channels: Channels
         };
         electron.ipcRenderer.send("server_connect", settings);
         // convert it to a JSON array
@@ -111,4 +114,5 @@ function popFields(json){
     $("#clearColours").prop("checked", json.messages.stripForm);
     $("#logMessages").prop("checked", json.messages.log);
     $("#floodProtect").prop("checked", json.floodProtect);
+    Channels = json.channels;
 }
