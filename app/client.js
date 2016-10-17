@@ -28,6 +28,33 @@ var Logging;
 
 const electron = require("electron");
 const fs = require("fs");
+const marked = require("marked");
+
+var MarkedRenderer = new marked.Renderer();
+MarkedRenderer.heading = function(text, level){
+    return text;
+}
+MarkedRenderer.list = function(body, ordered){
+    return body;
+}
+MarkedRenderer.listitem = function(text){
+    return text;
+}
+MarkedRenderer.paragraph = function(text){
+    return text;
+}
+MarkedRenderer.link = function(href, title, text){
+    console.log(href, title, text);
+    if(href.indexOf("http") == -1){
+        href = "http://" + href;
+    }
+    return "<a target='_blank' href='" + href + "'>" + text + "</a>";
+}
+
+var MarkedOptions = {
+    renderer: MarkedRenderer,
+    gfm: false
+};
 
 // ensure logs folder already exists, for logging purposes
 fs.mkdir("logs", 0777, function(err){
@@ -383,8 +410,13 @@ function nameIndexOf(array, value) {
         var links = linkify.find(hypertext);
         for(link in links){
             link = links[link];
-            hypertext = hypertext.replace(link.value, "<a target='_blank' href='" + link.href + "'>" + link.value + "</a>");
+            if(hypertext.indexOf("](" + link.value + ")") == -1){
+                hypertext = hypertext.replace(link.value, "[" + link.value + "](" + link.href + ")");
+            }
         }
+
+        console.log(marked(hypertext, {renderer: MarkedRenderer}));
+        hypertext = marked(hypertext, {renderer: MarkedRenderer});
 
         main.innerHTML = hypertext;
         var meta = document.createElement("p");
