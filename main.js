@@ -93,7 +93,7 @@ function newWindow(){
                     client.addListener("netError", function(error){
                         if(error.code == "ENOTFOUND"){
                             // couldn't connect to server, so tell the user.
-                            sendMsg("!sys", "Connection failed: Could not find host \"" + error.hostname + "\"<br />Please check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
+                            sendMsg("!sys", "Connection failed: Could not find host \"" + error.hostname + "\"  \nPlease check that the address is correct and you have a working internet connection, then try restarting the client.", "[ERROR]");
                         }else{
                             // otherwise, send a fairly generic disconnect error :)
                             contents.send("server_disconnect", error);
@@ -170,6 +170,17 @@ function newWindow(){
                         if(channel.indexOf("#") == 0){
                             client.part(channel);
                         }
+                        connDat.channels.remove(channel);
+                        // convert it to a JSON array
+                        var jsonSettings = JSON.stringify(connDat, null, 4);
+                        // write it to a file, to persist for next time
+                        fs.writeFile("servers/" + connDat.server.address + '.json', jsonSettings, 'utf8', function(err) {
+                            if(err) {
+                                console.log("couldn't write settings to json file: ", err);
+                            } else {
+                                console.log("settings saved as json: " + connDat.server.address + ".json");
+                            }
+                        });
                     });
                     ipcMain.on("nick_change", function(event, newnick){
                         client.send("NICK", newnick);
@@ -217,11 +228,11 @@ function newWindow(){
                     contents.send("log", [to, text]);
                 });
                 client.addListener("action", function (nick, chan, action, raw){
-                    var message = "<b> * " + nick + " " + action + "</b>";
+                    var message = "**_ \* " + nick + " " + action + "_**";
                     if(chan != client.nick.toLowerCase()){
-                        sendMsg(chan, message, nick, true);
+                        sendMsg(chan, message, nick);
                     }else{
-                        sendMsg(nick, message, nick, true);
+                        sendMsg(nick, message, nick);
                     }
                 });
                 client.addListener("notice", function (nick, chan, message, raw){
@@ -268,6 +279,12 @@ function newWindow(){
                         // sendMsg(chan, oldnick + " changed their name to " + newnick + ".", "[System]");
                     }
                 });
+
+                /* modes
+                v - voice
+                o - op
+                b - ban
+                */
                 client.addListener("+mode", function(channel, by, mode, argument, message){
                     if(mode == "o"){
                         sendMsg(channel, by + " ascended " + argument + " to operator.", "[System]");
@@ -333,24 +350,24 @@ function newWindow(){
                 });
 
                 client.addListener("motd", function(motd){
-                    var motd = motd.replaceAll("\n", " <br />");
-                    sendMsg("!sys", motd, "[MOTD]", true);
+                    var motd = motd.replaceAll("\n", "   \n");
+                    sendMsg("!sys", motd, "[MOTD]");
                 });
 
                 client.addListener("whois", function(info){
                     var whois = "";
-                    whois += "WHOIS response for user '" + info.nick + "' (" + info.user + ")<br />";
-                    whois += "Connecting from host " + info.host + " at " + info.server + "<br />";
-                    whois += "Real name is " + info.realname + "<br />";
+                    whois += "WHOIS response for user '" + info.nick + "' (" + info.user + ")  \n";
+                    whois += "Connecting from host " + info.host + " at " + info.server + "  \n";
+                    whois += "Real name is " + info.realname + "  \n";
                     var chans = "";
                     for(channel in info.channels){
                         chans += info.channels[channel] + " ";
                     }
                     whois += "User is currently chatting in the following channels: " + chans;
                     if(info.operator == "is an IRC Operator"){
-                        whois += "<br /><b>This user is an IRC operator.";
+                        whois += "  \n**This user is an IRC operator.**";
                     }
-                    sendMsg(info.nick, whois, "[System]", true);
+                    sendMsg(info.nick, whois, "[System]");
                 });
 
                 client.addListener("invite", function(channel, from, message){
