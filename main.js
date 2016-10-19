@@ -288,8 +288,11 @@ function newWindow(){
                 client.addListener("+mode", function(channel, by, mode, argument, message){
                     if(mode == "o"){
                         sendMsg(channel, by + " ascended " + argument + " to operator.", "[System]");
-                        contents.send("user_op_add", channel, argument);
-                        contents.send("log", message);
+                    }else if(mode == "v"){
+                        sendMsg(channel, by + " gave voice to " + argument + ".", "[System]");
+                    }else if(mode == "b"){
+                        sendMsg(channel, by + " banned " + argument + ".", "[System]");
+                        console.log(message);
                     }else{
                         if(by != undefined){
                             sendMsg(channel, by + " set the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
@@ -300,6 +303,11 @@ function newWindow(){
                     if(mode == "o"){
                         sendMsg(channel, by + " stripped " + argument + " of operator perks.", "[System]");
                         contents.send("user_op_remove", channel, argument);
+                    }else if(mode == "v"){
+                        sendMsg(channel, by + " stripped voice from " + argument + ".", "[System]");
+                    }else if(mode == "b"){
+                        sendMsg(channel, by + " unbanned " + argument + ".", "[System]");
+                        console.log(message);
                     }else{
                         if(by != undefined){
                             sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
@@ -350,7 +358,7 @@ function newWindow(){
                 });
 
                 client.addListener("motd", function(motd){
-                    var motd = motd.replaceAll("\n", "   \n");
+                    var motd = motd.replaceAll("\n", "  \n");
                     sendMsg("!sys", motd, "[MOTD]");
                 });
 

@@ -118,8 +118,8 @@ body {
                 box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
 }
 .chatLog .message p {
-    font-size: 12pt;
-    line-height: 12pt;
+    font-size: 14pt;
+    line-height: 14pt;
     margin: 0;
 }
 .chatLog .message a:link,
@@ -132,7 +132,7 @@ body {
     text-decoration: underline;
 }
 .chatLog .message .meta {
-    font-size: 10pt;
+    font-size: 12pt;
     color: #acacac;
     margin-bottom: 8px;
 }

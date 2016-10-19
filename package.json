@@ -1,5 +1,6 @@
 {
   "name": "Ave",
+  "author": "Damian Heaton <dh64784@gmail.com>",
   "version": "0.1.0",
   "description": "Material design IRC client.",
   "license": "GPL-3.0",
