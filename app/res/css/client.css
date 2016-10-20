@@ -119,7 +119,7 @@ body {
 }
 .chatLog .message p {
     font-size: 14pt;
-    line-height: 14pt;
+    line-height: 16pt;
     margin: 0;
 }
 .chatLog .message a:link,

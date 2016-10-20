@@ -2,3 +2,4 @@
 *.json
 !package.json
 client-backup.js
+Ave-*.zip

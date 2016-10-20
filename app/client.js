@@ -44,7 +44,6 @@ MarkedRenderer.paragraph = function(text){
     return text;
 }
 MarkedRenderer.link = function(href, title, text){
-    console.log(href, title, text);
     if(href.indexOf("http") == -1){
         href = "http://" + href;
     }
@@ -81,7 +80,6 @@ String.prototype.replaceBetween = function(start, end, what) {
 };
 function nameIndexOf(array, value) {
     for(var i = 0; i < array.length; i += 1) {
-        console.log(array[i].name);
         if(array[i].name === value) {
             return i;
         }
@@ -102,7 +100,6 @@ function nameIndexOf(array, value) {
         }
         this.Messages = [];
         this.Users = [];
-        console.log(this);
 
         // create the UI components (tab, contents, etc) like we usually do on newTab() here (save the chatLog as `this.ChatLog`, usrList as `this.UserList`, etc. however)
         tabName = name.toLowerCase();
@@ -175,7 +172,6 @@ function nameIndexOf(array, value) {
                 this.UserSearch.type = "text";
                 this.UserSearch.id = "searchUsers:" + tabName;
                 this.UserSearch.placeholder = "Search users...";
-                console.log("usersearch",this.UserSearch);
                 this.UserSearch.onkeyup = function(event){
                     var filter = this.value.toLowerCase();
                     var channel = this.id.split(":")[1].toLowerCase();
@@ -210,7 +206,6 @@ function nameIndexOf(array, value) {
                 comWhois.id = tabName;
                 comWhois.onclick = function(){
                     var channel = this.id;
-                    console.log(channel);
                     electron.ipcRenderer.send("user_whois", Tabs[channel].Name.toString());
                 };
                 var comWhoisLabel = document.createTextNode("WHOIS User");
@@ -261,7 +256,6 @@ function nameIndexOf(array, value) {
                     var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
                     var chan = $("#inviteChan-" + Chans[array[array.length-1]]).val().toString();
                     var user = Tabs[Chans[array[array.length-1]]].Name;
-                    console.log("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
                     electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
                 };
                 var comInviteFormButtonLabel = document.createTextNode("Invite User");
@@ -347,6 +341,8 @@ function nameIndexOf(array, value) {
         delete Users[name.toLowerCase()].Channels[this.Name.toLowerCase()];
         delete this.Users[this.Users.indexOf(name.toLowerCase())];
         this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id));
+
+        console.log("rem", this);
     }
     Tab.prototype.opUser = function(name){
         document.getElementById(name.toLowerCase() + "-" + this.Id).classList.add("op");
@@ -365,19 +361,12 @@ function nameIndexOf(array, value) {
     }
 }
 {
-    function Message(sender, contents, time, div, old=false, noFix=false){
+    function Message(sender, contents, time, div, old=false){
         this.Author = sender;
         this.Content = contents;
         this.Timestamp = time;
         this.Element = div;
         this.isOld = old;
-        this.isNotFixed = noFix;
-
-        // escape <>s, to prevent users from embedding HTML
-        if(!this.isNotFixed){
-            this.Content = this.Content.replace(/</g, "&lt;");
-            this.Content = this.Content.replace(/>/g, "&gt;");
-        }
 
         if(this.Author == "[System]"){
             // if it's a system message, add the appropriate class.
@@ -415,7 +404,6 @@ function nameIndexOf(array, value) {
             }
         }
 
-        console.log(marked(hypertext, {renderer: MarkedRenderer}));
         hypertext = marked(hypertext, {renderer: MarkedRenderer});
 
         main.innerHTML = hypertext;
@@ -525,11 +513,17 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
         Tabs[channel.toLowerCase()].removeUser(nick);
     });
     electron.ipcRenderer.on("user_quit", function(event, nick, chans, reason){
-        for(channel in Users[nick.toLowerCase()].Channels){
-            channel = Users[nick.toLowerCase()].Channels[channel];
-            channel.removeUser(nick);
-            var d = new Date();
-            newMsg(channel.Name.toString(), nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
+        console.log("QUIT ", nick);
+        for(channel in Tabs){
+            if(icChannel(channel) && channel != "!sys"){
+                channel = Tabs[channel];
+                if(channel.Users.indexOf(nick.toLowerCase()) != -1){
+                    channel.removeUser(nick);
+                    var d = new Date();
+                    newMsg(channel.Name.toString(), nick + " has quit the server (" + reason + ").", "[System]", d.toUTCString());
+                }
+            }
+            console.log(channel)
         }
     });
 }
@@ -570,8 +564,6 @@ function newTab(tabName){
 }
 // add a new message to a tab
 function newMsg(channel, message, sender, time, old=false, noFix=false){
-    console.log(channel);
-    console.log(message);
     channel = channel.toLowerCase();
 
     var tab = document.getElementById("content");
@@ -589,7 +581,6 @@ function newMsg(channel, message, sender, time, old=false, noFix=false){
     var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
     // get the selected channel name
     var curChan = Chans[array[array.length-1]];
-    console.log("curchan", curChan);
     if(curChan == channel){
         // scroll to bottom if isScrolledToBottom, if the channel is selected that the message was posted to
         if(isScrolledToBottom){
