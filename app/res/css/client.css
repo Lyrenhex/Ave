@@ -33,7 +33,7 @@ hr {
     border: 1px solid #aaa;
 }
 
-.toggle {
+.toggle, .toggle-md {
     max-height: 0;
     overflow: hidden;
     border-radius: 2px;
@@ -45,8 +45,11 @@ hr {
                 box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.24);
 }
 .usrList .toggle {
-    margin: 5px;
-    margin-top: 0;
+    box-shadow: none;
+    margin: 0 0 0 0;
+    padding: 0;
+    border-radius: none;
+    border-bottom: 1px solid #eee;
 }
 .shown {
     max-height: 200px;

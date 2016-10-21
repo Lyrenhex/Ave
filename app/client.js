@@ -178,10 +178,13 @@ function nameIndexOf(array, value) {
                     var lis = Tabs[channel].UserList.getElementsByTagName('li');
                     for (var i = 0; i < lis.length; i++) {
                         var name = lis[i].innerHTML;
-                        if (name.toLowerCase().indexOf(filter) == 0)
+                        if (name.toLowerCase().indexOf(filter) == 0){
                             lis[i].style.display = 'block';
-                        else
+                            document.getElementById(name.toLowerCase() + "-" + Tabs[channel].Id + ":coms").style.display = "block";
+                        }else{
                             lis[i].style.display = 'none';
+                            document.getElementById(name.toLowerCase() + "-" + Tabs[channel].Id + ":coms").style.display = "none";
+                        }
                     }
                 }
                 usrList.appendChild(this.UserSearch);
@@ -334,8 +337,63 @@ function nameIndexOf(array, value) {
         var nameText = document.createTextNode(name.toString());
         usrEntry.appendChild(nameText);
         usrEntry.id = name.toLowerCase() + "-" + this.Id;
-        usrEntry.onclick = function(){ newTab(this.innerHTML); };
+        // usrEntry.onclick = function(){ newTab(this.innerHTML); };
+        usrEntry.onclick = function(){ toggle(this.id + ":coms"); };
+
+        var usrComs = document.createElement("div");
+        usrComs.className = "toggle";
+        usrComs.id = name.toLowerCase() + "-" + this.Id + ":coms";
+        var usrComMsg = document.createElement("button");
+        usrComMsg.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        usrComMsg.onclick = function(){
+            console.log(this.parentNode.id.split(":"));
+            console.log(document.getElementById(this.parentNode.id.split(":")[0]));
+            newTab(document.getElementById(this.parentNode.id.split(":")[0]).innerHTML);
+         };
+        usrComMsg.appendChild(document.createTextNode("Open Private Chat"));
+        usrComs.appendChild(usrComMsg);
+
+        var usrOpBtn = document.createElement("button");
+        usrOpBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        this.id = name.toLowerCase() + "-" + this.Id + ":coms-op-btn"
+        usrOpBtn.onclick = function(){
+            toggle(this.id.split(":")[0] + ":coms-op");
+         };
+        usrOpBtn.appendChild(document.createTextNode("Op Commands"));
+
+        var usrOpComs = document.createElement("div");
+        usrOpComs.className = "toggle-md";
+        usrOpComs.id = name.toLowerCase() + "-" + this.Id + ":coms-op";
+        usrOpComs.appendChild(document.createElement("b").appendChild(document.createTextNode("Operator Commands")));
+
+        // op commands
+
+        var usrOpBanBtn = document.createElement("button");
+        usrOpBanBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        this.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kickban-btn"
+        usrOpBtn.onclick = function(){
+            toggle(this.id.split(":")[0] + ":coms-op-kickban");
+         };
+        usrOpBtn.appendChild(document.createTextNode("Kick / Ban"));
+        var usrOpBan = document.createElement("div");
+        usrOpBan.className = "toggle-md";
+        usrOpBan.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kickban";
+        var usrOpKBReason = document.createElement("div");
+        usrOpKBReason.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+        var usrOpKBReasonIn = document.createElement("input");
+        usrOpKBReasonIn.className = "mdl-textfield__input";
+        usrOpKBReasonIn.type = "text";
+        usrOpKBReasonIn.id = name.toLowerCase() + "-" + this.Id + ":-kbreason";
+        var usrOpKBReasonLabel = document.createElement("label");
+        usrOpKBReasonLabel.className = "mdl-textfield__label";
+        usrOpKBReasonLabel.for = name.toLowerCase() + "-" + this.Id + ":-kbreason";
+        usrOpKBReason.appendChild(usrOpKBReasonIn);
+        usrOpKBReason.appendChild(usrOpKBReasonLabel);
+        usrOpBan.appendChild(usrOpKBReason);
+
+        componentHandler.upgradeElements(usrComs);
         this.UserList.appendChild(usrEntry);
+        this.UserList.appendChild(usrComs);
     }
     Tab.prototype.removeUser = function(name){
         delete Users[name.toLowerCase()].Channels[this.Name.toLowerCase()];
@@ -515,7 +573,7 @@ electron.ipcRenderer.on("message_topic", function(event, channel, topic, nick){
     electron.ipcRenderer.on("user_quit", function(event, nick, chans, reason){
         console.log("QUIT ", nick);
         for(channel in Tabs){
-            if(icChannel(channel) && channel != "!sys"){
+            if(isChannel(channel) && channel != "!sys"){
                 channel = Tabs[channel];
                 if(channel.Users.indexOf(nick.toLowerCase()) != -1){
                     channel.removeUser(nick);
