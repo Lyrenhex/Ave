@@ -41,7 +41,7 @@ body {
 }
 img.large {
     cursor: zoom-in;
-    min-width: 480px;
+    min-width: 300px;
     max-width: 50%;
 }
 img.zoom {
