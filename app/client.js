@@ -115,6 +115,7 @@ function nameIndexOf(array, value) {
         this.Badge.className = "mdl-badge";
         this.Badge.setAttribute("data-badge", "0");
         this.Badge.innerHTML = tabName;
+        this.Badge.title = "Unread messages";
         // add the badge to the button
         this.Button.appendChild(this.Badge);
 
