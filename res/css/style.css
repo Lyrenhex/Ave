@@ -2,31 +2,63 @@ body {
     background-color: #f9f9f9;
 }
 
+.mdl-layout__header-row {
+    position: relative;
+}
+.mdl-layout__header-row .mdl-navigation {
+    margin-right: 10px;
+}
+
 .download {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    transform: translate(0, 50%);
 }
 
 .card {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10px;
+    margin-top: 16px;
+    margin-bottom: 16px;
     padding: 10px;
     width: 90%;
     background-color: #fff;
     border-radius: 2px;
     text-align: left;
-    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
-                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
+    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
 }
 .card img {
+    max-width: 50%;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    -webkit-transition: 1s linear;
+    -moz-transition: 1s linear;
+    transition: 1s linear;
 }
+img.zoom {
+    max-width: 100%;
+    -webkit-transition: 1s linear;
+    -moz-transition: 1s linear;
+    transition: 1s linear;
+}
+img.large {
+    cursor: zoom-in;
+}
+
+.main {
+    text-align: center;
+}
+.main a {
+    margin-top: 8px;
+}
+
 .card h1 {
     font-size: 48px;
-    text-align: left;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #09f;
 }

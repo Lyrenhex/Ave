@@ -25,7 +25,36 @@
         <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.blue-light_blue.min.css" />
         <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
+        <script src="res/js/script.js"></script>
+
         <link href="res/css/style.css" rel="stylesheet" type="text/css"/>
+
+        <script>
+        /*
+        @licstart  The following is the entire license notice for the
+        JavaScript code in this page.
+
+        Copyright (C) 2016  Damian Heaton
+
+        The JavaScript code in this page is free software: you can
+        redistribute it and/or modify it under the terms of the GNU
+        General Public License (GNU GPL) as published by the Free Software
+        Foundation, either version 3 of the License, or (at your option)
+        any later version.  The code is distributed WITHOUT ANY WARRANTY;
+        without even the implied warranty of MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+        As additional permission under GNU GPL version 3 section 7, you
+        may distribute non-source (e.g., minimized or compacted) forms of
+        that code without the copy of the GNU GPL normally required by
+        section 4, provided you include this license notice and a URL
+        through which recipients can access the Corresponding Source.
+
+
+        @licend  The above is the entire license notice
+        for the JavaScript code in this page.
+        */
+        </script>
     </head>
 
     <body>
@@ -42,19 +71,21 @@
                 <a class="mdl-navigation__link" href="http://github.com/Scratso/Ave/releases" target="_blank">Releases</a>
                 <a class="mdl-navigation__link" href="http://github.com/Scratso/Ave/wiki" target="_blank">Wiki</a>
               </nav>
+              <a href="http://ave-update.herokuapp.com" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored download" title="Download latest release."><i class="material-icons">file_download</i></a>
             </div>
           </header>
           <main class="mdl-layout__content">
             <div class="page-content">
-                <a href="http://ave-update.herokuapp.com">
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored download" title="Download latest release.">
-                        <i class="material-icons">file_download</i>
-                    </button>
-                </a>
+                <div class="card main">
+                    <img src="res/img/logo.png" alt="Ave IRC" />
+                    <h1>Modern IRC for a Modern World</h1>
+                    <img src="https://raw.githubusercontent.com/Scratso/Ave/master/screenshot.png" alt="Ave Screenshot" id="screen1" onclick="zoom('screen1')" class="large" />
+                    <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" href="http://ave-update.herokuapp.com">Download Ave (Latest) <i class="material-icons">file_download</i></a>
+                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="http://github.com/Scratso/Ave/wiki/Getting-Started">Installation Instructions <i class="material-icons">help_outline</i></a>
+                </div>
 
                 <div class="card">
-                    <img src="res/img/logo.png" alt="Ave IRC" />
-                    <h1>Material Design IRC that Respects Your Freedom: Ave</h1>
+                    <p>JavaScript is used on this page to enhance your experience. If you've disabled JavaScript, we recommend enabling it. <a href="js.html" rel="jslicense">All code is free.</a> Ave IRC is a community project led and created by <a href="http://damianheaton.com">Damian Heaton</a>.</p>
                 </div>
             </div>
           </main>
