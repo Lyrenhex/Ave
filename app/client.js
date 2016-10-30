@@ -432,7 +432,7 @@ function nameIndexOf(array, value) {
             // if it's a system message, add the appropriate class.
             this.Element.classList.add("sysmsg");
         }
-        if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.indexOf(UserNick) >= 0){
+        if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.toLowerCase().indexOf(UserNick.toLowerCase()) >= 0){
             // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
             this.Element.classList.add("important");
         }else if(this.Author == "[ERROR]"){

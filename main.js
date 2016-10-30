@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if(require('electron-squirrel-startup')) return;
+
 const {app, BrowserWindow, Menu, ipcMain, shell} = require("electron");
 const irc = require("irc");
 const fs = require("fs");
