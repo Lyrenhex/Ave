@@ -50,12 +50,14 @@ hr {
     padding: 0;
     border-radius: none;
     border-bottom: 1px solid #eee;
+    display: none;
 }
 .shown {
     max-height: 200px;
     overflow: auto;
     -webkit-transition: max-height 0.5s ease-out;
     transition: max-height 0.5s ease-out;
+    display: block !important;
 }
 .toggle h2 {
     font-size: 14px;
