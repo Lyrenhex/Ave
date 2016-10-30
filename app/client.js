@@ -400,6 +400,7 @@ function nameIndexOf(array, value) {
         delete Users[name.toLowerCase()].Channels[this.Name.toLowerCase()];
         delete this.Users[this.Users.indexOf(name.toLowerCase())];
         this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id));
+        this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id + ":coms"));
 
         console.log("rem", this);
     }

@@ -123,6 +123,7 @@ function newWindow(){
 
                     // user requested a reconnect attempt...
                     ipcMain.on("server_reconnect", function(event){
+                        client.disconnect("Reconnecting");
                         sendMsg("!sys", "Reconnecting...", "[SYSTEM]");
                         client.connect();
                     });

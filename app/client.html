@@ -81,8 +81,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Send Message</button>
                 </form>
                 <hr />
-                <form id="rc">
-                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" style="width: 100%" type="submit">Reconnect</button>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('rc')">Reconnect</button>
+                <form id="rc" class="toggle">
+                    <p>Please note that if you're currently connected to a server, you will experience a slight interruption in chat whilst we reconnect you to the server;
+                        it's recommended to use this function when your connection to the server drops (or if it seems that you've lost connection).<br />
+                    If you're sure that you want to do this, please confirm it by clicking the button below.</p>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Reconnect</button>
                 </form>
                 <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('dc')">Disconnect</button>
                 <form id="dc" class="toggle">
