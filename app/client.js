@@ -234,7 +234,7 @@ function nameIndexOf(array, value) {
                 // create invite form
                 var comInviteForm = document.createElement("div");
                 comInviteForm.id = "invite-" + tabName;
-                comInviteForm.className = "toggle";
+                comInviteForm.className = "toggle-md";
                 var comInviteFormDiv = document.createElement("div");
                 comInviteFormDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
                 var comInviteFormInput = document.createElement("input");
@@ -348,13 +348,13 @@ function nameIndexOf(array, value) {
             console.log(this.parentNode.id.split(":"));
             console.log(document.getElementById(this.parentNode.id.split(":")[0]));
             newTab(document.getElementById(this.parentNode.id.split(":")[0]).innerHTML);
-         };
+        };
         usrComMsg.appendChild(document.createTextNode("Open Private Chat"));
         usrComs.appendChild(usrComMsg);
 
         var usrOpBtn = document.createElement("button");
         usrOpBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
-        this.id = name.toLowerCase() + "-" + this.Id + ":coms-op-btn"
+        usrOpBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-btn"
         usrOpBtn.onclick = function(){
             toggle(this.id.split(":")[0] + ":coms-op");
          };
@@ -366,29 +366,46 @@ function nameIndexOf(array, value) {
         usrOpComs.appendChild(document.createElement("b").appendChild(document.createTextNode("Operator Commands")));
 
         // op commands
+        var usrOpAscBtn = document.createElement("button");
+        usrOpAscBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        usrOpAscBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-asc"
+        usrOpAscBtn.onclick = function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Chans[array[array.length-1]];
+            electron.ipcRenderer.send("mode", this.id.split("-")[0], "+o", channel);
+        };
+        usrOpAscBtn.appendChild(document.createTextNode("Give Op Status"));
+        var usrOpDescBtn = document.createElement("button");
+        usrOpDescBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        usrOpDescBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-desc"
+        usrOpDescBtn.onclick = function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Chans[array[array.length-1]];
+            electron.ipcRenderer.send("mode", this.id.split("-")[0], "-o", channel);
+        };
+        usrOpDescBtn.appendChild(document.createTextNode("Strip Op Status"));
 
         var usrOpBanBtn = document.createElement("button");
         usrOpBanBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
-        this.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kickban-btn"
-        usrOpBtn.onclick = function(){
-            toggle(this.id.split(":")[0] + ":coms-op-kickban");
-         };
-        usrOpBtn.appendChild(document.createTextNode("Kick / Ban"));
-        var usrOpBan = document.createElement("div");
-        usrOpBan.className = "toggle-md";
-        usrOpBan.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kickban";
-        var usrOpKBReason = document.createElement("div");
-        usrOpKBReason.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
-        var usrOpKBReasonIn = document.createElement("input");
-        usrOpKBReasonIn.className = "mdl-textfield__input";
-        usrOpKBReasonIn.type = "text";
-        usrOpKBReasonIn.id = name.toLowerCase() + "-" + this.Id + ":-kbreason";
-        var usrOpKBReasonLabel = document.createElement("label");
-        usrOpKBReasonLabel.className = "mdl-textfield__label";
-        usrOpKBReasonLabel.for = name.toLowerCase() + "-" + this.Id + ":-kbreason";
-        usrOpKBReason.appendChild(usrOpKBReasonIn);
-        usrOpKBReason.appendChild(usrOpKBReasonLabel);
-        usrOpBan.appendChild(usrOpKBReason);
+        usrOpBanBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-ban"
+        usrOpBanBtn.onclick = function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Chans[array[array.length-1]];
+            electron.ipcRenderer.send("mode", this.id.split("-")[0], "+b", channel);
+        };
+        usrOpBanBtn.appendChild(document.createTextNode("Ban User"));
+
+        usrOpComs.appendChild(usrOpAscBtn);
+        usrOpComs.appendChild(usrOpDescBtn);
+        usrOpComs.appendChild(usrOpBanBtn);
+        usrComs.appendChild(usrOpBtn);
+        usrComs.appendChild(usrOpComs);
 
         componentHandler.upgradeElements(usrComs);
         this.UserList.appendChild(usrEntry);

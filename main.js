@@ -205,6 +205,10 @@ function newWindow(){
                             sendMsg(channel, message, client.nick);
                         }
                     });
+
+                    ipcMain.on("mode", function(event, user, mode, channel){
+                        client.send("MODE", channel, mode, user);
+                    });
                 }
 
                 client.addListener("registered", function(message){
