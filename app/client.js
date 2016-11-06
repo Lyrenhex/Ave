@@ -181,10 +181,8 @@ function nameIndexOf(array, value) {
                         var name = lis[i].innerHTML;
                         if (name.toLowerCase().indexOf(filter) == 0){
                             lis[i].style.display = 'block';
-                            document.getElementById(name.toLowerCase() + "-" + Tabs[channel].Id + ":coms").style.display = "block";
                         }else{
                             lis[i].style.display = 'none';
-                            document.getElementById(name.toLowerCase() + "-" + Tabs[channel].Id + ":coms").style.display = "none";
                         }
                     }
                 }
