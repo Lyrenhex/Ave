@@ -198,6 +198,8 @@ function newWindow(){
                         if(message.charAt(0) == ":"){
                             message = message.substring(1);
                             eval(message);
+                        }else if(message.charAt(0) == "/"){
+                            sendMsg(channel, "Your message started with a `/`, and therefore was **not** sent to the server. If you were trying to execute a command, please be aware that this client is not command-centric. Why not take a look at the welcome page of Ave, and check out the supported commands in the command list (click the hamburger icon in the top left).", "[ERROR]");
                         }else if(channel != "!sys"){
                             client.say(channel, message);
                             sendMsg(channel, message, client.nick);
