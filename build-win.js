@@ -1,10 +1,10 @@
 var electronInstaller = require('electron-winstaller');
 
 resultPromise = electronInstaller.createWindowsInstaller({
-    appDirectory: './Ave-win32-x64/',
-    outputDirectory: '/rel',
+    appDirectory: './rel/Ave-win32-x64/',
+    outputDirectory: './rel/install',
     iconUrl: 'http://www.ave-irc.pw/res/img/icon.ico',
-    setupIcon: './app/res/img/icon.ico',
+    setupIcon: 'icon.ico',
     setupExe: 'Ave-Install.exe'
   });
 

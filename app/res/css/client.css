@@ -33,6 +33,10 @@ hr {
     border: 1px solid #aaa;
 }
 
+table {
+    max-width: 100% !important;
+}
+
 .toggle, .toggle-md {
     max-height: 0;
     overflow: hidden;
