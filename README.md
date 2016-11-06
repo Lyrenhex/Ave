@@ -1,4 +1,7 @@
 # Ave
+
+[![Join the chat at https://gitter.im/Ave-IRC/Lobby](https://badges.gitter.im/Ave-IRC/Lobby.svg)](https://gitter.im/Ave-IRC/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A material design IRC client written in HTML, CSS, and JavaScript, using electron/electron.
 
 ## Official IRC Channel
