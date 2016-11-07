@@ -47,7 +47,9 @@ MarkedRenderer.link = function(href, title, text){
     if(href.indexOf("http") == -1){
         href = "http://" + href;
     }
-    return "<a target='_blank' href='" + href + "'>" + text + "</a>";
+    // maybe change this so that it would return `exam.ple` rather than `http://exam.ple` to the user.
+    // solely to make code that we've (possibly incorrectly) identified as a link readable still.
+    return "<a target='_blank' href='" + href + "'>" + title + "</a>";
 }
 
 var MarkedOptions = {

@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/Ave-IRC/Lobby](https://badges.gitter.im/Ave-IRC/Lobby.svg)](https://gitter.im/Ave-IRC/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Check Dependencies Status](https://david-dm.org/Scratso/Ave/status.svg)](https://david-dm.org/Scratso/Ave)
 
-A material design IRC client written in HTML, CSS, and JavaScript, using electron/electron.
+A material design IRC client written in HTML, CSS, and JavaScript, using [Electron](http://electron.atom.io).
 
 ## Official IRC Channel
 Ave has an official IRC channel for discussion, operating at `#ave-irc` on `irc.freenode.net`.  Please feel free to join at any point to discuss various topics (normally concerning Ave...).
