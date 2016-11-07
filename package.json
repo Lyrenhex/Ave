@@ -10,7 +10,7 @@
     "start": "electron ."
   },
   "devDependencies": {
-    "electron-prebuilt": "^1.4.1",
+    "electron-prebuilt": "1.4.5",
     "electron-winstaller": "^2.3.4"
   },
   "dependencies": {
