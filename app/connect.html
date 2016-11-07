@@ -67,19 +67,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     					<label class="mdl-textfield__label" for="realname">Real Name</label>
     				</div><br />
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    					<input class="mdl-textfield__input" type="password" id="srvPass" />
+    					<label class="mdl-textfield__label" for="srvPass">Server Password</label>
+    				</div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     					<input class="mdl-textfield__input" type="text" id="encoding" value="UTF-8" />
     					<label class="mdl-textfield__label" for="encoding">Text Encoding</label>
-    				</div>
+    				</div><br />
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="retryCount" value="0" required />
     					<label class="mdl-textfield__label" for="retryCount">No. of Reconnect Attempts</label>
                         <span class="mdl-textfield__error">This field must be a numerical value.</span>
-    				</div><br />
+    				</div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="retryDelay" value="2000" required />
     					<label class="mdl-textfield__label" for="retryDelay">Delay to Reconnect (milliseconds)</label>
                         <span class="mdl-textfield__error">This field must be a numerical value.</span>
     				</div>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sasl">
+                        <input type="checkbox" id="sasl" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Secure Connection (SASL)</span>
+                    </label>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="badCert">
+                        <input type="checkbox" id="badCert" class="mdl-checkbox__input">
+                        <span class="mdl-checkbox__label">Accept Bad Certificates (self-signed / expired)</span>
+                    </label>
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="clearColours">
                         <input type="checkbox" id="clearColours" class="mdl-checkbox__input" checked>
                         <span class="mdl-checkbox__label">Clear Message Styling</span>

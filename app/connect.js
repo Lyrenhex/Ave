@@ -65,7 +65,12 @@ $(document).ready(function(){
         var settings = {
             server: {
                 address: $("#server").val(),
-                port: $("#port").val()
+                port: $("#port").val(),
+                password: $("#srvPass").val()
+            },
+            security: {
+                secure: $("#sasl").is(":checked"),
+                badCertsAllowed: $("#badCert").is(":checked")
             },
             user: {
                 nickname: $("#nick").val(),
@@ -104,6 +109,7 @@ function popFields(json){
     // parse the JSON stuff into the form fields.
     $("#server").val(json.server.address);
     $("#port").val(json.server.port);
+    $("#srvPass").val(json.server.password);
     $("#nick").val(json.user.nickname);
     $("#username").val(json.user.username);
     $("#realname").val(json.user.realname);
@@ -111,6 +117,8 @@ function popFields(json){
     $("#encoding").val(json.encoding);
     $("#retryCount").val(json.retry.count);
     $("#retryDelay").val(json.retry.delay);
+    $("#sasl").prop("checked", json.security.secure);
+    $("#badCert").prop("checked", json.security.badCertsAllowed);
     $("#clearColours").prop("checked", json.messages.stripForm);
     $("#logMessages").prop("checked", json.messages.log);
     $("#floodProtect").prop("checked", json.floodProtect);

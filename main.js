@@ -71,6 +71,7 @@ function newWindow(){
                     // try create IRC client object
                     client = new irc.Client(connDat.server.address, connDat.user.nickname, {
                         port: connDat.server.port,
+                        password: connDat.server.password,
                         showErrors: true,
                         autoConnect: false,
                         encoding: connDat.encoding,
@@ -79,7 +80,11 @@ function newWindow(){
                         retryCount: connDat.retry.count,
                         retryDelay: connDat.retry.delay,
                         stripColours: connDat.messages.stripForm,
-                        floodProtection: connDat.floodProtect
+                        floodProtection: connDat.floodProtect,
+                        sasl: connDat.security.secure,
+                        secure: connDat.security.secure,
+                        selfSigned: connDat.security.badCertsAllowed,
+                        certExpired: connDat.security.badCertsAllowed
                      });
                 }catch(err){
                     // tell the user that something went wrong
