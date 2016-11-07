@@ -260,6 +260,10 @@ function newWindow(){
                         sendMsg(nick, message, nick);
                     }
                 });
+                client.addListener("ctcp-version", function (from, to, raw){
+                    sendMsg("!sys", from + " has sent you a CTCP VERSION request.", "[SYSTEM]")
+                    client.ctcp(from, "VERSION", "Ave IRC Client version " + app.getVersion() + " http://ave-irc.pw");
+                });
 
                 client.addListener("topic", function (chan, topic, nick, message){
                     contents.send("message_topic", chan, topic, nick);
