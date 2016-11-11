@@ -189,12 +189,59 @@ function nameIndexOf(array, value) {
                     }
                 }
                 usrList.appendChild(this.UserSearch);
-                // register search bar with google mdl
-                componentHandler.upgradeElements(usrList);
 
                 this.UserList = document.createElement("ul");
                 this.UserList.id = "usrList-" + tabName;
                 usrList.appendChild(this.UserList);
+
+                var chOpComs = document.createElement("div");
+                chOpComs.className = "toggle-md shown";
+                chOpComs.appendChild(document.createElement("b").appendChild(document.createTextNode("Operator Commands")));
+                var chTopicToggle = document.createElement("button");
+                chTopicToggle.id = this.Name;
+                chTopicToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                chTopicToggle.onclick = function(){
+                    toggle("settopic-" + this.id);
+                }
+                chTopicToggle.appendChild(document.createTextNode("Change Topic"));
+                chOpComs.appendChild(chTopicToggle);
+
+                var chTopicForm = document.createElement("form");
+                chTopicForm.className = "toggle-md";
+                chTopicForm.id = "settopic-" + this.Name;
+                var chTopicFormDiv = document.createElement("div");
+                chTopicFormDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+                var chTopicFormInput = document.createElement("input");
+                chTopicFormInput.className = "mdl-textfield__input";
+                chTopicFormInput.type = "text";
+                chTopicFormInput.id = "topictext-" + this.Name;
+                chTopicFormDiv.appendChild(chTopicFormInput);
+                var chTopicFormLabel = document.createElement("label");
+                chTopicFormLabel.className = "mdl-textfield__label";
+                chTopicFormLabel.for = "topictext-" + this.Name;
+                var chTopicFormLabelText = document.createTextNode("Channel Topic");
+                chTopicFormLabel.appendChild(chTopicFormLabelText);
+                chTopicFormDiv.appendChild(chTopicFormLabel);
+                chTopicForm.appendChild(chTopicFormDiv);
+                var chTopicFormButton = document.createElement("button");
+                chTopicFormButton.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+                chTopicFormButton.type = "button";
+                chTopicFormButton.id = this.Name;
+                chTopicFormButton.onclick = function(){
+                    // break up the active tab's id, which is of form scroll-tab-[channel]
+                    var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+                    var channel = Chans[array[array.length-1]];
+                    electron.ipcRenderer.send("topic_set", channel, document.getElementById("topictext-" + this.id).innerHTML);
+                };
+                var chTopicFormButtonLabel = document.createTextNode("Set Chan Topic");
+                chTopicFormButton.appendChild(chTopicFormButtonLabel);
+                chTopicForm.appendChild(chTopicFormButton);
+                chOpComs.appendChild(chTopicForm);
+                usrList.appendChild(chOpComs);
+
+                // register search bar with google mdl
+                componentHandler.upgradeElements(usrList);
+
                 flexDiv.appendChild(usrList);
             }else{
                 // private chats can use the user list space for an easy command system
@@ -218,18 +265,11 @@ function nameIndexOf(array, value) {
                 // create invite toggle button
                 var comInviteToggle = document.createElement("button");
                 comInviteToggle.id = tabName;
-                comInviteToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect"
+                comInviteToggle.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
                 var comInviteToggleLabel = document.createTextNode("Invite to Channel");
                 comInviteToggle.onclick = function(){
                     var id = this.id;
-                    var element = document.getElementById("invite-" + id);
-                    if(element.classList.contains("shown")){
-                        // if shown, hide it
-                        element.classList.remove("shown");
-                    }else{
-                        // otherwise, show it
-                        element.classList.add("shown");
-                    }
+                    toggle("invite-" + id);
                 };
                 comInviteToggle.appendChild(comInviteToggleLabel);
                 this.CommandList.appendChild(comInviteToggle);

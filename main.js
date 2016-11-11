@@ -130,6 +130,10 @@ function newWindow(){
                         client.send(command);
                     });
 
+                    ipcMain.on("topic_set", function(event, channel, newtopic){
+                        client.send("TOPIC", channel, newtopic);
+                    });
+
                     // user requested a reconnect attempt...
                     ipcMain.on("server_reconnect", function(event){
                         client.disconnect("Reconnecting");
