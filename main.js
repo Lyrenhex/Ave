@@ -24,6 +24,8 @@ const fs = require("fs");
 
 // prevent JS garbage collector killing the window.
 let win;
+let opWin;
+let opWinC;
 let ext;
 let extCon;
 let contents;
@@ -152,7 +154,7 @@ function newWindow(){
                         });
 
                         ext.on("closed", function(){
-                            about = null;
+                            ext = null;
                         });
                     });
                     ipcMain.on("client_help", function(event){
@@ -167,7 +169,23 @@ function newWindow(){
                         });
 
                         ext.on("closed", function(){
-                            about = null;
+                            ext = null;
+                        });
+                    });
+                    ipcMain.on("client_ops_suite", function(event){
+                        opWin = new BrowserWindow({width:900, height:600, icon: ico});
+                        opWinC = opWin.webContents;
+
+                        opWin.loadURL("file://" + __dirname + "/app/oper.html");
+
+                        opWinC.on('new-window', function(e, url) {
+                            e.preventDefault();
+                            shell.openExternal(url);
+                        });
+
+                        opWin.on("closed", function(){
+                            opWin = null;
+                            opWinC = null;
                         });
                     });
 

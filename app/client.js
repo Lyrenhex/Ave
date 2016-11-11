@@ -702,6 +702,9 @@ function sendMsg(recipient, message){
     function help(){
         electron.ipcRenderer.send("client_help");
     }
+    function ircops(){
+        electron.ipcRenderer.send("client_ops_suite");
+    }
 
     // add handlers for form submits
     $(document).ready(function(){

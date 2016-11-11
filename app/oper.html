@@ -1,0 +1,97 @@
+<!--
+Ave Material Design Modern IRC Client
+Copyright (C) 2016  Damian Heaton
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Ave IRC Operator Suite</title>
+        <link href="res/css/oper.css" rel="stylesheet" />
+        <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css" />
+        <script src="../node_modules/material-design-lite/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <script>
+        // we have to import jQuery weirdly because of Electron
+        window.$ = window.jQuery = require(__dirname + '/res/js/jquery.min.js');
+        </script>
+        <script src="oper.js"></script>
+    </head>
+
+    <body id="body">
+        <dialog class="mdl-dialog">
+            <h4 class="mdl-dialog__title">Register with OPER</h4>
+            <div class="mdl-dialog__content">
+                <p>
+                    The commands on this page require IRC Server Operator access to use. Prior to using the
+                    commands available in this Op Suite, please fill in the following form to authenticate with
+                    the OPER command.
+                </p>
+            </div>
+            <div class="mdl-dialog__actions">
+                <!-- <button type="button" class="mdl-button">Agree</button>
+                <button type="button" class="mdl-button close">Disagree</button> -->
+                <form id="operReg">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="operUid" required />
+                      <label class="mdl-textfield__label" for="channel">Operator uID</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="password" id="operPass" required />
+                      <label class="mdl-textfield__label" for="channel">Operator Password</label>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect" type="submit">Authenticate</button>
+                </form>
+            </div>
+        </dialog>
+        <!-- Simple header with scrollable tabs. -->
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header" id="topbar">
+                <div class="mdl-layout__header-row">
+                    <!-- Title -->
+                    <span class="mdl-layout-title" id="server">Ave Operator Suite</span>
+                </div>
+            </header>
+            <main class="mdl-layout__content" id="content">
+                <!-- use an MDL grid to neatly arrange each operator function -->
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <div class="mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Title text</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <div class="mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Title text</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <div class="mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Title text</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
