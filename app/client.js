@@ -443,6 +443,18 @@ function nameIndexOf(array, value) {
         };
         usrOpBanBtn.appendChild(document.createTextNode("Ban User"));
 
+        var usrOpKickBtn = document.createElement("button");
+        usrOpKickBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        usrOpKickBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kick"
+        usrOpKickBtn.onclick = function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Chans[array[array.length-1]];
+            electron.ipcRenderer.send("kick", this.id.split("-")[0], channel);
+        };
+        usrOpKickBtn.appendChild(document.createTextNode("Kick User"));
+
         usrOpComs.appendChild(usrOpAscBtn);
         usrOpComs.appendChild(usrOpDescBtn);
         usrOpComs.appendChild(usrOpBanBtn);

@@ -54,7 +54,8 @@ function newWindow(){
     win = new BrowserWindow({width: 900, height: 700, icon: ico});
     contents = win.webContents;
 
-    win.loadURL("file://" + __dirname + "/app/connect.html");
+    // win.loadURL("file://" + __dirname + "/app/connect.html");
+    win.loadURL("file://" + __dirname + "/app/dash.html");
 
     contents.on("did-finish-load", function(){
         // handle when we get the connection data
