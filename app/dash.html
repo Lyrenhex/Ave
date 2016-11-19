@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <link href="res/css/dash.css" rel="stylesheet" />
+        <script src="dash.js"></script>
     </head>
 
     <body>
@@ -40,51 +41,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <main class="mdl-layout__content">
                 <div class="page-content">
                     <h2 class="mdl-layout-title">Your IRC Servers</h2>
-                    <div class="mdl-grid">
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-                            <div class="sCard" id="serv1">
-                                <h2>Scratso</h2>
-                                <h3>irc.freenode.net (6667)</h3>
-                                <p>#fsf, #fsf-members, #libreplanet, #ave-irc</p>
-
-                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv1-edit"><i class="material-icons">edit</i></button>
-                                <div class="mdl-tooltip" for="serv1-edit">
-                                    Edit Server
+                    <div class="mdl-grid" id="serverGrid">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop" id="nsCell">
+                            <a href="connect.html">
+                                <div class="sCard aCard" title="New Server" id="newServ">
+                                    <span class="action">
+                                        <i class="material-icons">add_circle_outline</i>
+                                    </span>
                                 </div>
-
-                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv1-del"><i class="material-icons">delete</i></button>
-                                <div class="mdl-tooltip" for="serv1-del">
-                                    Delete Server
+                                <div class="mdl-tooltip" for="newServ">
+                                    New Server
                                 </div>
-                            </div>
-                        </div>
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-                            <div class="sCard" id="serv2">
-                                <h2>Scratso</h2>
-                                <h3>irc.editingarchive.com (6667)</h3>
-                                <p>#8bit, #8bit-gamewatch, #8bit-gamewatch-serv4</p>
-
-                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv2-edit"><i class="material-icons">edit</i></button>
-                                <div class="mdl-tooltip" for="serv2-edit">
-                                    Edit Server
-                                </div>
-
-                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv2-del"><i class="material-icons">delete</i></button>
-                                <div class="mdl-tooltip" for="serv2-del">
-                                    Delete Server
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-                            <div class="sCard aCard" title="New Server" id="newServ">
-                                <span class="action">
-                                    <i class="material-icons">add_circle_outline</i>
-                                </span>
-                            </div>
-                            <div class="mdl-tooltip" for="newServ">
-                                New Server
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
