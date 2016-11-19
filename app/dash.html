@@ -32,31 +32,58 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
             <header class="mdl-layout__header">
                 <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">Your IRC Servers</span>
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored fab"><i class="material-icons">add</i></a>
+                    <img src="res/img/icon.ico" alt="Ave" />
+                    <span class="mdl-layout-title">Get Started</span>
                 </div>
             </header>
 
             <main class="mdl-layout__content">
                 <div class="page-content">
-                    <img src="res/img/logo.png" alt="Ave" />
+                    <h2 class="mdl-layout-title">Your IRC Servers</h2>
                     <div class="mdl-grid">
-                        <div class="mdl-cell mdl-cell--3-col">
-                            <div class="sCard">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                            <div class="sCard" id="serv1">
                                 <h2>Scratso</h2>
-                                <h3>irc.freenode.net:6667</h3>
+                                <h3>irc.freenode.net (6667)</h3>
                                 <p>#fsf, #fsf-members, #libreplanet, #ave-irc</p>
 
-                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Edit Server</button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv1-edit"><i class="material-icons">edit</i></button>
+                                <div class="mdl-tooltip" for="serv1-edit">
+                                    Edit Server
+                                </div>
+
+                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv1-del"><i class="material-icons">delete</i></button>
+                                <div class="mdl-tooltip" for="serv1-del">
+                                    Delete Server
+                                </div>
                             </div>
                         </div>
-                        <div class="mdl-cell mdl-cell--3-col">
-                            <div class="sCard">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                            <div class="sCard" id="serv2">
                                 <h2>Scratso</h2>
-                                <h3>irc.editingarchive.com:6667</h3>
+                                <h3>irc.editingarchive.com (6667)</h3>
                                 <p>#8bit, #8bit-gamewatch, #8bit-gamewatch-serv4</p>
 
-                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Edit Server</button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv2-edit"><i class="material-icons">edit</i></button>
+                                <div class="mdl-tooltip" for="serv2-edit">
+                                    Edit Server
+                                </div>
+
+                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="serv2-del"><i class="material-icons">delete</i></button>
+                                <div class="mdl-tooltip" for="serv2-del">
+                                    Delete Server
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                            <div class="sCard aCard" title="New Server" id="newServ">
+                                <span class="action">
+                                    <i class="material-icons">add_circle_outline</i>
+                                </span>
+                            </div>
+                            <div class="mdl-tooltip" for="newServ">
+                                New Server
                             </div>
                         </div>
                     </div>
