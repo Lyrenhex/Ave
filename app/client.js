@@ -395,7 +395,7 @@ function nameIndexOf(array, value) {
         usrComMsg.appendChild(document.createTextNode("Open Private Chat"));
         usrComs.appendChild(usrComMsg);
 
-        var usrOpBtn = document.createElement("button");
+        /* var usrOpBtn = document.createElement("button");
         usrOpBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
         usrOpBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-btn"
         usrOpBtn.onclick = function(){
@@ -459,8 +459,8 @@ function nameIndexOf(array, value) {
         usrOpComs.appendChild(usrOpAscBtn);
         usrOpComs.appendChild(usrOpDescBtn);
         usrOpComs.appendChild(usrOpBanBtn);
-        usrComs.appendChild(usrOpBtn);
-        usrComs.appendChild(usrOpComs);
+        // usrComs.appendChild(usrOpBtn);
+        usrComs.appendChild(usrOpComs); */
 
         componentHandler.upgradeElements(usrComs);
         this.UserList.appendChild(usrEntry);
@@ -730,6 +730,11 @@ function newMsg(channel, message, sender, time, old=false, noFix=false){
 function sendMsg(recipient, message){
     electron.ipcRenderer.send("message_send", recipient, message);
 }
+
+electron.ipcRenderer.on("loading_end", function(event){
+    document.getElementById("loading-m").classList.remove("active");
+    document.getElementById("loading").classList.remove("is-active");
+});
 
 /*
     USER INTERFACE ELEMENT HANDLERS

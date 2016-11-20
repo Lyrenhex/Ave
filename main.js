@@ -91,7 +91,7 @@ function newWindow(){
             }catch(err){
                 // tell the user that something went wrong
                 contents.send("log", err);
-                sendMsg("!sys", 'error: ' + err.toString(), "[System]");
+                sendMsg("!sys", 'error: ' + err.toString(), "[ERROR]");
             }
 
             /*
@@ -241,6 +241,7 @@ function newWindow(){
             client.addListener("registered", function(message){
                 contents.send("set_user", client.nick);
                 sendMsg("!sys", "Connected!", "[System]");
+                contents.send("loading_end");
                 // if the user set a NickServ password
                 if(connDat.user.password != ""){
                     // identify with NickServ
