@@ -68,6 +68,9 @@ $(document).ready(function(){
             document.createTextNode("edit")
         );
         editBtn.appendChild(editBtnIco);
+        editBtn.onclick = function(){
+            window.location = `connect.html?serv=${this.id.split("-")[0]}`;
+        }
 
         var delBtn = document.createElement("button");
         delBtn.className = "mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect";
@@ -78,6 +81,15 @@ $(document).ready(function(){
             document.createTextNode("delete")
         );
         delBtn.appendChild(delBtnIco);
+        delBtn.onclick = function(){
+            fs.unlink(`servers/${this.id.split("-")[0]}.json`, function(err){
+                if(err){
+                    console.log("Couldn't delete server", err);
+                }
+            });
+            this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+            console.log(this.parentNode.parentNode.parentNode);
+        }
 
         card.appendChild(editBtn);
         card.appendChild(delBtn);

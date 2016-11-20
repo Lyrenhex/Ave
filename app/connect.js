@@ -1,6 +1,10 @@
 const electron = require("electron");
 const fs = require("fs");
 
+function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+}
+
 // ensure server folder already exists
 fs.mkdir("servers", 0777, function(err){
         if(err){
@@ -60,6 +64,14 @@ $(document).ready(function(){
         serverList.appendChild(serverEntry);
     });
 
+    var serverId = getURLParameter("serv");
+    console.log(serverId);
+    if(serverId){
+        popFields(Servers[serverId]);
+    }else{
+        serverId = Servers.length;
+    }
+
     $('#connect').submit(function(){
         // set up the settings array
         var settings = {
@@ -90,17 +102,18 @@ $(document).ready(function(){
             floodProtect: $("#floodProtect").is(":checked"),
             channels: Channels
         };
-        electron.ipcRenderer.send("server_connect", settings);
+        // electron.ipcRenderer.send("server_connect", settings);
         // convert it to a JSON array
         var jsonSettings = JSON.stringify(settings, null, 4);
         // write it to a file, to persist for next time
-        fs.writeFile("servers/" + settings.server.address + '.json', jsonSettings, 'utf8', function(err) {
+        fs.writeFile("servers/" + serverId + '.json', jsonSettings, 'utf8', function(err) {
             if(err) {
                 console.log("couldn't write settings to json file: ", err);
             } else {
-                console.log("settings saved as json: " + settings.server.address + ".json");
+                console.log("settings saved as json: " + serverId + ".json");
             }
         });
+        window.location = "dash.html";
         return false;
     });
 });
