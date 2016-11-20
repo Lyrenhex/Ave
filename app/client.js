@@ -25,6 +25,7 @@ var cID = 0;
 var Server;
 var UserNick;
 var Logging;
+var ServId;
 
 const electron = require("electron");
 const fs = require("fs");
@@ -559,15 +560,16 @@ electron.ipcRenderer.on("set_logging", function(event, logging){
     // set whether or not to log messages
     Logging = logging;
 });
-electron.ipcRenderer.on("set_server", function(event, server){
+electron.ipcRenderer.on("set_server", function(event, server, id){
     // set the visible server details
     document.getElementById("server").innerHTML = server;
     document.title = "Ave IRC Client :: " + server;
     Server = server;
+    ServId = id;
 
     // load the old messages for this server into memory, if logs are enabled
     if(Logging){
-        var oldMessages = JSON.parse(fs.readFileSync("logs/" + server + '.json', 'utf8'));
+        var oldMessages = JSON.parse(fs.readFileSync("logs/" + ServId + '.json', 'utf8'));
         Messages = oldMessages;
     }
 });
@@ -760,6 +762,9 @@ function sendMsg(recipient, message){
 
     // add handlers for form submits
     $(document).ready(function(){
+        //document.getElementById("loading-m").classList.add("active");
+        //document.getElementById("loading").classList.add("");
+
         // if the top bar's clicked, we want to force the chat log to the bottom
         document.getElementById("topbar").addEventListener("click", function(){
             // we should reset the unread message indicator for the active channel (for in case the

@@ -94,6 +94,10 @@ $(document).ready(function(){
         card.appendChild(editBtn);
         card.appendChild(delBtn);
 
+        card.onclick = function(){
+            electron.ipcRenderer.send("server_connect", Servers[this.id], this.id);
+        };
+
         cell.appendChild(card);
 
         grid.insertBefore(cell, document.getElementById("nsCell"));
