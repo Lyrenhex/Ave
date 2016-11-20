@@ -47,23 +47,6 @@ $(document).ready(function(){
         console.log("unable to open settings.json; probably first run:", err);
     } */
 
-    var serverList = document.getElementById("serverList");
-    Servers.forEach(function(server, index){
-        console.log(Servers);
-        console.log(server);
-        var serverEntry = document.createElement("button");
-        serverEntry.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
-        var serverText = document.createTextNode(server.user.nickname + " @ " + server.server.address + " (" + server.server.port + ")");
-        serverEntry.appendChild(serverText);
-        serverEntry.id = index;
-        serverEntry.onclick = function(){
-            popFields(Servers[this.id]);
-        }
-
-        componentHandler.upgradeElement(serverEntry);
-        serverList.appendChild(serverEntry);
-    });
-
     var serverId = getURLParameter("serv");
     console.log(serverId);
     if(serverId){
