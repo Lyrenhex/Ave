@@ -25,6 +25,7 @@ var cID = 0;
 var Server;
 var UserNick;
 var Logging;
+var ServId;
 
 const electron = require("electron");
 const fs = require("fs");
@@ -394,7 +395,7 @@ function nameIndexOf(array, value) {
         usrComMsg.appendChild(document.createTextNode("Open Private Chat"));
         usrComs.appendChild(usrComMsg);
 
-        var usrOpBtn = document.createElement("button");
+        /* var usrOpBtn = document.createElement("button");
         usrOpBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
         usrOpBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-btn"
         usrOpBtn.onclick = function(){
@@ -443,11 +444,23 @@ function nameIndexOf(array, value) {
         };
         usrOpBanBtn.appendChild(document.createTextNode("Ban User"));
 
+        var usrOpKickBtn = document.createElement("button");
+        usrOpKickBtn.className = "mdl-button mdl-js-button mdl-js-ripple-effect";
+        usrOpKickBtn.id = name.toLowerCase() + "-" + this.Id + ":coms-op-kick"
+        usrOpKickBtn.onclick = function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Chans[array[array.length-1]];
+            electron.ipcRenderer.send("kick", this.id.split("-")[0], channel);
+        };
+        usrOpKickBtn.appendChild(document.createTextNode("Kick User"));
+
         usrOpComs.appendChild(usrOpAscBtn);
         usrOpComs.appendChild(usrOpDescBtn);
         usrOpComs.appendChild(usrOpBanBtn);
-        usrComs.appendChild(usrOpBtn);
-        usrComs.appendChild(usrOpComs);
+        // usrComs.appendChild(usrOpBtn);
+        usrComs.appendChild(usrOpComs); */
 
         componentHandler.upgradeElements(usrComs);
         this.UserList.appendChild(usrEntry);
@@ -547,15 +560,16 @@ electron.ipcRenderer.on("set_logging", function(event, logging){
     // set whether or not to log messages
     Logging = logging;
 });
-electron.ipcRenderer.on("set_server", function(event, server){
+electron.ipcRenderer.on("set_server", function(event, server, id){
     // set the visible server details
     document.getElementById("server").innerHTML = server;
     document.title = "Ave IRC Client :: " + server;
     Server = server;
+    ServId = id;
 
     // load the old messages for this server into memory, if logs are enabled
     if(Logging){
-        var oldMessages = JSON.parse(fs.readFileSync("logs/" + server + '.json', 'utf8'));
+        var oldMessages = JSON.parse(fs.readFileSync("logs/" + ServId + '.json', 'utf8'));
         Messages = oldMessages;
     }
 });
@@ -717,6 +731,11 @@ function sendMsg(recipient, message){
     electron.ipcRenderer.send("message_send", recipient, message);
 }
 
+electron.ipcRenderer.on("loading_end", function(event){
+    document.getElementById("loading-m").classList.remove("active");
+    document.getElementById("loading").classList.remove("is-active");
+});
+
 /*
     USER INTERFACE ELEMENT HANDLERS
 */
@@ -748,6 +767,9 @@ function sendMsg(recipient, message){
 
     // add handlers for form submits
     $(document).ready(function(){
+        //document.getElementById("loading-m").classList.add("active");
+        //document.getElementById("loading").classList.add("");
+
         // if the top bar's clicked, we want to force the chat log to the bottom
         document.getElementById("topbar").addEventListener("click", function(){
             // we should reset the unread message indicator for the active channel (for in case the

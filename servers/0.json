@@ -1,0 +1,30 @@
+{
+    "server": {
+        "address": "irc.freenode.net",
+        "port": "6667",
+        "password": ""
+    },
+    "security": {
+        "secure": false,
+        "badCertsAllowed": false
+    },
+    "user": {
+        "nickname": "AveUser",
+        "username": "AveUser",
+        "realname": "Ave User: http://ave-irc.pw",
+        "password": ""
+    },
+    "encoding": "UTF-8",
+    "retry": {
+        "count": "0",
+        "delay": "2000"
+    },
+    "messages": {
+        "stripForm": true,
+        "log": true
+    },
+    "floodProtect": false,
+    "channels": [
+        "#ave-irc"
+    ]
+}

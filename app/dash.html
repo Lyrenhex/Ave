@@ -1,0 +1,62 @@
+<!--
+Ave Material Design Modern IRC Client
+Copyright (C) 2016  Damian Heaton
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Ave IRC Client</title>
+        <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css">
+        <script src="../node_modules/material-design-lite/material.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <link href="res/css/dash.css" rel="stylesheet" />
+        <script src="dash.js"></script>
+    </head>
+
+    <body>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <img src="res/img/icon.ico" alt="Ave" />
+                    <span class="mdl-layout-title">Get Started</span>
+                </div>
+            </header>
+
+            <main class="mdl-layout__content">
+                <div class="page-content">
+                    <h2 class="mdl-layout-title">Your IRC Servers</h2>
+                    <div class="mdl-grid" id="serverGrid">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop" id="nsCell">
+                            <a href="connect.html">
+                                <div class="sCard aCard" title="New Server" id="newServ">
+                                    <span class="action">
+                                        <i class="material-icons">add_circle_outline</i>
+                                    </span>
+                                </div>
+                                <div class="mdl-tooltip" for="newServ">
+                                    New Server
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

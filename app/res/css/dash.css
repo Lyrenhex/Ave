@@ -1,0 +1,98 @@
+/*
+Ave Material Design Modern IRC Client
+Copyright (C) 2016  Damian Heaton
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    background-color: #F9F9F9;
+}
+
+.mdl-layout__header-row {
+    padding: 0;
+    padding-left: 7px;
+}
+.mdl-layout__header-row img {
+    left: -50px;
+    height: 75%;
+    margin-right: 10px;
+}
+
+.page-content {
+    padding: 0 16px;
+}
+.page-content h2.mdl-layout-title {
+    margin-bottom: 0;
+    font-size: 16pt;
+}
+.page-content img {
+    display: block;
+    margin: 12px auto 0;
+}
+
+.fab {
+    position: absolute;
+    bottom: 0;
+    right: 16px;
+    transform: translate(0, 50%);
+}
+
+.sCard {
+    background: #fff;
+    border-radius: 2px;
+    display: inline-block;
+    margin: 1rem;
+    position: relative;
+    width: 90%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    padding: 0 8px;
+}
+.sCard button i.material-icons {
+    color: rgba(0,0,0,.54);
+}
+.aCard {
+    height: 90%;
+    text-align: center;
+    padding: 0;
+}
+.aCard .action .material-icons {
+    font-size: 72pt;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: rgba(0,0,0,.54);
+}
+.sCard:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    cursor: pointer;
+}
+
+.sCard h2 {
+    font-size: 26px;
+    line-height: 1;
+    color: #2196F3;
+}
+.sCard h3 {
+    font-size: 18px;
+    color: rgba(0,0,0,.54);
+    line-height: 1;
+}
+.sCard p {
+    color: #757575;
+}
+.sCard button {
+    margin-bottom: 8px;
+}
