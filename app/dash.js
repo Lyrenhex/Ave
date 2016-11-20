@@ -22,6 +22,7 @@ const fs = require("fs");
 var Servers = [];
 
 var servers = fs.readdirSync("servers/");
+servers.sort();
 for(server in servers){
     Servers.push(JSON.parse(fs.readFileSync("servers/" + servers[server], "utf-8")));
 }

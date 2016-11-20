@@ -2,5 +2,6 @@
 /rel/
 *.json
 !package.json
+!/servers/0.json
 client-backup.js
 Ave-*.zip
