@@ -22,7 +22,12 @@ const {app, BrowserWindow, Menu, ipcMain, shell} = require("electron");
 const irc = require("irc");
 const fs = require("fs");
 
-<<<<<<< Updated upstream
+import handleStartupEvent from './squirrel';
+import { updateShortcuts } from './main/utils/_shortcutManager';
+
+app.setAppUserModelId('com.scratso.ave');
+updateShortcuts();
+
 // prevent JS garbage collector killing the window.
 let win;
 let opWin;
@@ -37,13 +42,6 @@ String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
-=======
-import handleStartupEvent from './squirrel';
-import { updateShortcuts } from './main/utils/_shortcutManager';
-
-app.setAppUserModelId('com.scratso.ave');
-updateShortcuts();
->>>>>>> Stashed changes
 
 Array.prototype.remove = function() {
     var what, a = arguments, L = a.length, ax;
