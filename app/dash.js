@@ -96,7 +96,7 @@ $(document).ready(function(){
         card.appendChild(delBtn);
 
         card.onclick = function(){
-            electron.ipcRenderer.send("server_connect", Servers[this.id], this.id);
+            electron.ipcRenderer.send("server", this.id, Servers[this.id]);
         };
 
         cell.appendChild(card);
