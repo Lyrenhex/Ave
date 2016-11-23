@@ -29,10 +29,9 @@ var Users = [];
 
 var cID = 0;
 
-var Server;
-var Client;
+var Server = {};
+var Client = {};
 var UserNick;
-var Logging;
 
 // set up the markdown parser
 var MarkedRenderer = new marked.Renderer();
@@ -77,6 +76,13 @@ function nameIndexOf(arr, val){
             return i;
         }
     }
+}
+
+/*
+    WEBSOCKET API STUFF
+*/
+function socketSend(json){
+    electron.ipcRenderer.send("websocket-api-send", json);
 }
 
 /*
@@ -456,9 +462,12 @@ function User(name){
     this.Channels = [];
 }
 
-electron.ipcRenderer.on("server", serverId, serverData){
+electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Server.id = serverId;
     Server.data = serverData;
+
+    document.getElementById("server").innerHTML = `${Server.data.server.address} (${Server.data.server.port})`;
+    document.title = `Ave IRC Client :: ${Server.data.server.address} (${Server.data.server.port})`;
 
     Client = new irc.Client(Server.data.server.address, Server.data.user.nickname, {
         port: Server.data.server.port,
@@ -500,14 +509,15 @@ electron.ipcRenderer.on("server", serverId, serverData){
     // client handlers
     Client.addListener("registered", function(message){
         UserNick = Client.nick;
-        newMsg("!sys", "Connected!", "[System]");
 
         document.getElementById("loading-m").classList.remove("active");
         document.getElementById("loading").classList.remove("is-active");
 
+        newMsg("!sys", "Connected!", "[System]");
+
         // if the user set a NickServ password
         if(Server.data.user.password !== ""){
-            // identify
+            // identify.
             Client.say("NickServ", `IDENTIFY ${Server.data.user.password}`);
             newMsg("NickServ", "IDENTIFY *redacted*", Client.nick);
         }
@@ -561,13 +571,13 @@ electron.ipcRenderer.on("server", serverId, serverData){
             Tabs[channel.toLowerCase()].removeUser(Tabs[channel.toLowerCase()].Users[user]);
         }
 
-        nicks.forEach(user, index){
+        nicks.forEach(function(user, index){
             var op = false;
             if(user === "@" || user === "~"){
                 op = true;
             }
             Tabs[channel.toLowerCase()].addUser(user, op);
-        }
+        });
     });
     Client.addListener("join", function(channel, nick, message){
         Tabs[channel.toLowerCase()].addUser(nick);
@@ -585,8 +595,14 @@ electron.ipcRenderer.on("server", serverId, serverData){
         }
     });
     Client.addListener("nick", function(oldnick, newnick, channels, message){
-        channels.forEach(chan, index){
-            
-        }
+        var usr = Users[oldnick.toLowerCase()];
+        usr.Channels.forEach(function(channel, index){
+            var usrEntry = document.getElementById(oldnick + "-" + (Tabs.indexOf(channel) + 1));
+            usrEntry.innerHTML = newnick;
+            usrEntry.id = newnick + "-" + (Tabs.indexOf(channel) + 1);
+            newMsg(channel, oldnick + " changed their name to " + newnick + ".", "[System]");
+        });
+        Users[newnick.toLowerCase()] = usr;
+        Users.splice(oldnick.toLowerCase(), 1);
     });
-}
+});

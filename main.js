@@ -20,11 +20,28 @@ if(require('electron-squirrel-startup')) return;
 
 const {app, BrowserWindow, ipcMain, shell} = require("electron");
 
-
+let windows = [];
+let mainWin;
 
 var ico = `${__dirname}/app/res/img/icon.ico`;
 
-function newWindow(){
+function start(){
+    mainWin = new BrowserWindow({
+        width: 900,
+        height: 700,
+        icon: ico
+    });
+
+    mainWin.loadURL(`file://${__dirname}/app/dash.html`);
+
+    var that = this;
+
+    ipcMain.on("server", function(event, serverId, serverData){
+        windows.push(new Window(serverId, serverData));
+    });
+}
+
+function Window(serverId, serverData){
     this.win = new BrowserWindow({
         width: 900,
         height: 700,
@@ -33,21 +50,27 @@ function newWindow(){
 
     this.contents = this.win.webContents;
 
-    this.win.loadURL(`file://${__dirname}/app/dash.html`);
+    this.win.loadURL(`file://${__dirname}/app/client.html`);
 
-    ipcMain.on("server", serverId, serverData){
-        this.win.loadURL(`file://${__dirname}/app/client.html`);
-        this.contents.on("did-finish-load", function(){
-            this.contents.send("server", serverId, serverData);
-        });
-    }
+    var that = this;
+
+    this.contents.on("did-finish-load", function(){
+        that.contents.send("server", serverId, serverData);
+    });
+
+    /*
+    TODO: on 'websocket-api-send', send to the websocket server, and identify with a server id (from windows list?)
+
+    We need to start the webserver before this, though!
+    */
+    this.contents.on("")
 
     this.win.on("closed", function(){
         this.win = null;
     })
 }
 
-app.on("ready", newWindow);
+app.on("ready", start);
 
 // all windows closed; quit
 app.on("window-all-closed", function(){
@@ -60,6 +83,6 @@ app.on("window-all-closed", function(){
 app.on("activate", function(){
     // more mac specific stuff
     if(win == null){
-        newWindow();
+        start();
     }
 });
