@@ -79,13 +79,6 @@ function nameIndexOf(arr, val){
 }
 
 /*
-    WEBSOCKET API STUFF
-*/
-function socketSend(json){
-    electron.ipcRenderer.send("websocket-api-send", json);
-}
-
-/*
     OBJECT DECLARATION
 */
 function Tab(name, id){
@@ -462,6 +455,13 @@ function User(name){
     this.Channels = [];
 }
 
+/*
+    WEBSOCKET API STUFF
+*/
+function socketSend(obj){
+    electron.ipcRenderer.send("websocket-api-send", obj);
+}
+
 electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Server.id = serverId;
     Server.data = serverData;
@@ -513,6 +513,13 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         document.getElementById("loading-m").classList.remove("active");
         document.getElementById("loading").classList.remove("is-active");
 
+        socketSend({
+            type: "connect",
+            payload: {
+                status: "success",
+                server: Server.data.server
+            }
+        });
         newMsg("!sys", "Connected!", "[System]");
 
         // if the user set a NickServ password

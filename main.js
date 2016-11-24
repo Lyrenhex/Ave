@@ -19,11 +19,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if(require('electron-squirrel-startup')) return;
 
 const {app, BrowserWindow, ipcMain, shell} = require("electron");
+const ws = require("nodejs-websocket");
 
 let windows = [];
+let contents = [];
 let mainWin;
+let api;
 
 var ico = `${__dirname}/app/res/img/icon.ico`;
+
+function startServer(){
+    api = ws.createServer(function(conn){
+        console.log("New connection");
+        conn.on("close", function(code, reason){
+            console.log("Connection closed");
+        });
+    });
+    api.listen(5673);
+    start();
+}
 
 function start(){
     mainWin = new BrowserWindow({
@@ -37,7 +51,9 @@ function start(){
     var that = this;
 
     ipcMain.on("server", function(event, serverId, serverData){
-        windows.push(new Window(serverId, serverData));
+        var newWin = new Window(serverId, serverData);
+        windows.push(newWin);
+        contents.push(newWin.contents);
     });
 }
 
@@ -63,14 +79,24 @@ function Window(serverId, serverData){
 
     We need to start the webserver before this, though!
     */
-    this.contents.on("")
 
     this.win.on("closed", function(){
         this.win = null;
     })
 }
 
-app.on("ready", start);
+ipcMain.on("websocket-api-send", function(event, obj){
+    console.log(obj);
+    var index = contents.indexOf(event.sender);
+    console.log(index);
+    obj.instance = index;
+    json = JSON.stringify(obj);
+    api.connections.forEach(function(conn){
+        conn.send(json);
+    });
+});
+
+app.on("ready", startServer);
 
 // all windows closed; quit
 app.on("window-all-closed", function(){
