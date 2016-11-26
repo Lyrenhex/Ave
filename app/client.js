@@ -502,6 +502,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             payload: {
                 status: false,
                 server: Server.data.server,
+                user: Server.data.user.nickname,
                 errorCode: error.code
             }
         });
@@ -535,6 +536,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             payload: {
                 status: true,
                 server: Server.data.server,
+                user: Client.nick,
                 errorCode: null
             }
         });
@@ -611,11 +613,29 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
 
     Client.addListener("topic", function(chan, topic, nick, message){
+        socketSend({
+            type: "message",
+            payload: {
+                type: "topic",
+                channel: chan,
+                sender: nick,
+                content: topic,
+                raw: message
+            }
+        });
         newMsg(chan, topic, nick, "topic");
     });
 
     // connection stuff - joins, parts, names, quits
     Client.addListener("names", function(channel, nicks){
+        socketSend({
+            type: "namesList",
+            payload: {
+                channel: channel,
+                list: nicks
+            }
+        });
+
         /* for in case NAMES was called *after* the initial channel call, we should probably clear
         the existing user list (to prevent duplicates and potentially delete nonapplicable nicks)
         __note that this shouldn't happen often!__*/
@@ -628,10 +648,19 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             if(user === "@" || user === "~"){
                 op = true;
             }
-            Tabs[channel.toLowerCase()].addUser(user, op);
+            Tabs[channel.toLowerCase()].addUser(index, op);
         });
     });
     Client.addListener("join", function(channel, nick, message){
+        socketSend({
+            type: "user",
+            payload: {
+                action: "join",
+                nickname: nick,
+                channel: channel,
+                raw: message
+            }
+        });
         Tabs[channel.toLowerCase()].addUser(nick);
         newMsg(channel, `${nick} has joined the channel.`, "[System]");
         if(nick === Client.nick && Server.data.channels.indexOf(channel) === -1){
@@ -649,12 +678,90 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Client.addListener("nick", function(oldnick, newnick, channels, message){
         var usr = Users[oldnick.toLowerCase()];
         usr.Channels.forEach(function(channel, index){
+            socketSend({
+                type: "user",
+                payload: {
+                    action: "nick",
+                    nickname: [oldnick, newnick],
+                    channel: index,
+                    raw: message
+                }
+            });
             var usrEntry = document.getElementById(oldnick + "-" + (Tabs.indexOf(channel) + 1));
             usrEntry.innerHTML = newnick;
             usrEntry.id = newnick + "-" + (Tabs.indexOf(channel) + 1);
-            newMsg(channel, oldnick + " changed their name to " + newnick + ".", "[System]");
+            newMsg(index, oldnick + " changed their name to " + newnick + ".", "[System]");
         });
         Users[newnick.toLowerCase()] = usr;
         Users.splice(oldnick.toLowerCase(), 1);
+    });
+    client.addListener("part", function(channel, nick, reason, message){
+        socketSend({
+            type: "user",
+            payload: {
+                action: "part",
+                nickname: nick,
+                channel: channel,
+                raw: message
+            }
+        });
+        if(nick != Client.nick){
+            Tabs[channel.toLowerCase()].removeUser(nick);
+            newMsg(channel, `${nick} has left the channel (${reason}).`, "[System]");
+        }else if(Server.data.channels.indexOf(channel) != -1){
+            Server.data.channels.remove(channel);
+            // convert it to a JSON array
+            var jsonSettings = JSON.stringify(Server.data, null, 4);
+            // write it to a file, to persist for next time
+            fs.writeFile(`servers/${Server.Id}.json`, jsonSettings, 'utf8', function(err) {
+                if(err) {
+                    console.log("couldn't write settings to json file: ", err);
+                } else {
+                    console.log("settings saved as json: " + Server.Id + ".json");
+                }
+            });
+        }
+    });
+    client.addListener("kick", function(channel, nick, by, reason, message){
+        socketSend({
+            type: "user",
+            payload: {
+                action: "part",
+                nickname: nick,
+                channel: channel,
+                raw: message
+            }
+        });
+        if(nick != Client.nick){
+            Tabs[channel.toLowerCase()].removeUser(nick);
+            newMsg(channel, `${nick} was kicked by ${by} (${reason}).`, "[System]");
+        }else if(Server.data.channels.indexOf(channel) != -1){
+            Server.data.channels.remove(channel);
+            // convert it to a JSON array
+            var jsonSettings = JSON.stringify(Server.data, null, 4);
+            // write it to a file, to persist for next time
+            fs.writeFile(`servers/${Server.Id}.json`, jsonSettings, 'utf8', function(err) {
+                if(err) {
+                    console.log("couldn't write settings to json file: ", err);
+                } else {
+                    console.log("settings saved as json: " + Server.Id + ".json");
+                }
+            });
+        }
+    });
+    Client.addListener("quit", function(nick, reason, channels, message){
+        var usr = Users[nick.toLowerCase()];
+        usr.Channels.forEach(function(channel, index){
+            socketSend({
+                type: "user",
+                payload: {
+                    action: "quit",
+                    nickname: nick,
+                    channel: index,
+                    raw: message
+                }
+            });
+            Tabs[index].removeUser(nick);
+        });
     });
 });
