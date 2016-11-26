@@ -497,10 +497,27 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             alert(`We couldn't connect to the server. (${error})`);
         }
         window.location = "dash.html";
+        socketSend({
+            type: "connect",
+            payload: {
+                status: false,
+                server: Server.data.server,
+                errorCode: error.code
+            }
+        });
     });
     // standard irc error
     Client.addListener("error", function(message){
         newMsg(message.args[1], `error: ${message.args[2]}`, "[ERROR]");
+        socketSend({
+            type: "ircError",
+            payload: {
+                code: message.toString(),
+                target: message.args[1],
+                description: message.args[2],
+                raw: message
+            }
+        });
     });
 
     // initiate connection to the server
@@ -516,8 +533,9 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         socketSend({
             type: "connect",
             payload: {
-                status: "success",
-                server: Server.data.server
+                status: true,
+                server: Server.data.server,
+                errorCode: null
             }
         });
         newMsg("!sys", "Connected!", "[System]");
@@ -535,30 +553,57 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
 
     Client.addListener("message", function(nick, chan, message, raw){
-        if(chan !== Client.nick.toLowerCase()){
-            newMsg(chan, message, nick);
-        }else{
-            newMsg(nick, message, nick);
+        if(chan === Client.nick.toLowerCase()){
+            chan = nick;
         }
+        socketSend({
+            type: "message",
+            payload: {
+                type: "text",
+                channel: chan,
+                sender: nick,
+                content: message,
+                raw: raw
+            }
+        });
+        newMsg(chan, message, nick);
     });
     Client.addListener("action", function(nick, chan, action, raw){
         var message = `**_\*${nick} ${action}_**`;
-        if(chan !== Client.nick.toLowerCase()){
-            newMsg(chan, message, nick);
-        }else{
-            newMsg(nick, message, nick);
+        if(chan === Client.nick.toLowerCase()){
+            chan = nick;
         }
+        socketSend({
+            type: "message",
+            payload: {
+                type: "action",
+                channel: chan,
+                sender: nick,
+                content: action,
+                raw: raw
+            }
+        });
+        newMsg(chan, message, nick);
     });
     Client.addListener("notice", function(nick, chan, message, raw){
         if(nick === null){
             nick = "[SERVER]";
             chan = "!sys";
         }
-        if(chan !== Client.nick.toLowerCase()){
-            newMsg(chan, message, nick);
-        }else{
-            newMsg(nick, message, nick);
+        if(chan === Client.nick.toLowerCase()){
+            chan = nick;
         }
+        socketSend({
+            type: "message",
+            payload: {
+                type: "text",
+                channel: chan,
+                sender: nick,
+                content: action,
+                raw: raw
+            }
+        });
+        newMsg(chan, message, nick);
     });
     Client.addListener("ctcp-version", function(from, to, raw){
         newMsg("!sys", `${from} has sent you a CTCP VERSION request.`, "[System]");

@@ -74,12 +74,6 @@ function Window(serverId, serverData){
         that.contents.send("server", serverId, serverData);
     });
 
-    /*
-    TODO: on 'websocket-api-send', send to the websocket server, and identify with a server id (from windows list?)
-
-    We need to start the webserver before this, though!
-    */
-
     this.win.on("closed", function(){
         this.win = null;
     })
