@@ -496,7 +496,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         }else{
             alert(`We couldn't connect to the server. (${error})`);
         }
-        window.location = "dash.html";
+        window.close();
         socketSend({
             type: "connect",
             payload: {
@@ -601,7 +601,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                 type: "text",
                 channel: chan,
                 sender: nick,
-                content: action,
+                content: message,
                 raw: raw
             }
         });
@@ -695,7 +695,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         Users[newnick.toLowerCase()] = usr;
         Users.splice(oldnick.toLowerCase(), 1);
     });
-    client.addListener("part", function(channel, nick, reason, message){
+    Client.addListener("part", function(channel, nick, reason, message){
         socketSend({
             type: "user",
             payload: {
@@ -722,7 +722,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             });
         }
     });
-    client.addListener("kick", function(channel, nick, by, reason, message){
+    Client.addListener("kick", function(channel, nick, by, reason, message){
         socketSend({
             type: "user",
             payload: {

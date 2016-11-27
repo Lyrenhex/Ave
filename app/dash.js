@@ -63,6 +63,9 @@ $(document).ready(function(){
         var editBtn = document.createElement("button");
         editBtn.className = "mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect";
         editBtn.id = `${index}-edit`;
+        $(editBtn.id).click(function(e){
+            e.stopPropogation();
+        });
         var editBtnIco = document.createElement("i");
         editBtnIco.className = "material-icons";
         editBtnIco.appendChild(
@@ -76,6 +79,9 @@ $(document).ready(function(){
         var delBtn = document.createElement("button");
         delBtn.className = "mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect";
         delBtn.id = `${index}-del`;
+        $(delBtn.id).click(function(e){
+            e.stopPropogation();
+        });
         var delBtnIco = document.createElement("i");
         delBtnIco.className = "material-icons";
         delBtnIco.appendChild(

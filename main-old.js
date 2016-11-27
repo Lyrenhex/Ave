@@ -359,19 +359,18 @@ function newWindow(){
                 if(nick != client.nick){
                     contents.send("user_remove", channel, nick);
                     sendMsg(channel, nick + " has left the channel (" + reason + ").", "[System]");
-                    if(nick == client.nick && connDat.channels.indexOf(channel) != -1){
-                        connDat.channels.remove(channel);
-                        // convert it to a JSON array
-                        var jsonSettings = JSON.stringify(connDat, null, 4);
-                        // write it to a file, to persist for next time
-                        fs.writeFile("servers/" + servId + '.json', jsonSettings, 'utf8', function(err) {
-                            if(err) {
-                                console.log("couldn't write settings to json file: ", err);
-                            } else {
-                                console.log("settings saved as json: " + servId + ".json");
-                            }
-                        });
-                    }
+                }else if(connDat.channels.indexOf(channel) != -1){
+                    connDat.channels.remove(channel);
+                    // convert it to a JSON array
+                    var jsonSettings = JSON.stringify(connDat, null, 4);
+                    // write it to a file, to persist for next time
+                    fs.writeFile("servers/" + servId + '.json', jsonSettings, 'utf8', function(err) {
+                        if(err) {
+                            console.log("couldn't write settings to json file: ", err);
+                        } else {
+                            console.log("settings saved as json: " + servId + ".json");
+                        }
+                    });
                 }
             });
             client.addListener("kick", function(channel, nick, by, reason, message){
