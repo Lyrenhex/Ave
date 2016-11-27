@@ -381,8 +381,6 @@ Tab.prototype.removeUser = function(name){
     delete this.Users[this.Users.indexOf(name.toLowerCase())];
     this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id));
     this.UserList.removeChild(document.getElementById(name.toLowerCase() + "-" + this.Id + ":coms"));
-
-    console.log("rem", this);
 }
 Tab.prototype.opUser = function(name){
     document.getElementById(name.toLowerCase() + "-" + this.Id).classList.add("op");
@@ -457,8 +455,6 @@ function User(name){
 */
 function socketSend(obj){
     electron.ipcRenderer.send("websocket-api-send", obj);
-    console.log(obj);
-    console.log(obj.payload);
 }
 
 electron.ipcRenderer.on("server", function(event, serverId, serverData){
@@ -561,16 +557,6 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         if(chan === Client.nick.toLowerCase()){
             chan = nick;
         }
-        socketSend({
-            type: "message",
-            payload: {
-                type: "text",
-                channel: chan,
-                sender: nick,
-                content: message,
-                raw: raw
-            }
-        });
         newMsg(chan, message, nick);
     });
     Client.addListener("action", function(nick, chan, action, raw){
@@ -582,16 +568,6 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         if(chan === Client.nick.toLowerCase()){
             chan = nick;
         }
-        socketSend({
-            type: "message",
-            payload: {
-                type: "action",
-                channel: chan,
-                sender: nick,
-                content: action,
-                raw: raw
-            }
-        });
         newMsg(chan, message, nick);
     });
     Client.addListener("notice", function(nick, chan, message, raw){
@@ -602,16 +578,6 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         if(chan === Client.nick.toLowerCase()){
             chan = nick;
         }
-        socketSend({
-            type: "message",
-            payload: {
-                type: "text",
-                channel: chan,
-                sender: nick,
-                content: message,
-                raw: raw
-            }
-        });
         newMsg(chan, message, nick);
     });
     Client.addListener("ctcp-version", function(from, to, raw){
@@ -620,16 +586,6 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
 
     Client.addListener("topic", function(chan, topic, nick, message){
-        socketSend({
-            type: "message",
-            payload: {
-                type: "topic",
-                channel: chan,
-                sender: nick,
-                content: topic,
-                raw: message
-            }
-        });
         newMsg(chan, topic, nick, "topic");
     });
 
@@ -650,13 +606,13 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             Tabs[channel.toLowerCase()].removeUser(Tabs[channel.toLowerCase()].Users[user]);
         }
 
-        nicks.forEach(function(user, index){
+        for(nick in nicks){
             var op = false;
-            if(user === "@" || user === "~"){
+            if("&@~".includes(nicks[nick]) && nicks[nick] !== ""){
                 op = true;
             }
-            Tabs[channel.toLowerCase()].addUser(index, op);
-        });
+            Tabs[channel.toLowerCase()].addUser(nick, op);
+        }
     });
     Client.addListener("join", function(channel, nick, message){
         socketSend({
@@ -668,8 +624,8 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                 raw: message
             }
         });
-        Tabs[channel.toLowerCase()].addUser(nick);
         newMsg(channel, `${nick} has joined the channel.`, "[System]");
+        Tabs[channel.toLowerCase()].addUser(nick);
         if(nick === Client.nick && Server.data.channels.indexOf(channel) === -1){
             Server.data.channels.push(channel);
             // convert to JSON array
@@ -771,6 +727,101 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             Tabs[index].removeUser(nick);
         });
     });
+
+    // add handlers for form submits
+    $(document).ready(function(){
+        //document.getElementById("loading-m").classList.add("active");
+        //document.getElementById("loading").classList.add("");
+
+        // if the top bar's clicked, we want to force the chat log to the bottom
+        document.getElementById("topbar").addEventListener("click", function(){
+            // we should reset the unread message indicator for the active channel (for in case the
+            // user just changed it)
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // get the selected channel name
+            var curChan = Channels[array[array.length-1]];
+            var tab = document.getElementById("content");
+            if(array[array.length-1] != 0){
+                // jump to bottom
+                tab.scrollTop = tab.scrollHeight;
+
+                Tabs[curChan].Badge.setAttribute("data-badge", "0");
+            }else{
+                // jump to top
+                tab.scrollTop = 0;
+            }
+        });
+
+        // when the new message form is completed
+        $('#send').submit(function(){
+            // break up the active tab's id, which is of form scroll-tab-[channel]
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // we need to get [channel], so we grab the last element of the array
+            var channel = Channels[array[array.length-1]];
+            // *never send an empty message*
+            if($("#msg").val() != ""){
+                Client.say(channel, $('#msg').val().toString());
+                newMsg(channel, $('#msg').val().toString(), Client.nick);
+                // reset the field.
+                $("#msg").val("");
+            }
+            // prevent Chromium refreshing the page
+            return false;
+        });
+
+        // when user tries joining a channel
+        $('#joinChan').submit(function(){
+            // ask main thread to join a channel; we have no direct controller for node-irc in this
+            // thread (maybe we could simplify this by adding one?)
+            // make it lower case, so that we aren't case-sensitive!
+            Client.join($("#channel").val().toString().toLowerCase());
+            // override Chromium behaviour
+            return false;
+        });
+        // user wants to leave channel OR private chat
+        $('#partChan').submit(function(){
+            // lowercase it; all channels and stuff should be lowercase (we don't want case-sensitivity)
+            var channel = $("#partChannel").val().toString().toLowerCase();
+            try{
+                // destroy the object.
+                Tabs[channel].destroy();
+                electron.ipcRenderer.send("channel_part", channel);
+            }catch(err){
+                // we couldn't leave the requested chat for some reason. probably a user typo.
+                alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
+                console.log("chat leave error: ", err);
+            }
+            // override Chromium behaviour
+            return false;
+        });
+        $('#pmUsr').submit(function(){
+            sendMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString());
+            // override Chromium behaviour
+            return false;
+        });
+        $('#changeNick').submit(function(){
+            electron.ipcRenderer.send("nick_change", $("#newNick").val().toString());
+            // override Chromium behaviour
+            return false;
+        });
+
+        $('#rc').submit(function(){
+            electron.ipcRenderer.send("server_reconnect");
+            // override Chromium behaviour
+            return false;
+        });
+        $('#dc').submit(function(){
+            electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
+            // override Chromium behaviour
+            return false;
+        });
+
+        window.onbeforeunload = closingCode;
+        function closingCode(){
+           Client.disconnect("Client quit.");
+           return null;
+        }
+    });
 });
 
 // handle form togglers
@@ -814,6 +865,16 @@ function newMsg(channel, message, sender, time=null){
             time = d.toUTCString();
         }
 
+        socketSend({
+            type: "message",
+            payload: {
+                channel: channel,
+                sender: sender,
+                content: message,
+                timestamp: time
+            }
+        });
+
         channel = channel.toLowerCase();
 
         var tab = document.getElementById("content");
@@ -849,91 +910,3 @@ function newMsg(channel, message, sender, time=null){
         newMsg(channel, message, sender, time);
     }
 }
-
-// add handlers for form submits
-$(document).ready(function(){
-    //document.getElementById("loading-m").classList.add("active");
-    //document.getElementById("loading").classList.add("");
-
-    // if the top bar's clicked, we want to force the chat log to the bottom
-    document.getElementById("topbar").addEventListener("click", function(){
-        // we should reset the unread message indicator for the active channel (for in case the
-        // user just changed it)
-        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-        // get the selected channel name
-        var curChan = Channels[array[array.length-1]];
-        var tab = document.getElementById("content");
-        if(array[array.length-1] != 0){
-            // jump to bottom
-            tab.scrollTop = tab.scrollHeight;
-
-            Tabs[curChan].Badge.setAttribute("data-badge", "0");
-        }else{
-            // jump to top
-            tab.scrollTop = 0;
-        }
-    });
-
-    // when the new message form is completed
-    $('#send').submit(function(){
-        // break up the active tab's id, which is of form scroll-tab-[channel]
-        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-        // we need to get [channel], so we grab the last element of the array
-        var channel = Channels[array[array.length-1]];
-        // *never send an empty message*
-        if($("#msg").val() != ""){
-            sendMsg(channel, $('#msg').val().toString());
-            // reset the field.
-            $("#msg").val("");
-        }
-        // prevent Chromium refreshing the page
-        return false;
-    });
-
-    // when user tries joining a channel
-    $('#joinChan').submit(function(){
-        // ask main thread to join a channel; we have no direct controller for node-irc in this
-        // thread (maybe we could simplify this by adding one?)
-        // make it lower case, so that we aren't case-sensitive!
-        electron.ipcRenderer.send("channel_join", $("#channel").val().toString().toLowerCase());
-        // override Chromium behaviour
-        return false;
-    });
-    // user wants to leave channel OR private chat
-    $('#partChan').submit(function(){
-        // lowercase it; all channels and stuff should be lowercase (we don't want case-sensitivity)
-        var channel = $("#partChannel").val().toString().toLowerCase();
-        try{
-            // destroy the object.
-            Tabs[channel].destroy();
-            electron.ipcRenderer.send("channel_part", channel);
-        }catch(err){
-            // we couldn't leave the requested chat for some reason. probably a user typo.
-            alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
-            console.log("chat leave error: ", err);
-        }
-        // override Chromium behaviour
-        return false;
-    });
-    $('#pmUsr').submit(function(){
-        sendMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString());
-        // override Chromium behaviour
-        return false;
-    });
-    $('#changeNick').submit(function(){
-        electron.ipcRenderer.send("nick_change", $("#newNick").val().toString());
-        // override Chromium behaviour
-        return false;
-    });
-
-    $('#rc').submit(function(){
-        electron.ipcRenderer.send("server_reconnect");
-        // override Chromium behaviour
-        return false;
-    });
-    $('#dc').submit(function(){
-        electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
-        // override Chromium behaviour
-        return false;
-    });
-});

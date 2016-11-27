@@ -63,32 +63,27 @@ $(document).ready(function(){
         var editBtn = document.createElement("button");
         editBtn.className = "mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect";
         editBtn.id = `${index}-edit`;
-        $(editBtn.id).click(function(e){
-            e.stopPropogation();
-        });
         var editBtnIco = document.createElement("i");
         editBtnIco.className = "material-icons";
         editBtnIco.appendChild(
             document.createTextNode("edit")
         );
         editBtn.appendChild(editBtnIco);
-        editBtn.onclick = function(){
+        editBtn.onclick = function(e){
             window.location = `connect.html?serv=${this.id.split("-")[0]}`;
+            e.stopPropagation();
         }
 
         var delBtn = document.createElement("button");
         delBtn.className = "mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect";
         delBtn.id = `${index}-del`;
-        $(delBtn.id).click(function(e){
-            e.stopPropogation();
-        });
         var delBtnIco = document.createElement("i");
         delBtnIco.className = "material-icons";
         delBtnIco.appendChild(
             document.createTextNode("delete")
         );
         delBtn.appendChild(delBtnIco);
-        delBtn.onclick = function(){
+        delBtn.onclick = function(e){
             fs.unlink(`servers/${this.id.split("-")[0]}.json`, function(err){
                 if(err){
                     console.log("Couldn't delete server", err);
@@ -96,6 +91,7 @@ $(document).ready(function(){
             });
             this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
             console.log(this.parentNode.parentNode.parentNode);
+            e.stopPropagation();
         }
 
         card.appendChild(editBtn);
@@ -103,6 +99,8 @@ $(document).ready(function(){
 
         card.onclick = function(){
             electron.ipcRenderer.send("server", this.id, Servers[this.id]);
+            // reload the page every 20 seconds so that we get the latest information (such as if servers have new channels now)
+            setInterval(location.reload(), 20000);
         };
 
         cell.appendChild(card);
