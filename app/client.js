@@ -218,7 +218,7 @@ function Tab(name, id){
             chTopicFormButton.onclick = function(){
                 // break up the active tab's id, which is of form scroll-tab-[channel]
                 var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-                var channel = Chans[array[array.length-1]];
+                var channel = Channels[array[array.length-1]];
                 electron.ipcRenderer.send("topic_set", channel, document.getElementById("topictext-" + this.id).innerHTML);
             };
             var chTopicFormButtonLabel = document.createTextNode("Set Chan Topic");
@@ -286,8 +286,8 @@ function Tab(name, id){
             comInviteFormButton.onclick = function(){
                 // break up the active tab's id, which is of form scroll-tab-[channel]
                 var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
-                var chan = $("#inviteChan-" + Chans[array[array.length-1]]).val().toString();
-                var user = Tabs[Chans[array[array.length-1]]].Name;
+                var chan = $("#inviteChan-" + Channels[array[array.length-1]]).val().toString();
+                var user = Tabs[Channels[array[array.length-1]]].Name;
                 electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
             };
             var comInviteFormButtonLabel = document.createTextNode("Invite User");
@@ -314,7 +314,8 @@ function Tab(name, id){
         new MaterialLayoutTab(mdlTabs[i], mdlTabs, mdlPanels, mdlLayout.MaterialLayout);
     }
 }
-Tab.prototype.addMessage = function(sender, contents, time, old=false, noFix=false){
+Tab.prototype.addMessage = function(sender, contents, time){
+    //console.log(this.Messages);
     // check if there are any previous messages
     if(this.Messages.length > 0){
         // check if the same user posted both messages
@@ -322,17 +323,18 @@ Tab.prototype.addMessage = function(sender, contents, time, old=false, noFix=fal
     }else{
         var prevMessage = {Author: undefined};
     }
-    if(prevMessage.Author == sender){
+    //console.log(sender);
+    if(prevMessage.Author === sender){
         // consecutive messages are separated with a <hr />
         prevMessage.Element.appendChild(document.createElement("hr"));
         // create the message, sharing the previous message's div container.
-        this.Messages.push(new Message(sender, contents, time, prevMessage.Element, old, noFix));
+        this.Messages.push(new Message(sender, contents, time, prevMessage.Element));
     }else{
         // otherwise, make a new div and pass that to the Message object
         var messageDiv = document.createElement("div");
         messageDiv.className = "message";
         this.ChatLog.appendChild(messageDiv);
-        this.Messages.push(new Message(sender, contents, time, messageDiv, old, noFix));
+        this.Messages.push(new Message(sender, contents, time, messageDiv));
     }
 }
 Tab.prototype.addUser = function(name, op=false){
@@ -394,15 +396,14 @@ Tab.prototype.destroy = function(){
     }
     this.Button.parentNode.removeChild(this.Button);
     this.Content.parentNode.removeChild(this.Content);
-    Chans[this.Id] = null;
+    Channels[this.Id] = null;
     delete Tabs[this.Name.toLowerCase()];
 }
-function Message(sender, contents, time, div, old=false){
+function Message(sender, contents, time, div){
     this.Author = sender;
     this.Content = contents;
     this.Timestamp = time;
     this.Element = div;
-    this.isOld = old;
 
     if(this.Author == "[System]"){
         // if it's a system message, add the appropriate class.
@@ -414,10 +415,6 @@ function Message(sender, contents, time, div, old=false){
     }else if(this.Author == "[ERROR]"){
         // if it's an error, then style accordingly
         this.Element.classList.add("error");
-    }
-    if(this.isOld){
-        // if it's an old message, reduce the opacity 50%;
-        this.Element.classList.add("old");
     }
     var main = document.createElement("p");
 
@@ -460,6 +457,8 @@ function User(name){
 */
 function socketSend(obj){
     electron.ipcRenderer.send("websocket-api-send", obj);
+    console.log(obj);
+    console.log(obj.payload);
 }
 
 electron.ipcRenderer.on("server", function(event, serverId, serverData){
@@ -555,6 +554,10 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
 
     Client.addListener("message", function(nick, chan, message, raw){
+        if(!nick){
+            nick = "[SERVER]";
+            chan = "!sys";
+        }
         if(chan === Client.nick.toLowerCase()){
             chan = nick;
         }
@@ -571,6 +574,10 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         newMsg(chan, message, nick);
     });
     Client.addListener("action", function(nick, chan, action, raw){
+        if(!nick){
+            nick = "[SERVER]";
+            chan = "!sys";
+        }
         var message = `**_\*${nick} ${action}_**`;
         if(chan === Client.nick.toLowerCase()){
             chan = nick;
@@ -588,7 +595,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         newMsg(chan, message, nick);
     });
     Client.addListener("notice", function(nick, chan, message, raw){
-        if(nick === null){
+        if(!nick){
             nick = "[SERVER]";
             chan = "!sys";
         }
@@ -763,5 +770,170 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             });
             Tabs[index].removeUser(nick);
         });
+    });
+});
+
+// handle form togglers
+function toggle(id){
+    var element = document.getElementById(id);
+    if(element.classList.contains("shown")){
+        // if shown, hide it
+        element.classList.remove("shown");
+    }else{
+        // otherwise, show it
+        element.classList.add("shown");
+    }
+}
+// simple check to see if a string is a channel
+function isChannel(channel){
+    // does it begin with '#', '&', '+', or '!'?
+    if(channel.indexOf("#") == 0 || channel.indexOf("&") == 0 || channel.indexOf("+") == 0 || channel.indexOf("!") == 0){
+        // if yes, it's a channel
+        return true;
+    }
+    // if not, it's not a channel (probably a private message!)
+    return false;
+}
+
+// open a new tab
+function newTab(tabName){
+    // only create a new tab if there isn't one already
+    if(Tabs[tabName.toLowerCase()] === undefined){
+        // add it to the tab list
+        cID++;
+        Channels.push(tabName.toLowerCase());
+        Tabs[tabName.toLowerCase()] = new Tab(tabName, cID);
+    }
+}
+// add a new message to a tab
+function newMsg(channel, message, sender, time=null){
+    //console.log(sender);
+    try{
+        if(!time){
+            var d = new Date();
+            time = d.toUTCString();
+        }
+
+        channel = channel.toLowerCase();
+
+        var tab = document.getElementById("content");
+        // allow 1px inaccuracy by adding 1
+        var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
+
+        Tabs[channel].addMessage(sender, message, time);
+
+        // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.
+        if(!isChannel(channel) && sender.toLowerCase() === channel){
+            Tabs[channel].Name = sender;
+        }
+
+        // if it was posted to the current channel, we should bump the scroll
+        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+        // get the selected channel name
+        var curChan = Channels[array[array.length-1]];
+        if(curChan == channel){
+            // scroll to bottom if isScrolledToBottom, if the channel is selected that the message was posted to
+            if(isScrolledToBottom){
+                tab.scrollTop = tab.scrollHeight;
+            }
+        }else{
+            // otherwise, we should probably increase the badge of the actual channel
+            // set the badge to its value + 1.
+            Tabs[channel].Badge.setAttribute("data-badge", String(Number(Tabs[channel].Badge.getAttribute("data-badge")) + 1));
+        }
+    }catch(err){
+        /* if the channel doesn't have a tab, it will probably raise an error. therefore, if we assume that
+        this error was caused by that, we should get away with it (let's face it - it probably was) */
+        console.log("error in newMsg function. assuming nonexistant tab. creating new tab.", err);
+        newTab(channel);
+        newMsg(channel, message, sender, time);
+    }
+}
+
+// add handlers for form submits
+$(document).ready(function(){
+    //document.getElementById("loading-m").classList.add("active");
+    //document.getElementById("loading").classList.add("");
+
+    // if the top bar's clicked, we want to force the chat log to the bottom
+    document.getElementById("topbar").addEventListener("click", function(){
+        // we should reset the unread message indicator for the active channel (for in case the
+        // user just changed it)
+        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+        // get the selected channel name
+        var curChan = Channels[array[array.length-1]];
+        var tab = document.getElementById("content");
+        if(array[array.length-1] != 0){
+            // jump to bottom
+            tab.scrollTop = tab.scrollHeight;
+
+            Tabs[curChan].Badge.setAttribute("data-badge", "0");
+        }else{
+            // jump to top
+            tab.scrollTop = 0;
+        }
+    });
+
+    // when the new message form is completed
+    $('#send').submit(function(){
+        // break up the active tab's id, which is of form scroll-tab-[channel]
+        var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+        // we need to get [channel], so we grab the last element of the array
+        var channel = Channels[array[array.length-1]];
+        // *never send an empty message*
+        if($("#msg").val() != ""){
+            sendMsg(channel, $('#msg').val().toString());
+            // reset the field.
+            $("#msg").val("");
+        }
+        // prevent Chromium refreshing the page
+        return false;
+    });
+
+    // when user tries joining a channel
+    $('#joinChan').submit(function(){
+        // ask main thread to join a channel; we have no direct controller for node-irc in this
+        // thread (maybe we could simplify this by adding one?)
+        // make it lower case, so that we aren't case-sensitive!
+        electron.ipcRenderer.send("channel_join", $("#channel").val().toString().toLowerCase());
+        // override Chromium behaviour
+        return false;
+    });
+    // user wants to leave channel OR private chat
+    $('#partChan').submit(function(){
+        // lowercase it; all channels and stuff should be lowercase (we don't want case-sensitivity)
+        var channel = $("#partChannel").val().toString().toLowerCase();
+        try{
+            // destroy the object.
+            Tabs[channel].destroy();
+            electron.ipcRenderer.send("channel_part", channel);
+        }catch(err){
+            // we couldn't leave the requested chat for some reason. probably a user typo.
+            alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
+            console.log("chat leave error: ", err);
+        }
+        // override Chromium behaviour
+        return false;
+    });
+    $('#pmUsr').submit(function(){
+        sendMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString());
+        // override Chromium behaviour
+        return false;
+    });
+    $('#changeNick').submit(function(){
+        electron.ipcRenderer.send("nick_change", $("#newNick").val().toString());
+        // override Chromium behaviour
+        return false;
+    });
+
+    $('#rc').submit(function(){
+        electron.ipcRenderer.send("server_reconnect");
+        // override Chromium behaviour
+        return false;
+    });
+    $('#dc').submit(function(){
+        electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
+        // override Chromium behaviour
+        return false;
     });
 });
