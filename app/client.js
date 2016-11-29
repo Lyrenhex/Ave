@@ -717,7 +717,8 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
     Client.addListener("quit", function(nick, reason, channels, message){
         var usr = Users[nick.toLowerCase()];
-        usr.Channels.forEach(function(channel, index){
+        for(index in usr.Channels){
+            var channel = usr.Channels[index];
             socketSend({
                 type: "user",
                 payload: {
