@@ -491,7 +491,9 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         }else{
             alert(`We couldn't connect to the server. (${error})`);
         }
-        window.close();
+        document.getElementById("loading-m").classList.remove("active");
+        document.getElementById("loading").classList.remove("is-active");
+        document.getElementById("disconnected-m").classList.add("active");
         socketSend({
             type: "connect",
             payload: {
@@ -640,7 +642,8 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     });
     Client.addListener("nick", function(oldnick, newnick, channels, message){
         var usr = Users[oldnick.toLowerCase()];
-        usr.Channels.forEach(function(channel, index){
+        for(index in usr.Channels){
+            var channel = usr.Channels[index];
             socketSend({
                 type: "user",
                 payload: {
@@ -650,11 +653,11 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                     raw: message
                 }
             });
-            var usrEntry = document.getElementById(oldnick + "-" + (Tabs.indexOf(channel) + 1));
+            var usrEntry = document.getElementById(oldnick.toLowerCase() + "-" + Channels.indexOf(index));
             usrEntry.innerHTML = newnick;
-            usrEntry.id = newnick + "-" + (Tabs.indexOf(channel) + 1);
+            usrEntry.id = newnick.toLowerCase() + "-" + Channels.indexOf(index);
             newMsg(index, oldnick + " changed their name to " + newnick + ".", "[System]");
-        });
+        }
         Users[newnick.toLowerCase()] = usr;
         Users.splice(oldnick.toLowerCase(), 1);
     });
@@ -785,7 +788,20 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             try{
                 // destroy the object.
                 Tabs[channel].destroy();
-                electron.ipcRenderer.send("channel_part", channel);
+                if(channel.indexOf("#") === 0){
+                    client.part(channel);
+                }
+                Server.data.channels.remove(channel);
+                // convert it to a JSON array
+                var jsonSettings = JSON.stringify(Server.data, null, 4);
+                // write it to a file, to persist for next time
+                fs.writeFile("servers/" + Server.Id + '.json', jsonSettings, 'utf8', function(err) {
+                    if(err) {
+                        console.log("couldn't write settings to json file: ", err);
+                    } else {
+                        console.log("settings saved as json: " + Server.Id + ".json");
+                    }
+                });
             }catch(err){
                 // we couldn't leave the requested chat for some reason. probably a user typo.
                 alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
@@ -795,23 +811,30 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             return false;
         });
         $('#pmUsr').submit(function(){
-            sendMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString());
+            Client.say($("#pmNick").val().toString(), $("#pmMsg").val().toString());
+            newMsg($("#pmNick").val().toString(), $("#pmMsg").val().toString(), Client.nick);
             // override Chromium behaviour
             return false;
         });
         $('#changeNick').submit(function(){
-            electron.ipcRenderer.send("nick_change", $("#newNick").val().toString());
+            Client.send("NICK", $("#newNick").val().toString());
             // override Chromium behaviour
             return false;
         });
 
         $('#rc').submit(function(){
-            electron.ipcRenderer.send("server_reconnect");
+            Client.disconnect("Reconnecting");
+            newMsg("!sys", "Reconnecting...", "[SYSTEM]");
+            document.getElementById("disconnected-m").classList.remove("active");
+            document.getElementById("loading-m").classList.add("active");
+            document.getElementById("loading").classList.add("is-active");
+            Client.connect();
             // override Chromium behaviour
             return false;
         });
         $('#dc').submit(function(){
-            electron.ipcRenderer.send("server_disconnect", $("#dcReason").val().toString());
+            Client.disconnect($("#dcReason").val().toString());
+            document.getElementById("disconnected-m").classList.add("active");
             // override Chromium behaviour
             return false;
         });

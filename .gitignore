@@ -3,5 +3,6 @@
 *.json
 !package.json
 !/servers/0.json
+!settings.json
 client-backup.js
 Ave-*.zip

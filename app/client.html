@@ -234,19 +234,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                     </div>
                 </section>
+                <div class="msg">
+                    <form id="send">
+                        <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
+                        <button type="submit">
+                            <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <div class="loading-modal" id="disconnected-m"></div>
              </main>
         </div>
-              <div class="msg">
-                  <form id="send">
-                      <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
-                      <button type="submit">
-                          <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
-                              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                          </svg>
-                      </button>
-                  </form>
-            </div>
-            <div class="loading-modal active" id="loading-m"></div>
-            <div class="mdl-spinner mdl-js-spinner loading is-active" id="loading"></div>
+        <div class="loading-modal active" id="loading-m"></div>
+        <div class="mdl-spinner mdl-js-spinner loading is-active" id="loading"></div>
     </body>
 </html>
