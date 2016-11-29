@@ -18,8 +18,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 if(require('electron-squirrel-startup')) return;
 
-const {app, BrowserWindow, ipcMain, shell} = require("electron");
+const {app, BrowserWindow, ipcMain, shell, autoUpdater} = require("electron");
 const ws = require("nodejs-websocket");
+const os = require("os");
+
+if(os.platform === "win32"){
+    const feedURL = 'http://ave-update.herokuapp.com/update/win32-' + os.arch();
+
+    var cmd = process.argv[1];
+    if(cmd === "--squirrel-install"){
+        app.quit();
+    }
+
+    autoUpdater.addListener("update-available", function(event) {
+        console.log("an update is available");
+    });
+    autoUpdater.addListener("update-downloaded", function(event, releaseNotes, releaseName, releaseDate, updateURL) {
+        console.log("update downloaded");
+        autoUpdater.quitAndInstall();
+    });
+    autoUpdater.addListener("error", function(error) {
+        console.log("update error", error);
+    });
+    autoUpdater.addListener("checking-for-update", function(event) {
+        console.log("checking for an update");
+    });
+    autoUpdater.addListener("update-not-available", function(event) {
+        console.log("no updates are available");
+    });
+
+    autoUpdater.setFeedURL(feedURL);
+    autoUpdater.checkForUpdates();
+}
 
 let windows = [];
 let contents = [];

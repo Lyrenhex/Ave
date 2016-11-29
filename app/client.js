@@ -729,7 +729,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                 }
             });
             Tabs[index].removeUser(nick);
-        });
+        }
     });
 
     // add handlers for form submits
