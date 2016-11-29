@@ -788,7 +788,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             try{
                 // destroy the object.
                 Tabs[channel].destroy();
-                if(channel.indexOf("#") === 0){
+                if(isChannel(channel)){
                     client.part(channel);
                 }
                 Server.data.channels.remove(channel);
