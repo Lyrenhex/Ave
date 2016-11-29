@@ -1,6 +1,6 @@
 # Ave
 
-[![Join the chat at https://gitter.im/Ave-IRC/Lobby](https://badges.gitter.im/Ave-IRC/Lobby.svg)](https://gitter.im/Ave-IRC/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/freechat-project/Ave](https://badges.gitter.im/freechat-project/Ave.svg)](https://gitter.im/freechat-project/Ave?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Check Dependencies Status](https://david-dm.org/Scratso/Ave/status.svg)](https://david-dm.org/Scratso/Ave)
 
 A material design IRC client written in HTML, CSS, and JavaScript, using [Electron](http://electron.atom.io).
