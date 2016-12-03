@@ -23,7 +23,7 @@ const irc = require("irc");
 const marked = require("marked");
 
 // define some important global variables
-var Channels = ["Welcome"];
+var Channels = ["%Server"];
 var Tabs = [];
 var Users = [];
 

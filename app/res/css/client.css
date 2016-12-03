@@ -262,34 +262,23 @@ body {
                 box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
     transition: 0.25s linear;
 }
+.msg input[type="text"]:hover {
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.12), 0 0 4px rgba(0,0,0,0.24);
+                box-shadow: 0 0 5px rgba(0,0,0,0.12), 0 0 4px rgba(0,0,0,0.24);
+    transition: 0.25s linear;
+}
 .msg input[type="text"]:focus {
-    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
-                box-shadow: 0px 0px 10px rgba(0,0,0,.8);
     -webkit-box-shadow: 0 0 9px rgba(0,0,0,0.12), 0 0 8px rgba(0,0,0,0.24);
                 box-shadow: 0 0 9px rgba(0,0,0,0.12), 0 0 8px rgba(0,0,0,0.24);
     transition: 0.25s linear;
 }
 .msg button[type="submit"] {
     position: fixed;
-    bottom: 17px;
-    right: calc(1vw + 4px);
-    height: 25px;
-    width: 25px;
-    outline: none !important;
-    border: none;
-    border-radius: 12.5px;
-    background-color: #eee;
-    padding: 4px;
-    text-align: center;
-    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
-                box-shadow: 0 0 3px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.24);
+    bottom: 14px;
+    right: calc(1vw);
 }
-.msg button[type="submit"]:hover {
-    background-color: #bbb;
-    cursor: pointer;
-}
-.msg button[type="submit"] svg {
-    fill: #09f;
+.msg button[type="submit"] i {
+    color: #09f;
 }
 
 .container img {
@@ -306,12 +295,6 @@ code, pre {
     color: lightgrey;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	color: #0099ff;
-}
-h1 {
-    text-align: center;
-}
 h2.genre {
     color: #999;
     font-size: 18pt;
@@ -323,4 +306,8 @@ h6 {
 .sub {
     text-align: center;
     margin-top: -20px;
+}
+
+section {
+    padding: 0 16px
 }

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Ave IRC Client</title>
         <link href="res/css/client.css" rel="stylesheet" />
         <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css" />
@@ -36,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <body id="body">
         <!-- Simple header with scrollable tabs. -->
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
             <header class="mdl-layout__header" id="topbar">
                 <div class="mdl-layout__header-row">
                     <!-- Title -->
@@ -45,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- Tabs -->
                 <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="tab-bar">
                      <a href="#scroll-tab-0" class="mdl-layout__tab is-active">
-                        Welcome
+                        %Server
                     </a>
                 </div>
             </header>
@@ -116,131 +117,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <main class="mdl-layout__content" id="content">
                 <section class="mdl-layout__tab-panel is-active" id="scroll-tab-0">
-                    <div class="special">
-                        <div class="content">
-                            <img src="res/img/logo.png" alt="Ave" />
-                            <h1>Hi there</h1>
-                            <p>Welcome! We're glad to see people using Ave for chatter, and we'd like to
-                                thank you for choosing Ave over the many other IRC clients. Of course, to
-                                make this as great an experience for you as we can, this page will just outline
-                                some things that we think are important when using Ave, and help you make
-                                the most out of this client. However, if you're already an expert on Ave, then
-                                feel free to ignore this!</p>
+                    <h2 class="mdl-layout-title">Channels You've Joined</h2>
+                    <div class="mdl-grid" id="Channels">
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                            
                         </div>
-                        <div class="content">
-                            <h2>For new users</h2>
-                            <p>If you're new to using IRC, welcome, and we're honoured that you chose Ave to be your
-                                first IRC chat client (and hopefully your only one!). Of course, though, to help allay any
-                                confusion that might arise, we advise reading the following information so that you know
-                                what some terms mean, and where you can get help with using Ave.</p>
-                            <p>Firstly, if you're in need of help, <a href="https://github.com/Scratso/Ave/wiki" target="_blank">checking
-                                the wiki</a> is usually a good idea, as it contains information both valuable to the use of Ave for new users,
-                                and some information for developers (for new users, we recommend reading the Getting Started page). If
-                                the wiki doesn't help you, however, we recommend either opening on issue on <a href="https://github.com/Scratso/Ave/issues" target="_blank">GitHub</a>,
-                                or asking in the #ave-irc channel on Freenode (IP irc.freenode.net, port 6667).</p>
-                            <p>Also, why not take a quick look at the jargon buster below, designed to help you know exactly what we're talking about throughout the client?</p>
-                            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-                                <thead>
-                                    <tr>
-                                        <th class="mdl-data-table__cell--non-numeric">Terminology</th>
-                                        <th class="mdl-data-table__cell--non-numeric">Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="mdl-data-table__cell--non-numeric">Chat Channels</td>
-                                        <td class="mdl-data-table__cell--non-numeric">Chat channels are a system in IRC to help organise and separate conversations regarding different topics and
-                                          <br />projects. Each chat channel, which is either an IRC channel (a chat room which groups of people can join and
-                                          <br />leave; conversations here are public) or a private chat (a one-to-one discussion between two people, which are
-                                          <br />usually private) is shown as a separate tab in the tabs bar at the top of the client. (Please be warned that private
-                                          <br />chats can be made public if the person whom you're talking to is logging the conversation, and releases the logs
-                                          <br />to the public. Be careful when chatting online.)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="mdl-data-table__cell--non-numeric">Nickname</td>
-                                        <td class="mdl-data-table__cell--non-numeric">In IRC, each user is identified by a nickname (or "nick" for short). Thus,
-                                            <br />only one user can have a particular nickname at one time. (Think of nicknames as usernames in most
-                                            <br />other online services.)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="content">
-                            <h2>Update Changelogs</h2>
-                            <p><b>Please note:</b> Ave is currently in development, and changes may be made
-                                within the source repository that may not be shown in changelogs, and changelogs
-                                may not be maintained at the moment. Changelogs are planned for release; pre-alpha's
-                                changes are too numerous to logically index in a changelog (feel free to peruse
-                                the GitHub history for a "changelog"; see about.)</p>
-                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('chlog')">Show / Hide Changelog</button>
-                            <div class="toggle" id="chlog">
-                                <h4>v0.1-alpha -> v0.1.2-beta</h4>
-                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changelog-1')">Show / Hide Changelog</button>
-                                <div class="toggle" id="changelog-1">
-                                    <ul>
-                                        <li>Fixed case sensitivity on mentions</li>
-                                        <li>Fixed lag on very large channels (such as ##javascript and #node.js)</li>
-                                        <li>Added warning on reconnect function</li>
-                                        <li>Fixed user's leaving not fully being executed, resulting in a space where their name once was</li>
-                                        <li>Added unread message indicator tooltip</li>
-                                        <li>Improved userlist, adding a command list for each individual user accessed by clicking on their username</li>
-                                        <li>Fixed some bugs</li>
-                                    </ul>
-                                </div>
-
-                                <h4>v0.1.2-beta -> v0.2.0</h4>
-                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changelog-2')">Show / Hide Changelog</button>
-                                <div class="toggle" id="changelog-2">
-                                    <ul>
-                                        <li>Changed channel leave function text to be clearer to new users</li>
-                                        <li>Added a small jargon buster and a "for new users" section to the welcome page; will probably need expanding in future?</li>
-                                    </ul>
-                                </div>
-
-                                <h4>v0.2.0 -> v0.2.1</h4>
-                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="toggle('changelog-3')">Show / Hide Changelog</button>
-                                <div class="toggle" id="changelog-3">
-                                    <ul>
-                                        <li>Created operator commands section within user command lists.</li>
-                                        <li>Added buttons to operator commands user section allowing operators to ban, op, and deop users.</li>
-                                        <li>Fixed a small bug with links.</li>
-                                        <li>Ave now supports password-protected servers and SSL certificates.</li>
-                                        <li>Ave now responds to CTCP VERSION requests (and notifies the user).</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h2>What makes Ave different</h2>
-                            <p>Ave is, in many ways, different to most of your usual IRC clients. Part of this
-                                is because Ave's design is inspired, uniquely for an IRC client, by Google's Material
-                                Design Guidelines. But Ave is also unique in that <i>user interface is valued
-                                    above command interfaces</i>.</p>
-                            <p>It is common for IRC clients to implement commands via the textual input
-                                fields, resulting in users entering <code>/msg nickserv identify password</code>
-                                to identify with NickServ. We working on Ave, however, consider this <b>bad form</b>
-                                as users should not be expected to memorise a long list of commands and their syntaxes.</p>
-                            <p>Consequently, Ave aims to implement as many commands as possible naturally
-                                into the client's user interface, allowing users to do what they can do in other clients
-                                with a logical, and natural, graphical user interface.</p>
-                            <p>(An example is that joining channels, in other clients, is usually done with
-                                <code>/join #channel</code>. In Ave, this is accomplished by opening the side
-                                menu (click the hamburger icon in the top left), clicking "Join IRC Channel",
-                                entering the channel name and clicking "join". It sounds like a lot - we know -
-                                but it's not (and actually a lot more natural!).)</p>
-                            <p>If you're on Freenode, in fact, perhaps you'd consider joining #ave-irc? Just click the button below!</p>
-                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="electron.ipcRenderer.send('channel_join', '#ave-irc');">Join #ave-irc</button>
-                        </div>
-
                     </div>
                 </section>
                 <div class="msg">
                     <form id="send">
                         <input type="text"size="100%" name="msg" id="msg" placeholder="Enter message here." />
-                        <button type="submit">
-                            <svg id="send-icon" class="send-icon" viewBox="0 0 24 24">
-                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                            </svg>
+                        <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons">send</i>
                         </button>
                     </form>
                 </div>
