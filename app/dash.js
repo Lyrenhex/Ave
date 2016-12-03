@@ -70,7 +70,7 @@ $(document).ready(function(){
         );
         editBtn.appendChild(editBtnIco);
         editBtn.onclick = function(e){
-            window.location = `connect.html?serv=${this.id.split("-")[0]}`;
+            window.location = `server.html?serv=${this.id.split("-")[0]}`;
             e.stopPropagation();
         }
 
