@@ -556,7 +556,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             nick = "[SERVER]";
             chan = "!sys";
         }
-        if(chan === Client.nick.toLowerCase()){
+        if(chan.toLowerCase() === Client.nick.toLowerCase()){
             chan = nick;
         }
         newMsg(chan, message, nick);
@@ -567,7 +567,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             chan = "!sys";
         }
         var message = `**_\*${nick} ${action}_**`;
-        if(chan === Client.nick.toLowerCase()){
+        if(chan.toLowerCase() === Client.nick.toLowerCase()){
             chan = nick;
         }
         newMsg(chan, message, nick);
@@ -577,7 +577,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             nick = "[SERVER]";
             chan = "!sys";
         }
-        if(chan === Client.nick.toLowerCase()){
+        if(chan.toLowerCase() === Client.nick.toLowerCase()){
             chan = nick;
         }
         newMsg(chan, message, nick);
@@ -843,6 +843,15 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         window.onbeforeunload = closingCode;
         function closingCode(){
            Client.disconnect("Client quit.");
+           socketSend({
+               type: "connect",
+               payload: {
+                   status: false,
+                   server: Server.data.server,
+                   user: Server.data.user.nickname,
+                   errorCode: null
+               }
+           });
            return null;
         }
     });

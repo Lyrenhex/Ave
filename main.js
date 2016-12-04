@@ -21,6 +21,7 @@ if(require('electron-squirrel-startup')) return;
 const {app, BrowserWindow, ipcMain, shell, autoUpdater} = require("electron");
 const ws = require("nodejs-websocket");
 const os = require("os");
+const fs = require("fs");
 
 if(os.platform === "win32"){
     const feedURL = 'http://ave-update.herokuapp.com/update/win32-' + os.arch();
@@ -58,14 +59,25 @@ let api;
 
 var ico = `${__dirname}/app/res/img/icon.ico`;
 
+var Settings = JSON.parse(fs.readFileSync("settings.json", "utf-8"));
+var apisocket = false;
+
 function startServer(){
-    api = ws.createServer(function(conn){
-        console.log("New connection");
-        conn.on("close", function(code, reason){
-            console.log("Connection closed");
-        });
-    });
-    api.listen(5673);
+    if(Settings.enableWebsocketApi){
+        try{
+            api = ws.createServer(function(conn){
+                console.log("New connection");
+                conn.on("close", function(code, reason){
+                    console.log("Connection closed");
+                });
+            });
+            api.listen(5673);
+            apisocket = true;
+        }catch(err){
+            // we couldn't start the websocket server
+            console.log("Unable to start the websocket server.", err);
+        }
+    }
     start();
 }
 
@@ -110,14 +122,16 @@ function Window(serverId, serverData){
 }
 
 ipcMain.on("websocket-api-send", function(event, obj){
-    console.log(obj);
-    var index = contents.indexOf(event.sender);
-    console.log(index);
-    obj.instance = index;
-    json = JSON.stringify(obj);
-    api.connections.forEach(function(conn){
-        conn.send(json);
-    });
+    if(apisocket){
+        console.log(obj);
+        var index = contents.indexOf(event.sender);
+        console.log(index);
+        obj.instance = index;
+        json = JSON.stringify(obj);
+        api.connections.forEach(function(conn){
+            conn.send(json);
+        });
+    }
 });
 
 app.on("ready", startServer);
