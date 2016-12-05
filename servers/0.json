@@ -9,9 +9,9 @@
         "badCertsAllowed": false
     },
     "user": {
-        "nickname": "AveUser",
+        "nickname": "AveTest",
         "username": "AveUser",
-        "realname": "Ave User: http://ave-irc.pw",
+        "realname": "Ave IRC Client https://github.com/Scratso/Ave",
         "password": ""
     },
     "encoding": "UTF-8",
@@ -24,7 +24,5 @@
         "log": true
     },
     "floodProtect": false,
-    "channels": [
-        "#ave-irc"
-    ]
+    "channels": []
 }

@@ -121,7 +121,7 @@ function Tab(name, id){
         this.ChatLog.id = "clog-" + tabName;
         flexDiv.appendChild(this.ChatLog);
 
-        if(tabName == "!sys"){
+        if(tabName == "%Server"){
             // if it is the system channel, we need a server command list.
             var usrCTitle = document.createElement("p");
             usrCTitle.innerHTML = "Server Commands";
@@ -537,7 +537,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                 errorCode: null
             }
         });
-        newMsg("!sys", "Connected!", "[System]");
+        newMsg("%Server", "Connected!", "[System]");
 
         // if the user set a NickServ password
         if(Server.data.user.password !== ""){
@@ -554,7 +554,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Client.addListener("message", function(nick, chan, message, raw){
         if(!nick){
             nick = "[SERVER]";
-            chan = "!sys";
+            chan = "%Server";
         }
         if(chan.toLowerCase() === Client.nick.toLowerCase()){
             chan = nick;
@@ -564,7 +564,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Client.addListener("action", function(nick, chan, action, raw){
         if(!nick){
             nick = "[SERVER]";
-            chan = "!sys";
+            chan = "%Server";
         }
         var message = `**_\*${nick} ${action}_**`;
         if(chan.toLowerCase() === Client.nick.toLowerCase()){
@@ -575,7 +575,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
     Client.addListener("notice", function(nick, chan, message, raw){
         if(!nick){
             nick = "[SERVER]";
-            chan = "!sys";
+            chan = "%Server";
         }
         if(chan.toLowerCase() === Client.nick.toLowerCase()){
             chan = nick;
@@ -583,7 +583,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         newMsg(chan, message, nick);
     });
     Client.addListener("ctcp-version", function(from, to, raw){
-        newMsg("!sys", `${from} has sent you a CTCP VERSION request.`, "[System]");
+        newMsg("%Server", `${from} has sent you a CTCP VERSION request.`, "[System]");
         Client.ctcp(from, "VERSION", `Ave IRC Client version ${app.getVersion()} https://ave-irc.pw`);
     });
 
@@ -825,7 +825,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
 
         $('#rc').submit(function(){
             Client.disconnect("Reconnecting");
-            newMsg("!sys", "Reconnecting...", "[SYSTEM]");
+            newMsg("%Server", "Reconnecting...", "[SYSTEM]");
             document.getElementById("disconnected-m").classList.remove("active");
             document.getElementById("loading-m").classList.add("active");
             document.getElementById("loading").classList.add("is-active");
@@ -914,7 +914,12 @@ function newMsg(channel, message, sender, time=null){
         // allow 1px inaccuracy by adding 1
         var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
 
-        Tabs[channel].addMessage(sender, message, time);
+        if(channel !== "%Server"){
+            Tabs[channel].addMessage(sender, message, time);
+        }else{
+            var msg = 
+            document.getElementById('Messages:%Server').
+        }
 
         // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.
         if(!isChannel(channel) && sender.toLowerCase() === channel){

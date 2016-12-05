@@ -1,5 +1,38 @@
 const electron = require("electron");
 const fs = require("fs");
+const firebase = require("firebase");
+
+var database;
+var uid;
+var serverId;
+
+// Initialize Firebase
+var config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+firebase.initializeApp(config);
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        var isAnonymous = user.isAnonymous;
+        uid = user.uid;
+        console.log(user);
+
+        database = firebase.database();
+            if(getURLParameter("serv") === undefined){
+            database.ref(`${uid}`).once('value', function(snapshot){
+                serverId = snapshot.numChildren();
+                console.log(serverId);
+            });
+        }
+    } else {
+        firebase.auth().signInAnonymously().catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(error);
+        });
+    }
+});
 
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
@@ -47,13 +80,12 @@ $(document).ready(function(){
         console.log("unable to open settings.json; probably first run:", err);
     } */
 
-    var serverId = getURLParameter("serv");
-    console.log(serverId);
-    if(serverId){
+    console.log(getURLParameter("serv"));
+    if(getURLParameter("serv") !== undefined){
+        serverId = getURLParameter("serv");
         popFields(Servers[serverId]);
-    }else{
-        serverId = Servers.length;
     }
+    console.log(serverId);
 
     $('#connect').submit(function(){
         // set up the settings array
@@ -85,6 +117,7 @@ $(document).ready(function(){
             floodProtect: $("#floodProtect").is(":checked"),
             channels: Channels
         };
+        database.ref(`${uid}/${serverId}`).set(settings);
         // electron.ipcRenderer.send("server_connect", settings);
         // convert it to a JSON array
         var jsonSettings = JSON.stringify(settings, null, 4);
