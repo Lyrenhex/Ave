@@ -117,24 +117,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <main class="mdl-layout__content" id="content">
                 <section class="mdl-layout__tab-panel is-active" id="scroll-tab-0">
-                    <h2 class="mdl-layout-title">Channels You've Joined</h2>
-                    <div class="mdl-grid" id="Channels">
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-
-                        </div>
-                    </div>
-
                     <h2 class="mdl-layout-title">Server Commands</h2>
                     <div class="mdl-grid" id="Commands">
                         <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-                            <div class="sCard mdl-shadow--2dp">
+                            <div class="sCard mdl-shadow--2dp" onclick="Client.send('MOTD')">
                                 <h2>/motd</h2>
                                 <h3>Message of the Day</h3>
                                 <p>Display the message of the day for the current server.</p>
                             </div>
                         </div>
                         <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
-                            <div class="sCard mdl-shadow--2dp">
+                            <div class="sCard mdl-shadow--2dp" onclick="Client.send('RULES')">
                                 <h2>/rules</h2>
                                 <h3>Server Rules</h3>
                                 <p>Display the rules of the current server, if applicable.</p>
