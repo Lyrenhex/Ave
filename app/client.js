@@ -21,6 +21,13 @@ const electron = require("electron");
 const fs = require("fs");
 const irc = require("irc");
 const marked = require("marked");
+const firebase = require("firebase");
+
+// Initialize Firebase
+var config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+firebase.initializeApp(config);
+
+var database = firebase.database();
 
 // define some important global variables
 var Channels = ["%Server"];
@@ -457,9 +464,16 @@ function socketSend(obj){
     electron.ipcRenderer.send("websocket-api-send", obj);
 }
 
-electron.ipcRenderer.on("server", function(event, serverId, serverData){
+electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
     Server.id = serverId;
     Server.data = serverData;
+
+    if(!Server.data.channels){
+        Server.data.channels = [];
+    }
+
+    Server.database = database.ref(`${uid}/${Server.id}`);
+    Server.channelRef = database.ref(`${uid}/${Server.id}/channels`);
 
     document.getElementById("server").innerHTML = `${Server.data.server.address} (${Server.data.server.port})`;
     document.title = `Ave IRC Client :: ${Server.data.server.address} (${Server.data.server.port})`;
@@ -630,14 +644,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
         Tabs[channel.toLowerCase()].addUser(nick);
         if(nick === Client.nick && Server.data.channels.indexOf(channel) === -1){
             Server.data.channels.push(channel);
-            // convert to JSON array
-            var jsonServer = JSON.stringify(Server.data, null, 4);
-            // write to file for persistance
-            fs.writeFile(`servers/${Server.id}.json`, jsonServer, 'utf8', function(err){
-                if(err){
-                    console.log("couldn't write settings to json file:", err);
-                }
-            });
+            Server.channelRef.set(Server.data.channels)
         }
     });
     Client.addListener("nick", function(oldnick, newnick, channels, message){
@@ -676,16 +683,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             newMsg(channel, `${nick} has left the channel (${reason}).`, "[System]");
         }else if(Server.data.channels.indexOf(channel) != -1){
             Server.data.channels.remove(channel);
-            // convert it to a JSON array
-            var jsonSettings = JSON.stringify(Server.data, null, 4);
-            // write it to a file, to persist for next time
-            fs.writeFile(`servers/${Server.Id}.json`, jsonSettings, 'utf8', function(err) {
-                if(err) {
-                    console.log("couldn't write settings to json file: ", err);
-                } else {
-                    console.log("settings saved as json: " + Server.Id + ".json");
-                }
-            });
+            Server.channelRef.set(Server.data.channels)
         }
     });
     Client.addListener("kick", function(channel, nick, by, reason, message){
@@ -703,16 +701,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
             newMsg(channel, `${nick} was kicked by ${by} (${reason}).`, "[System]");
         }else if(Server.data.channels.indexOf(channel) != -1){
             Server.data.channels.remove(channel);
-            // convert it to a JSON array
-            var jsonSettings = JSON.stringify(Server.data, null, 4);
-            // write it to a file, to persist for next time
-            fs.writeFile(`servers/${Server.Id}.json`, jsonSettings, 'utf8', function(err) {
-                if(err) {
-                    console.log("couldn't write settings to json file: ", err);
-                } else {
-                    console.log("settings saved as json: " + Server.Id + ".json");
-                }
-            });
+            Server.channelRef.set(Server.data.channels)
         }
     });
     Client.addListener("quit", function(nick, reason, channels, message){
@@ -793,16 +782,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData){
                     client.part(channel);
                 }
                 Server.data.channels.remove(channel);
-                // convert it to a JSON array
-                var jsonSettings = JSON.stringify(Server.data, null, 4);
-                // write it to a file, to persist for next time
-                fs.writeFile("servers/" + Server.Id + '.json', jsonSettings, 'utf8', function(err) {
-                    if(err) {
-                        console.log("couldn't write settings to json file: ", err);
-                    } else {
-                        console.log("settings saved as json: " + Server.Id + ".json");
-                    }
-                });
+                Server.channelRef.set(Server.data.channels)
             }catch(err){
                 // we couldn't leave the requested chat for some reason. probably a user typo.
                 alert("We couldn't leave the chat. Are you sure you spelled it correctly?")
@@ -914,11 +894,12 @@ function newMsg(channel, message, sender, time=null){
         // allow 1px inaccuracy by adding 1
         var isScrolledToBottom = tab.scrollHeight - tab.clientHeight <= tab.scrollTop + 1;
 
-        if(channel !== "%Server"){
+        if(channel !== "%server"){
             Tabs[channel].addMessage(sender, message, time);
         }else{
-            var msg = 
-            document.getElementById('Messages:%Server').
+            /* var msg =
+            document.getElementById('Messages:%Server'). */
+            // TODO: sort this server message script out.
         }
 
         // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.

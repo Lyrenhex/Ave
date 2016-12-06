@@ -18,10 +18,16 @@ firebase.auth().onAuthStateChanged(function(user) {
         console.log(user);
 
         database = firebase.database();
-            if(getURLParameter("serv") === undefined){
+        if(getURLParameter("serv") === null){
             database.ref(`${uid}`).once('value', function(snapshot){
                 serverId = snapshot.numChildren();
                 console.log(serverId);
+            });
+        }else{
+            database.ref(`${uid}/${getURLParameter("serv")}`).once('value', function(snapshot){
+                serverId = getURLParameter("serv");
+                console.log(snapshot.val());
+                popFields(snapshot.val());
             });
         }
     } else {
@@ -36,23 +42,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
-}
-
-// ensure server folder already exists
-fs.mkdir("servers", 0777, function(err){
-        if(err){
-            if(err.code == "EEXIST"){
-                // do nothing; folder already exists
-            }else{
-                console.log("Unable to create servers folder", err);
-            }
-        }
-});
-
-var Servers = [];
-var servers = fs.readdirSync("servers/");
-for(server in servers){
-    Servers.push(JSON.parse(fs.readFileSync("servers/" + servers[server], "utf-8")));
 }
 
 var Channels = [];
@@ -73,18 +62,7 @@ function toggle(id){
 }
 
 $(document).ready(function(){
-    /* try{
-        var settings = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
-        popFields(settings);
-    }catch(err){
-        console.log("unable to open settings.json; probably first run:", err);
-    } */
-
     console.log(getURLParameter("serv"));
-    if(getURLParameter("serv") !== undefined){
-        serverId = getURLParameter("serv");
-        popFields(Servers[serverId]);
-    }
     console.log(serverId);
 
     $('#connect').submit(function(){
@@ -118,17 +96,6 @@ $(document).ready(function(){
             channels: Channels
         };
         database.ref(`${uid}/${serverId}`).set(settings);
-        // electron.ipcRenderer.send("server_connect", settings);
-        // convert it to a JSON array
-        var jsonSettings = JSON.stringify(settings, null, 4);
-        // write it to a file, to persist for next time
-        fs.writeFile("servers/" + serverId + '.json', jsonSettings, 'utf8', function(err) {
-            if(err) {
-                console.log("couldn't write settings to json file: ", err);
-            } else {
-                console.log("settings saved as json: " + serverId + ".json");
-            }
-        });
         window.location = "dash.html";
         return false;
     });

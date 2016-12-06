@@ -71,7 +71,7 @@ function startServer(){
                     console.log("Connection closed");
                 });
             });
-            api.listen(5673);
+            api.listen(Settings.websocketPort);
             apisocket = true;
         }catch(err){
             // we couldn't start the websocket server
@@ -92,14 +92,14 @@ function start(){
 
     var that = this;
 
-    ipcMain.on("server", function(event, serverId, serverData){
-        var newWin = new Window(serverId, serverData);
+    ipcMain.on("server", function(event, serverId, serverData, uid){
+        var newWin = new Window(serverId, serverData, uid);
         windows.push(newWin);
         contents.push(newWin.contents);
     });
 }
 
-function Window(serverId, serverData){
+function Window(serverId, serverData, uid){
     this.win = new BrowserWindow({
         width: 900,
         height: 700,
@@ -113,7 +113,7 @@ function Window(serverId, serverData){
     var that = this;
 
     this.contents.on("did-finish-load", function(){
-        that.contents.send("server", serverId, serverData);
+        that.contents.send("server", serverId, serverData, uid);
     });
 
     this.win.on("closed", function(){
