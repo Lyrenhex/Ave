@@ -24,6 +24,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   src: local('Roboto'), local('Roboto-Regular'), url(Roboto/Roboto-Regular.ttf) format('ttf');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+/* Roboto font */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Mono'), local('Roboto-Mono'), url(Roboto/RobotoMono-Regular.ttf) format('ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 
 .loading-modal {
     background-color: #000;
@@ -125,71 +133,66 @@ body {
 }
 
 .chatLog {
-    margin-left: 5px;
-    width: 75vw;
+    margin: 0;
+    width: 75%;
     min-width: 375px;
     margin-bottom: 50px;
 }
-.chatLog .message {
+.message {
     display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 7px;
     margin-bottom: 7px;
-    padding: 10px;
     width: 99%;
-    background-color: white;
-    border-radius: 2px;
-    text-align: left;
-    color: #000;
-    -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
-                box-shadow: 0 2px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
 }
-.chatLog .message p {
+.message p {
+    margin: 0;
+}
+.message p.main {
+    background-color: white;
+    border-radius: 19px;
+    padding: 8px;
     font-size: 14pt;
     line-height: 16pt;
     margin: 0;
+    color: rgba(0,0,0,.87);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
-.chatLog .message a:link,
-.chatLog .message a:visited,
-.chatLog .message a:active {
+.message a:link,
+.message a:visited,
+.message a:active {
     color: #3F51B5;
     text-decoration: none;
 }
-.chatLog .message a:hover {
+.message a:hover {
     text-decoration: underline;
 }
-.chatLog .message .meta {
+.message .meta {
     font-size: 12pt;
-    color: #acacac;
-    margin-bottom: 8px;
+    color: rgba(0,0,0,.54);
 }
 /* .chatLog .message .meta:hover {
     color: #000;
     cursor: pointer;
     margin-bottom: 8px;
 } */
-.chatLog .message .meta .msgId {
+.message .meta .msgId {
     font-style: italic;
     text-align: right;
 }
 
-.chatLog .sysmsg {
+.sysmsg p.main {
     background-color: #dbdbdb;
 }
-.chatLog .sysmsg .meta {
-    color: #616161;
-}
-.chatLog .important {
+.important p.main {
     background-color: #09f;
-    color: #fff;
 }
 .chatLog .old {
     opacity: 0.4;
 }
-.chatLog .error {
+.error {
     background-color: #ff1744;
-    color: #fff;
 }
 
 .usrList {
@@ -247,6 +250,7 @@ body {
     transition: 0.5s linear;
 }
 .msg input[type="text"] {
+    font-family: "Roboto", sans-serif;
     height: 98%;
     width: calc(98vw - 48px);
     resize: none;
@@ -282,6 +286,7 @@ body {
     width: 100%;
 }
 code, pre {
+    font-family: "Roboto Mono", monospace;
     background-color: #eee;
     border-radius: 2px;
     padding: 2px;

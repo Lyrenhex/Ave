@@ -35,6 +35,7 @@ var Tabs = [];
 var Users = [];
 
 var cID = 0;
+var mID = 0;
 
 var Server = {};
 var Client = {};
@@ -330,27 +331,20 @@ Tab.prototype.addMessage = function(sender, contents, time){
     }else{
         var prevMessage = {Author: undefined};
     }
-    //console.log(sender);
-    if(prevMessage.Author === sender){
-        // consecutive messages are separated with a <hr />
-        prevMessage.Element.appendChild(document.createElement("hr"));
-        // create the message, sharing the previous message's div container.
-        this.Messages.push(new Message(sender, contents, time, prevMessage.Element));
-    }else{
-        // otherwise, make a new div and pass that to the Message object
-        var messageDiv = document.createElement("div");
-        messageDiv.className = "message";
-        this.ChatLog.appendChild(messageDiv);
-        this.Messages.push(new Message(sender, contents, time, messageDiv));
-    }
+    //console.log(sender)
+
+    var messageDiv = document.createElement("div");
+    messageDiv.className = "message";
+    this.ChatLog.appendChild(messageDiv);;
+    this.Messages.push(new Message(sender, contents, time, messageDiv, prevMessage.Author !== sender));
 }
 Tab.prototype.addUser = function(name, op=false){
-    if(Users.indexOf(name.toLowerCase()) >= 0){
-        var user = name.toLowerCase();
+    var user = name.toLowerCase();
+    if(Users[user] !== undefined){
         Users[user].Channels[this.Name.toLowerCase()] = this;
     }else{
-        Users[name.toLowerCase()] = new User(name);
-        Users[name.toLowerCase()].Channels[this.Name.toLowerCase()] = this;
+        Users[user] = new User(name);
+        Users[user].Channels[this.Name.toLowerCase()] = this;
     }
     this.Users.push(name.toLowerCase());
     var usrEntry = document.createElement("li");
@@ -404,7 +398,7 @@ Tab.prototype.destroy = function(){
     Channels[this.Id] = null;
     delete Tabs[this.Name.toLowerCase()];
 }
-function Message(sender, contents, time, div){
+function Message(sender, contents, time, div, incName=true){
     this.Author = sender;
     this.Content = contents;
     this.Timestamp = time;
@@ -422,6 +416,7 @@ function Message(sender, contents, time, div){
         this.Element.classList.add("error");
     }
     var main = document.createElement("p");
+    main.className = "main";
 
     // check for links and emails, and then make them into links (because users like that shit)
     // create a copy of the message, so that we can mess around with the visible output but keep a clean object in the logs
@@ -445,12 +440,23 @@ function Message(sender, contents, time, div){
     hypertext = marked(hypertext, {renderer: MarkedRenderer});
 
     main.innerHTML = hypertext;
+    main.title = this.Timestamp;
+    main.id = mID;
+    var tooltip = document.createElement("span");
+    tooltip.htmlFor = mID;
+    tooltip.className = "mdl-tooltip";
+    tooltip.appendChild(document.createTextNode(this.Timestamp));
+    mID++;
     var meta = document.createElement("p");
     meta.className = "meta";
-    var metaText = document.createTextNode(this.Author + " (" + this.Timestamp + "):");
+    var metaText = document.createTextNode(`${this.Author}    (${this.Timestamp})`);
     meta.appendChild(metaText);
-    this.Element.appendChild(meta);
+    if(incName)
+        this.Element.appendChild(meta);
     this.Element.appendChild(main);
+    this.Element.appendChild(tooltip);
+
+    componentHandler.upgradeDom("mdl-tooltip");
 }
 function User(name){
     this.Name = name;
@@ -779,9 +785,12 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
                 // destroy the object.
                 Tabs[channel].destroy();
                 if(isChannel(channel)){
-                    client.part(channel);
+                    Client.part(channel);
                 }
-                Server.data.channels.remove(channel);
+                var index = Server.data.channels.indexOf(channel);
+                if (index > -1) {
+                    Server.data.channels.splice(index, 1);
+                }
                 Server.channelRef.set(Server.data.channels)
             }catch(err){
                 // we couldn't leave the requested chat for some reason. probably a user typo.
@@ -897,9 +906,10 @@ function newMsg(channel, message, sender, time=null){
         if(channel !== "%server"){
             Tabs[channel].addMessage(sender, message, time);
         }else{
-            /* var msg =
-            document.getElementById('Messages:%Server'). */
-            // TODO: sort this server message script out.
+            var messageDiv = document.createElement("div");
+            messageDiv.className = "message";
+            document.getElementById("Messages:Server").appendChild(messageDiv);
+            new Message(sender, message, time, messageDiv, false);
         }
 
         // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.
@@ -916,7 +926,7 @@ function newMsg(channel, message, sender, time=null){
             if(isScrolledToBottom){
                 tab.scrollTop = tab.scrollHeight;
             }
-        }else{
+        }else if(channel !== "%server"){
             // otherwise, we should probably increase the badge of the actual channel
             // set the badge to its value + 1.
             Tabs[channel].Badge.setAttribute("data-badge", String(Number(Tabs[channel].Badge.getAttribute("data-badge")) + 1));
