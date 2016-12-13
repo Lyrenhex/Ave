@@ -734,7 +734,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
         }else if(mode === "v"){
             sendMsg(channel, by + `${by} gave voice to ${argument}.`, "[System]");
         }else if(mode === "b"){
-            sendMsg(channel, by + `${by} has banned ${argument}.` "[System]");
+            sendMsg(channel, `${by} has banned ${argument}.`, "[System]");
         }else{
             if(by !== undefined){
                 sendMsg(channel, `${by} set the ${mode} mode on ${channel}/${argument}.`, "[System]");
