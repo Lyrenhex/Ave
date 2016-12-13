@@ -727,6 +727,35 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
         }
     });
 
+    Client.addListener("+mode", function(channel, by, mode, argument, message){
+        if(mode === "o"){
+            newMsg(channel, `${by} ascended ${argument} to operator.`, "[System]");
+            Tabs[channel.toLowerCase()].opUser(argument);
+        }else if(mode === "v"){
+            sendMsg(channel, by + `${by} gave voice to ${argument}.`, "[System]");
+        }else if(mode === "b"){
+            sendMsg(channel, by + `${by} has banned ${argument}.` "[System]");
+        }else{
+            if(by !== undefined){
+                sendMsg(channel, `${by} set the ${mode} mode on ${channel}/${argument}.`, "[System]");
+            }
+        }
+    });
+    Client.addListener("-mode", function(channel, by, mode, argument, message){
+        if(mode === "o"){
+            sendMsg(channel, `${by} stripped ${argument} of operator.`, "[System]");
+            Tabs[channel.toLowerCase()].deopUser(argument);
+        }else if(mode === "v"){
+            sendMsg(channel, `${by} stripped voice from ${argument}.`, "[System]");
+        }else if(mode === "b"){
+            sendMsg(channel, `${by} has unbanned ${argument}.`, "[System]");
+        }else{
+            if(by !== undefined){
+                sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+            }
+        }
+    });
+
     // add handlers for form submits
     $(document).ready(function(){
         //document.getElementById("loading-m").classList.add("active");
