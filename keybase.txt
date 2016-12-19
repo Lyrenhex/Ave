@@ -1,0 +1,72 @@
+https://keybase.io/scratso
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://ave-irc.pw
+  * I am scratso (https://keybase.io/scratso) on keybase.
+  * I have a public key with fingerprint 68BD 580E AC17 3646 1BD2  C4A8 9B4B ED39 AEF4 6BD9
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0120b8d329ca9d527bd8827b208ba32e77e8d4ddd474c568a59be05c7e5ae5afc3e60a",
+            "fingerprint": "68bd580eac1736461bd2c4a89b4bed39aef46bd9",
+            "host": "keybase.io",
+            "key_id": "9b4bed39aef46bd9",
+            "kid": "01014675c4dbd3be392d542a6cd64c7aff6e78becd4081f667b3d0676d81e64dc3970a",
+            "uid": "93ad7f970c05ee784d1766fa562f0f19",
+            "username": "scratso"
+        },
+        "service": {
+            "hostname": "ave-irc.pw",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1482164666,
+    "expire_in": 157680000,
+    "prev": "861eaeff164728b45d22d67e481e062341975f7090e6e20d64411d52243d6909",
+    "seqno": 19,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.61
+Comment: https://keybase.io/crypto
+
+yMNpAnicbVJtUFRVGF4IMhgI5SOdEXG4oQ1C2/08916KYNSwErFhdIKSWe+951z2
+snh327u7wCBgljr9EGOWRgokRGkVAx2ytaRS+R4xMWF0yBooaGYt7QcjRZHYWdJ/
+nTlz7tx3nud5n/c5py/6MVNkSOPmu2LnPdt4yPClerepoCDifCUh22EFkVFJ2NDi
+B5VCZLgsNg0SGQRJ0aQsQIYWFUmEHM3LUBDwSZOCLDE04nkkQBZCyPKswgFB4kQZ
+kZzCI07CW1UYBEiJSCdUTS9GTodT011YFggy5AQSSQrFM4AFlAxphZUEUWZlBBlR
+QioLZChiotVuBBnYnCwZyKzZcQ3/WBbt/Q/+kW+SYgHPKSyUISMjRqQhx9ISUCBg
+FV5SVYB4QUYKZEmBUgHgZQaSgAdQoBBgocKI/KJv9399GAnyKi4pJIcwkYUUD4Aq
+cYBWSZUK9nUbyKlLuxBGG4pTchl2oiqdwEWPpqBgrsFBHgIkD3pWcypmRxkmOpx2
+l12xl+K61eVyZARprgpHEFeGZMtDBYus6RBniAke5DQ0u05kUBipuLSgJMUKNIWD
+BCCdQOUOzYksWhDB8UAg8Qq2QR4sKQAK4bRUDOZpQWY5SNMQ8IjFc5OAZlhK5DmV
+J0USAUSTOC2WovDF0ywDgUgGJzXQW7oda4vYp1QcnFcr1iWX24mIqp5LO8JMIZGm
+x8NDg4/LFBmx9NGTy86PmV8SPxh9r+bO6MDVrptETc620JIvn3o57uht+daytAMn
+8k7EyH8ZfZfTyg6Ou3VhfoPLdqerI/GH9rTrT5SYsjLy/+yo3nr84/NxY0dHvdkX
+k+dK6xaMkal1tTs+2mQ53FquXYixf3PtqyYlPTnQsEw/kiC5C5v73RMbTn9Q4mvc
+7TOizvnVv8++y6Z2N8V738nrN7JAx3D+5Sl7aas/9z7/YtFeM5X8/UF6LzXjr/3x
+2gojZSDO/Ftz0i+rr7yeNW0be9M05NyXUBPe2pafufF0Ouf7pEEvKyzYcuRMW7nw
+0nRPYkHm2VXw7uSwp7al9qdRsL+96sy4ryDh7ffrtnDtTw7oz4RX9kpZqZ0Nxsnv
+siXbsUPL1/BRMUmfL8wfdh3ypuwcjNlXl/n7zpX53vo9a8fuT+Qc33Qqz+bYHXFs
+pd450tYYmLGa14f4t+Y+T36dts633XeA6aVqJsdgxa/atxOz1qujS7UQ89Ae/wSx
+tjtq9bzwxbmZ2QmHde5U98nurOp/+m/2WG7sn412JAmbn5t7ryWsqbxa8r6QM9/n
+uBX4tDD1evae6N6avo3Nps9eGc4M+K8E1pTFLlmV+yo3uWLbBc9tW2ZbrJIYyT/9
+gA59raQmfgoGptWRopHGqsQxsFDk256tJN3oqr3o7R7q73/wx4dhb8zp9T8P7rKu
+j81JWd4S/y+dBcCe
+=KY/W
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/scratso
