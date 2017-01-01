@@ -336,7 +336,7 @@ Tab.prototype.addMessage = function(sender, contents, time){
     var messageDiv = document.createElement("div");
     messageDiv.className = "message";
     this.ChatLog.appendChild(messageDiv);;
-    this.Messages.push(new Message(sender, contents, time, messageDiv, prevMessage.Author !== sender));
+    this.Messages.push(new ChatMessage(sender, contents, time, messageDiv, prevMessage.Author !== sender));
 }
 Tab.prototype.addUser = function(name, op=false){
     var user = name.toLowerCase();
@@ -398,7 +398,7 @@ Tab.prototype.destroy = function(){
     Channels[this.Id] = null;
     delete Tabs[this.Name.toLowerCase()];
 }
-function Message(sender, contents, time, div, incName=true){
+function ChatMessage(sender, contents, time, div, incName=true){
     this.Author = sender;
     this.Content = contents;
     this.Timestamp = time;
@@ -408,13 +408,19 @@ function Message(sender, contents, time, div, incName=true){
         // if it's a system message, add the appropriate class.
         this.Element.classList.add("sysmsg");
     }
-    if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.toLowerCase().indexOf(UserNick.toLowerCase()) >= 0){
-        // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
-        this.Element.classList.add("important");
-    }else if(this.Author == "[ERROR]"){
-        // if it's an error, then style accordingly
-        this.Element.classList.add("error");
+
+    try{
+      if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.toLowerCase().indexOf(Client.nick.toLowerCase()) >= 0){
+          // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
+          this.Element.classList.add("important");
+      }else if(this.Author == "[ERROR]"){
+          // if it's an error, then style accordingly
+          this.Element.classList.add("error");
+      }
+    } catch(err) {
+      // do nothing; probably just a message sent prior to Client.nick having a value
     }
+
     var main = document.createElement("p");
     main.className = "main";
 
@@ -456,7 +462,7 @@ function Message(sender, contents, time, div, incName=true){
     this.Element.appendChild(main);
     this.Element.appendChild(tooltip);
 
-    componentHandler.upgradeDom("mdl-tooltip");
+    componentHandler.upgradeElements(this.Element);
 }
 function User(name){
     this.Name = name;
@@ -780,7 +786,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
             }
         });
 
-        // when the new message form is completed
+        // when the new ChatMessage form is completed
         $('#send').submit(function(){
             // break up the active tab's id, which is of form scroll-tab-[channel]
             var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
@@ -907,7 +913,7 @@ function newTab(tabName){
         Tabs[tabName.toLowerCase()] = new Tab(tabName, cID);
     }
 }
-// add a new message to a tab
+// add a new ChatMessage to a tab
 function newMsg(channel, message, sender, time=null){
     //console.log(sender);
     try{
@@ -938,7 +944,7 @@ function newMsg(channel, message, sender, time=null){
             var messageDiv = document.createElement("div");
             messageDiv.className = "message";
             document.getElementById("Messages:Server").appendChild(messageDiv);
-            new Message(sender, message, time, messageDiv, false);
+            new ChatMessage(sender, message, time, messageDiv, false);
         }
 
         // if it's a private chat, and the message is from the other person, make sure the tab's proper name matches the capitalisation of the person's nick.
@@ -967,4 +973,6 @@ function newMsg(channel, message, sender, time=null){
         newTab(channel);
         newMsg(channel, message, sender, time);
     }
+
+    return 0;
 }

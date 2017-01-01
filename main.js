@@ -57,7 +57,7 @@ let contents = [];
 let mainWin;
 let api;
 
-var ico = `${__dirname}/app/res/img/icon.ico`;
+var ico = `${__dirname}/app/res/img/icon.png`;
 
 var Settings = JSON.parse(fs.readFileSync("settings.json", "utf-8"));
 var apisocket = false;
@@ -87,6 +87,7 @@ function start(){
         height: 700,
         icon: ico
     });
+    console.log(ico);
 
     mainWin.loadURL(`file://${__dirname}/app/dash.html`);
 
