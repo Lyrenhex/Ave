@@ -796,6 +796,10 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
       }
     });
 
+    Client.addListener("motd", function(motd) {
+      newMsg("%Server", motd, "[MOTD]");
+    });
+
     // add handlers for form submits
     $(document).ready(function(){
         //document.getElementById("loading-m").classList.add("active");
