@@ -202,7 +202,7 @@ function Tab(name, id){
             chTopicToggle.appendChild(document.createTextNode("Change Topic"));
             chOpComs.appendChild(chTopicToggle);
 
-            var chTopicForm = document.createElement("form");
+            var chTopicForm = document.createElement("div");
             chTopicForm.className = "toggle-md";
             chTopicForm.id = "settopic-" + this.Name;
             var chTopicFormDiv = document.createElement("div");
@@ -227,7 +227,9 @@ function Tab(name, id){
                 // break up the active tab's id, which is of form scroll-tab-[channel]
                 var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
                 var channel = Channels[array[array.length-1]];
-                electron.ipcRenderer.send("topic_set", channel, document.getElementById("topictext-" + this.id).innerHTML);
+                Client.send("TOPIC", channel, document.getElementById("topictext-" + this.id).innerHTML);
+
+                return false;
             };
             var chTopicFormButtonLabel = document.createTextNode("Set Chan Topic");
             chTopicFormButton.appendChild(chTopicFormButtonLabel);
@@ -253,7 +255,7 @@ function Tab(name, id){
             comWhois.id = tabName;
             comWhois.onclick = function(){
                 var channel = this.id;
-                electron.ipcRenderer.send("user_whois", Tabs[channel].Name.toString());
+                Client.send("WHOIS", Tabs[channel].Name.toString());
             };
             var comWhoisLabel = document.createTextNode("WHOIS User");
             comWhois.appendChild(comWhoisLabel);
@@ -296,7 +298,7 @@ function Tab(name, id){
                 var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
                 var chan = $("#inviteChan-" + Channels[array[array.length-1]]).val().toString();
                 var user = Tabs[Channels[array[array.length-1]]].Name;
-                electron.ipcRenderer.send("message_send", user, ":client.send(\"INVITE\", \"" + user + "\", \"" + chan + "\");");
+                Client.send("INVITE", user, chan);
             };
             var comInviteFormButtonLabel = document.createTextNode("Invite User");
             comInviteFormButton.appendChild(comInviteFormButtonLabel);
@@ -416,9 +418,14 @@ function ChatMessage(sender, contents, time, div, incName=true){
       }else if(this.Author == "[ERROR]"){
           // if it's an error, then style accordingly
           this.Element.classList.add("error");
+          incName = false;
       }
     } catch(err) {
       // do nothing; probably just a message sent prior to Client.nick having a value
+    }
+
+    if (this.Author === "[SERVER]") {
+      incName = false;
     }
 
     var main = document.createElement("p");
@@ -532,7 +539,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
     });
     // standard irc error
     Client.addListener("error", function(message){
-        newMsg(message.args[1], `error: ${message.args[2]}`, "[ERROR]");
+        newMsg(message.args[1], `error: ${message.args[1]}: ${message.args[message.args.len - 1]}`, "[ERROR]");
         socketSend({
             type: "ircError",
             payload: {
@@ -974,5 +981,5 @@ function newMsg(channel, message, sender, time=null){
         newMsg(channel, message, sender, time);
     }
 
-    return 0;
+    return false;
 }
