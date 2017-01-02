@@ -256,6 +256,7 @@ function Tab(name, id){
             comWhois.onclick = function(){
                 var channel = this.id;
                 Client.send("WHOIS", Tabs[channel].Name.toString());
+                console.log(Tabs[channel]);
             };
             var comWhoisLabel = document.createTextNode("WHOIS User");
             comWhois.appendChild(comWhoisLabel);
@@ -745,28 +746,44 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
             newMsg(channel, `${by} ascended ${argument} to operator.`, "[System]");
             Tabs[channel.toLowerCase()].opUser(argument);
         }else if(mode === "v"){
-            sendMsg(channel, by + `${by} gave voice to ${argument}.`, "[System]");
+            newMsg(channel, by + `${by} gave voice to ${argument}.`, "[System]");
         }else if(mode === "b"){
-            sendMsg(channel, `${by} has banned ${argument}.`, "[System]");
+            newMsg(channel, `${by} has banned ${argument}.`, "[System]");
         }else{
             if(by !== undefined){
-                sendMsg(channel, `${by} set the ${mode} mode on ${channel}/${argument}.`, "[System]");
+                newMsg(channel, `${by} set the ${mode} mode on ${channel}/${argument}.`, "[System]");
             }
         }
     });
     Client.addListener("-mode", function(channel, by, mode, argument, message){
         if(mode === "o"){
-            sendMsg(channel, `${by} stripped ${argument} of operator.`, "[System]");
+            newMsg(channel, `${by} stripped ${argument} of operator.`, "[System]");
             Tabs[channel.toLowerCase()].deopUser(argument);
         }else if(mode === "v"){
-            sendMsg(channel, `${by} stripped voice from ${argument}.`, "[System]");
+            newMsg(channel, `${by} stripped voice from ${argument}.`, "[System]");
         }else if(mode === "b"){
-            sendMsg(channel, `${by} has unbanned ${argument}.`, "[System]");
+            newMsg(channel, `${by} has unbanned ${argument}.`, "[System]");
         }else{
             if(by !== undefined){
-                sendMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
+                newMsg(channel, by + " removed the " + mode + " mode on " + channel + "/" + argument + ".", "[System]");
             }
         }
+    });
+
+    Client.addListener("whois", function(info){
+      var whois = "";
+      whois += "WHOIS response for user '" + info.nick + "' (" + info.user + ")  \n";
+      whois += "Connecting from host " + info.host + " at " + info.server + "  \n";
+      whois += "Real name is " + info.realname + "  \n";
+      var chans = "";
+      for(channel in info.channels){
+          chans += info.channels[channel] + " ";
+      }
+      whois += "User is currently chatting in the following channels: " + chans;
+      if(info.operator == "is an IRC Operator"){
+          whois += "  \n**This user is an IRC operator.**";
+      }
+      newMsg(info.nick, whois, "[System]");
     });
 
     // add handlers for form submits
