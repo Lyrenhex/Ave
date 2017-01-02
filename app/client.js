@@ -416,7 +416,7 @@ function ChatMessage(sender, contents, time, div, incName=true){
       if(this.Author == "[MOTD]" || this.Author == "[SERVER]" || this.Timestamp == "topic" || this.Content.toLowerCase().indexOf(Client.nick.toLowerCase()) >= 0){
           // if it's a motd, server notice, topic, or contains the user's nick, then increase the importance
           this.Element.classList.add("important");
-      }else if(this.Author == "[ERROR]"){
+      }else if(this.Author === "[ERROR]"){
           // if it's an error, then style accordingly
           this.Element.classList.add("error");
           incName = false;
@@ -540,7 +540,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
     });
     // standard irc error
     Client.addListener("error", function(message){
-        newMsg(message.args[1], `error: ${message.args[1]}: ${message.args[message.args.len - 1]}`, "[ERROR]");
+        newMsg(message.args[1], `error: ${message.args[1]}: ${message.args[message.args.length - 1]}`, "[ERROR]");
         socketSend({
             type: "ircError",
             payload: {
@@ -698,7 +698,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
                 raw: message
             }
         });
-        if(nick != Client.nick){
+        if(nick !== Client.nick){
             Tabs[channel.toLowerCase()].removeUser(nick);
             newMsg(channel, `${nick} has left the channel (${reason}).`, "[System]");
         }else if(Server.data.channels.indexOf(channel) != -1){
@@ -786,6 +786,16 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
       newMsg(info.nick, whois, "[System]");
     });
 
+    Client.addListener("invite", function(channel, from, message){
+      newMsg("%Server", `You have been invited to the ${channel} channel, by ${from}!`, "[SERVER]");
+      // check if the user wants to join the channel they were invited to
+      var join = confirm(`You have been invited to the  ${channel} channel by ${from}. Would you like to accept this invitation?`);
+      if(join){
+          // if they do, accept the invite.
+          Client.join(channel);
+      }
+    });
+
     // add handlers for form submits
     $(document).ready(function(){
         //document.getElementById("loading-m").classList.add("active");
@@ -840,6 +850,14 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
         $('#partChan').submit(function(){
             // lowercase it; all channels and stuff should be lowercase (we don't want case-sensitivity)
             var channel = $("#partChannel").val().toString().toLowerCase();
+            // if we're trying to leave the current channel, **change to %server**
+            var array = $('.mdl-layout__tab-panel.is-active').attr("id").split("-");
+            // get the selected channel name
+            var curChan = Channels[array[array.length-1]];
+            if(curChan == channel){
+                // TODO: change the current channel to %server
+
+            }
             try{
                 // destroy the object.
                 Tabs[channel].destroy();
