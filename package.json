@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-packager . Ave --out=dist/ --all --overwrite --version-string.ProductName='Ave IRC' --ignore='./.git(ignore) ./servers ./logs' --asar=true",
-    "deb64": "electron-installer-debian --src dist/Ave-linux-x64/ --dest dist/installers/ --arch amd64"
+    "deb64": "electron-installer-debian --src dist/Ave-linux-x64/ --dest dist/installers/ --arch amd64",
+    "deb32": "electron-installer-debian --src dist/Ave-linux-ia32/ --dest dist/installers/ --arch ia32"
   },
   "devDependencies": {
     "electron-prebuilt": "1.4.5",
