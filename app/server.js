@@ -19,12 +19,12 @@ firebase.auth().onAuthStateChanged(function(user) {
 
         database = firebase.database();
         if(getURLParameter("serv") === null){
-            database.ref(`${uid}`).once('value', function(snapshot){
+            database.ref(`${uid}/ave/servers`).once('value', function(snapshot){
                 serverId = snapshot.numChildren();
                 console.log(serverId);
             });
         }else{
-            database.ref(`${uid}/${getURLParameter("serv")}`).once('value', function(snapshot){
+            database.ref(`${uid}/ave/servers/${getURLParameter("serv")}`).once('value', function(snapshot){
                 serverId = getURLParameter("serv");
                 console.log(snapshot.val());
                 popFields(snapshot.val());
@@ -95,7 +95,7 @@ $(document).ready(function(){
             floodProtect: $("#floodProtect").is(":checked"),
             channels: Channels
         };
-        database.ref(`${uid}/${serverId}`).set(settings);
+        database.ref(`${uid}/ave/servers/${serverId}`).set(settings);
         window.location = "dash.html";
         return false;
     });

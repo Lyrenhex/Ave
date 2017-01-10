@@ -75,7 +75,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         document.getElementById("loading").classList.remove("is-active");
         uid = user.uid;
         console.log(user);
-        var serverRef = firebase.database().ref(`${uid}`);
+        var serverRef = firebase.database().ref(`${uid}/ave/servers`);
         serverRef.on("value", function(snapshot){
             console.log(snapshot);
             console.log(snapshot.val());
@@ -180,7 +180,7 @@ firebase.auth().onAuthStateChanged(function(user) {
                         );
                         delBtn.appendChild(delBtnIco);
                         delBtn.onclick = function(e){
-                            database.ref(`${uid}/${this.id.split("-")[0]}`).set(null);
+                            database.ref(`${uid}/ave/servers/${this.id.split("-")[0]}`).set(null);
                             this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
                             e.stopPropagation();
                         }

@@ -492,8 +492,8 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
         Server.data.channels = [];
     }
 
-    Server.database = database.ref(`${uid}/${Server.id}`);
-    Server.channelRef = database.ref(`${uid}/${Server.id}/channels`);
+    Server.database = database.ref(`${uid}/ave/servers/${Server.id}`);
+    Server.channelRef = database.ref(`${uid}/ave/servers/${Server.id}/channels`);
 
     document.getElementById("server").innerHTML = `${Server.data.server.address} (${Server.data.server.port})`;
     document.title = `Ave IRC Client :: ${Server.data.server.address} (${Server.data.server.port})`;
