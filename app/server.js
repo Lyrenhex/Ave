@@ -66,6 +66,10 @@ $(document).ready(function(){
     console.log(serverId);
 
     $('#connect').submit(function(){
+      if(!Channels){
+        Channels = [];
+      }
+
         // set up the settings array
         var settings = {
             server: {
@@ -74,8 +78,9 @@ $(document).ready(function(){
                 password: $("#srvPass").val()
             },
             security: {
-                secure: $("#sasl").is(":checked"),
-                badCertsAllowed: $("#badCert").is(":checked")
+                secure: $("#ssl").is(":checked"),
+                badCertsAllowed: $("#badCert").is(":checked"),
+                sasl: $("#sasl").is(":checked"),
             },
             user: {
                 nickname: $("#nick").val(),
@@ -113,7 +118,8 @@ function popFields(json){
     $("#encoding").val(json.encoding);
     $("#retryCount").val(json.retry.count);
     $("#retryDelay").val(json.retry.delay);
-    $("#sasl").prop("checked", json.security.secure);
+    $("#sasl").prop("checked", json.security.sasl);
+    $("#ssl").prop("checked", json.security.secure);
     $("#badCert").prop("checked", json.security.badCertsAllowed);
     $("#clearColours").prop("checked", json.messages.stripForm);
     $("#logMessages").prop("checked", json.messages.log);

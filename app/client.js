@@ -510,7 +510,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
         retryDelay: Server.data.retry.delay,
         stripColours: Server.data.messages.stripForm,
         floodProtection: Server.data.floodProtect,
-        sasl: Server.data.security.secure,
+        sasl: Server.data.security.sasl,
         secure: Server.data.security.secure,
         selfSigned: Server.data.security.badCertsAllowed,
         certExpired: Server.data.security.badCertsAllowed
@@ -797,6 +797,7 @@ electron.ipcRenderer.on("server", function(event, serverId, serverData, uid){
     });
 
     Client.addListener("motd", function(motd) {
+      motd = motd.replace(/(?:\r\n|\r|\n)/g, '<br />');
       newMsg("%Server", motd, "[MOTD]");
     });
 

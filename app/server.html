@@ -33,13 +33,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <img src="res/img/logo.png" alt="Ave" />
 			<h2>Server Editor</h2>
 			<p>Please enter your desired nickname and the connection information for the server that you would like to connect to. For reference, the freenode IRC credentials have been pre-filled for you; please feel free to change these.</p>
+      <p>To protect your privacy, default server configurations utilise SSL. SSL operates, by standards, on the 6697 port. Please check that your IRC server supports SSL; if it doesn't, you should likely uncheck the "SSL" checkbox, and change your server port to 6667.</p>
 			<form id="connect">
 				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					<input class="mdl-textfield__input" type="text" id="server" value="irc.freenode.net" required />
+					<input class="mdl-textfield__input" type="text" id="server" value="wilhelm.freenode.net" required />
 					<label class="mdl-textfield__label" for="server">Server IP</label>
 				</div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="port" value="6667" required />
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="port" value="6697" required />
 					<label class="mdl-textfield__label" for="port">Server Port</label>
                     <span class="mdl-textfield__error">Ports should be a number (usually 6667)</span>
 				</div><br />
@@ -52,6 +53,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<input class="mdl-textfield__input" type="password" id="nsPass" />
 					<label class="mdl-textfield__label" for="nsPass">NickServ Password (if needed)</label>
 				</div><br />
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ssl">
+            <input type="checkbox" id="ssl" class="mdl-checkbox__input" checked>
+            <span class="mdl-checkbox__label">Secure Connection (SSL)</span>
+        </label><br />
 				<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Save Server</button>
                 <a href="dash.html" class="mdl-button mdl-js-button mdl-button--warn mdl-js-ripple-effect">Cancel</a>
                 <button type="button" onclick="toggle('advanced')" class="mdl-button mdl-js-button mdl-js-ripple-effect">Toggle Advanced Options</button>
@@ -82,9 +87,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     					<label class="mdl-textfield__label" for="retryDelay">Delay to Reconnect (milliseconds)</label>
                         <span class="mdl-textfield__error">This field must be a numerical value.</span>
     				</div>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ssl">
+                        <input type="checkbox" id="ssl" class="mdl-checkbox__input" checked>
+                        <span class="mdl-checkbox__label">Secure Connection (SSL)</span>
+                    </label>
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sasl">
                         <input type="checkbox" id="sasl" class="mdl-checkbox__input">
-                        <span class="mdl-checkbox__label">Secure Connection (SASL)</span>
+                        <span class="mdl-checkbox__label">SASL Login</span>
                     </label>
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="badCert">
                         <input type="checkbox" id="badCert" class="mdl-checkbox__input">
