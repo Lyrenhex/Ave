@@ -43,10 +43,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <h2 class="mdl-layout-title">Your IRC Servers</h2>
                     <div class="mdl-grid" id="serverGrid">
                         <div class="mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop" id="nsCell">
-                            <a href="connect.html">
+                            <a href="server.html">
                                 <div class="sCard aCard" title="New Server" id="newServ">
                                     <span class="action">
-                                        <i class="material-icons">add_circle_outline</i>
+                                        <i class="material-icons">
+                                            add_circle_outline
+                                        </i>
                                     </span>
                                 </div>
                                 <div class="mdl-tooltip" for="newServ">
@@ -55,8 +57,57 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </a>
                         </div>
                     </div>
+
+                    <h2 class="mdl-layout-title">Your Ave Account</h2>
+                    <div class="card">
+                        <h2 id="user">Not signed in</h2>
+
+                        <div class="toggle" id="verifyAccount">
+                            <h2>Unverified account</h2>
+                            <p>For security reasons, we require that all Ave accounts' emails be verified. Unfortunately, it seems that this is not the case for your email address. Your account is thus liable for summary deletion in the event of contact from the email address holder. If this is your email address, please check your inbox for a verification email.</p>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="sendVerificationEmail()">Resend Verification Email</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="deleteAccount()">Delete Ave Account</button>
+                        </div>
+
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="firebase.auth().signOut()">Log out</button>
+                    </div>
                 </div>
             </main>
         </div>
+        <div class="loading-modal" id="loading-m"></div>
+        <div class="mdl-spinner mdl-js-spinner loading" id="loading"></div>
+
+        <div class="modal mdl-shadow--2dp" id="login-modal">
+        <h2>Log in to Ave</h2>
+        <p>If you use Secret, you can use that account here.</p>
+        <form id="login">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="login-email">
+            <label class="mdl-textfield__label" for="login-email">Email</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="password" id="login-password">
+            <label class="mdl-textfield__label" for="login-password">Passphrase</label>
+          </div><br />
+          <button class='mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised'>
+            Log in
+          </button>
+        </form>
+
+        <h2>Sign up to Ave</h2>
+        <form id="register">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="reg-email">
+            <label class="mdl-textfield__label" for="reg-email">Email</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="password" id="reg-password">
+            <label class="mdl-textfield__label" for="reg-password">Passphrase</label>
+          </div><br />
+          <button class='mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised'>
+            Sign up
+          </button>
+        </form>
+      </div>
     </body>
 </html>

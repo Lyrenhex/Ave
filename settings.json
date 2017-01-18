@@ -1,0 +1,4 @@
+{
+    "enableWebsocketApi": true,
+    "websocketPort": 5673
+}

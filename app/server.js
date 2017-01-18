@@ -1,25 +1,47 @@
 const electron = require("electron");
 const fs = require("fs");
+const firebase = require("firebase");
+
+var database;
+var uid;
+var serverId;
+
+// Initialize Firebase
+var config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+firebase.initializeApp(config);
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        var isAnonymous = user.isAnonymous;
+        uid = user.uid;
+        console.log(user);
+
+        database = firebase.database();
+        if(getURLParameter("serv") === null){
+            database.ref(`${uid}/ave/servers`).once('value', function(snapshot){
+                serverId = snapshot.numChildren();
+                console.log(serverId);
+            });
+        }else{
+            database.ref(`${uid}/ave/servers/${getURLParameter("serv")}`).once('value', function(snapshot){
+                serverId = getURLParameter("serv");
+                console.log(snapshot.val());
+                popFields(snapshot.val());
+            });
+        }
+    } else {
+        firebase.auth().signInAnonymously().catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(error);
+        });
+    }
+});
 
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
-}
-
-// ensure server folder already exists
-fs.mkdir("servers", 0777, function(err){
-        if(err){
-            if(err.code == "EEXIST"){
-                // do nothing; folder already exists
-            }else{
-                console.log("Unable to create servers folder", err);
-            }
-        }
-});
-
-var Servers = [];
-var servers = fs.readdirSync("servers/");
-for(server in servers){
-    Servers.push(JSON.parse(fs.readFileSync("servers/" + servers[server], "utf-8")));
 }
 
 var Channels = [];
@@ -40,22 +62,14 @@ function toggle(id){
 }
 
 $(document).ready(function(){
-    /* try{
-        var settings = JSON.parse(fs.readFileSync('settings.json', 'utf8'));
-        popFields(settings);
-    }catch(err){
-        console.log("unable to open settings.json; probably first run:", err);
-    } */
-
-    var serverId = getURLParameter("serv");
+    console.log(getURLParameter("serv"));
     console.log(serverId);
-    if(serverId){
-        popFields(Servers[serverId]);
-    }else{
-        serverId = Servers.length;
-    }
 
     $('#connect').submit(function(){
+      if(!Channels){
+        Channels = [];
+      }
+
         // set up the settings array
         var settings = {
             server: {
@@ -64,8 +78,9 @@ $(document).ready(function(){
                 password: $("#srvPass").val()
             },
             security: {
-                secure: $("#sasl").is(":checked"),
-                badCertsAllowed: $("#badCert").is(":checked")
+                secure: $("#ssl").is(":checked"),
+                badCertsAllowed: $("#badCert").is(":checked"),
+                sasl: $("#sasl").is(":checked"),
             },
             user: {
                 nickname: $("#nick").val(),
@@ -85,17 +100,7 @@ $(document).ready(function(){
             floodProtect: $("#floodProtect").is(":checked"),
             channels: Channels
         };
-        // electron.ipcRenderer.send("server_connect", settings);
-        // convert it to a JSON array
-        var jsonSettings = JSON.stringify(settings, null, 4);
-        // write it to a file, to persist for next time
-        fs.writeFile("servers/" + serverId + '.json', jsonSettings, 'utf8', function(err) {
-            if(err) {
-                console.log("couldn't write settings to json file: ", err);
-            } else {
-                console.log("settings saved as json: " + serverId + ".json");
-            }
-        });
+        database.ref(`${uid}/ave/servers/${serverId}`).set(settings);
         window.location = "dash.html";
         return false;
     });
@@ -113,7 +118,8 @@ function popFields(json){
     $("#encoding").val(json.encoding);
     $("#retryCount").val(json.retry.count);
     $("#retryDelay").val(json.retry.delay);
-    $("#sasl").prop("checked", json.security.secure);
+    $("#sasl").prop("checked", json.security.sasl);
+    $("#ssl").prop("checked", json.security.secure);
     $("#badCert").prop("checked", json.security.badCertsAllowed);
     $("#clearColours").prop("checked", json.messages.stripForm);
     $("#logMessages").prop("checked", json.messages.log);
