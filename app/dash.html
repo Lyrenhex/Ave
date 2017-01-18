@@ -60,9 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                     <h2 class="mdl-layout-title">Your Ave Account</h2>
                     <div class="card">
-                        <h2 id="user">Anonymous User</h2>
-                        <button id="signIn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="toggle('signInForm')">Sign In</button>
-                        <button id="signUp" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="toggle('signUpForm')">Create Ave Account</button>
+                        <h2 id="user">Not signed in</h2>
 
                         <div class="toggle" id="verifyAccount">
                             <h2>Unverified account</h2>
@@ -71,41 +69,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="deleteAccount()">Delete Ave Account</button>
                         </div>
 
-                        <form class="toggle" id="signInForm">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="email" id="signInEmail" required>
-                                <label class="mdl-textfield__label" for="signInEmail">Email Address</label>
-                            </div>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="password" id="signInPass" required>
-                                <label class="mdl-textfield__label" for="signInPass">Password</label>
-                            </div>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Sign In</button>
-                            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="toggle('forgottenPassword')">Forgot Password</button>
-                        </form>
-                        <form class="toggle" id="forgottenPassword">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="email" id="forgotEmail" required>
-                                <label class="mdl-textfield__label" for="forgotEmail">Email Address</label>
-                            </div>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Reset Password (email)</button>
-                        </form>
-                        <form class="toggle" id="signUpForm">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="email" id="signUpEmail" required>
-                                <label class="mdl-textfield__label" for="signUpEmail">Email address</label>
-                            </div>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="password" id="signUpPass" required>
-                                <label class="mdl-textfield__label" for="signUpPass">Password</label>
-                            </div>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Create Account</button>
-                        </form>
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="firebase.auth().signOut()">Log out</button>
                     </div>
                 </div>
             </main>
         </div>
-        <div class="loading-modal active" id="loading-m"></div>
-        <div class="mdl-spinner mdl-js-spinner loading is-active" id="loading"></div>
+        <div class="loading-modal" id="loading-m"></div>
+        <div class="mdl-spinner mdl-js-spinner loading" id="loading"></div>
+
+        <div class="modal mdl-shadow--2dp" id="login-modal">
+        <h2>Log in to Ave</h2>
+        <p>If you use Secret, you can use that account here.</p>
+        <form id="login">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="login-email">
+            <label class="mdl-textfield__label" for="login-email">Email</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="password" id="login-password">
+            <label class="mdl-textfield__label" for="login-password">Passphrase</label>
+          </div><br />
+          <button class='mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised'>
+            Log in
+          </button>
+        </form>
+
+        <h2>Sign up to Ave</h2>
+        <form id="register">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="reg-email">
+            <label class="mdl-textfield__label" for="reg-email">Email</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="password" id="reg-password">
+            <label class="mdl-textfield__label" for="reg-password">Passphrase</label>
+          </div><br />
+          <button class='mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised'>
+            Sign up
+          </button>
+        </form>
+      </div>
     </body>
 </html>

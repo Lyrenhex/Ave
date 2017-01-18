@@ -60,6 +60,18 @@ body {
     display: none;
     z-index: 3;
 }
+.modal {
+  background-color: #fff;
+  border-radius: 2px;
+  padding: 8px 16px;
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: inherit inherit 0 0;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
 .active {
     display: block;
 }
