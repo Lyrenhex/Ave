@@ -190,7 +190,7 @@ function Tab(name, id){
             this.UserList.id = "usrList-" + tabName;
             usrList.appendChild(this.UserList);
 
-            var chOpComs = document.createElement("div");
+            /* var chOpComs = document.createElement("div");
             chOpComs.className = "toggle-md shown";
             chOpComs.appendChild(document.createElement("b").appendChild(document.createTextNode("Operator Commands")));
             var chTopicToggle = document.createElement("button");
@@ -235,7 +235,7 @@ function Tab(name, id){
             chTopicFormButton.appendChild(chTopicFormButtonLabel);
             chTopicForm.appendChild(chTopicFormButton);
             chOpComs.appendChild(chTopicForm);
-            usrList.appendChild(chOpComs);
+            usrList.appendChild(chOpComs); */
 
             // register search bar with google mdl
             componentHandler.upgradeElements(usrList);
