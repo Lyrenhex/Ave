@@ -14,7 +14,7 @@
     "win32": "node build-win.js"
   },
   "devDependencies": {
-    "electron": "1.4.5",
+    "electron": "9.4.0",
     "electron-winstaller": "^2.3.4"
   },
   "dependencies": {
